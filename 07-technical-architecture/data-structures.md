@@ -40,6 +40,8 @@ The blueprint format achieves extreme compression ratios by focusing on informat
 
 **Cultural and Contextual Markers** are preserved selectively - elements that establish setting, mood, or cultural context are maintained, while generic environmental details are compressed.
 
+**Expression and Communication Patterns** preserve the sophisticated layers of human expression including micro-expressions, cultural body language patterns, vocal inflections, and musical expression nuances that carry semantic meaning beyond explicit content and determine authenticity and cultural appropriateness.
+
 ### Adaptive Detail Levels
 
 The blueprint format supports variable levels of detail based on the importance and uniqueness of different elements:

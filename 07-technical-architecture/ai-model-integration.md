@@ -66,6 +66,15 @@ Maintaining consistent character appearance across regenerated content requires 
 
 **Cultural Nuance Loss**: AI models frequently fail to preserve subtle cultural elements, historical accuracy, and culturally-specific aesthetic choices during regeneration, particularly for non-Western cultural contexts underrepresented in training data.
 
+**Subtle Expression and Micro-Movement Detection**: Current AI models lack the sophistication to detect and recreate the nuanced layers of human expression that convey meaning beyond explicit content. This includes:
+- **Micro-expressions and facial subtleties** that communicate emotional subtext, cultural context, and character psychology
+- **Body language nuances** including posture shifts, gesture timing, and spatial relationships that carry narrative significance
+- **Vocal inflections and speech patterns** that convey personality, emotional state, cultural background, and relationship dynamics
+- **Musical micro-timing and expression** including subtle rhythmic variations, dynamic changes, and instrumental techniques that create emotional impact
+- **Textual subtext and implied meaning** where the semantic content lies in what's not explicitly stated
+
+These limitations mean that current semantic compression would lose critical layers of human communication that audiences unconsciously process and that contribute significantly to the overall impact and meaning of media content.
+
 ## Audio and Voice Regeneration
 
 ### Speech Synthesis Integration

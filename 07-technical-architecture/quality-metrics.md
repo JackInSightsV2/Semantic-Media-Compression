@@ -22,6 +22,8 @@ Quality in semantic media compression operates across multiple dimensions that m
 
 **Emotional Preservation** assesses whether the regenerated content evokes the same emotional responses and maintains the intended emotional arc of the original.
 
+**Expression Fidelity** measures how well regenerated content preserves the subtle layers of human communication including micro-expressions, body language nuances, vocal inflections, and cultural communication patterns that carry semantic meaning beyond explicit content.
+
 **Cultural and Contextual Accuracy** measures how well the regenerated content preserves cultural references, historical context, and setting-specific details that contribute to authenticity.
 
 **Aesthetic Coherence** evaluates whether the regenerated content maintains a consistent visual and audio style that supports the narrative intent.
@@ -51,6 +53,18 @@ Character consistency across regenerated content requires sophisticated evaluati
 **Relationship Dynamics** assesses whether the interactions between characters maintain the appropriate emotional tone and power dynamics established in the original.
 
 **Character Arc Integrity** measures whether character development and growth patterns are preserved throughout the regenerated content.
+
+### Expression and Communication Quality Metrics
+
+**Micro-Expression Preservation** evaluates whether subtle facial expressions lasting 1/25th to 1/5th of a second are accurately detected, preserved, and regenerated, maintaining the emotional subtext and authenticity of character performances.
+
+**Cultural Body Language Accuracy** measures how well regenerated content preserves culturally-specific gesture meanings, posture patterns, and spatial relationship dynamics that communicate social context and character relationships.
+
+**Vocal Subtext Fidelity** assesses whether regenerated speech maintains the micro-timing, inflection patterns, and emotional undertones that convey meaning beyond the literal words spoken.
+
+**Musical Expression Preservation** evaluates whether regenerated music maintains the subtle timing variations, dynamic changes, and instrumental techniques that create emotional impact and artistic expression.
+
+**Cross-Cultural Communication Accuracy** measures how well expression detection and regeneration systems preserve culturally-appropriate communication patterns when adapting content for different cultural contexts.
 
 ## Technical Quality Assessment
 
@@ -122,6 +136,8 @@ The system evaluates semantic preservation through coordinated analysis across m
 **Narrative Function Validation** evaluates whether each regenerated scene serves the same narrative purpose as the original - advancing plot, developing character, establishing mood, or providing exposition.
 
 **Emotional Intent Matching** measures whether regenerated content evokes the same emotional responses and maintains the intended emotional progression of the original work.
+
+**Expression Semantic Preservation** evaluates whether the subtle layers of human communication - micro-expressions, body language, vocal inflections, and cultural communication patterns - are accurately detected, preserved, and regenerated to maintain authentic human expression.
 
 #### Character Consistency Validation Framework
 

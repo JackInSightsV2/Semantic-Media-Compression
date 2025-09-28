@@ -72,6 +72,8 @@ This analysis provides a realistic assessment of current AI model capabilities a
 - Absence of community validation frameworks
 - Insufficient cultural expert involvement in model development
 
+**Expression Detection Limitations**: Current AI models lack the sophistication to detect and preserve the subtle layers of human expression that carry significant semantic meaning - micro-expressions, cultural body language patterns, vocal inflections, and musical expression nuances that audiences unconsciously process and that contribute significantly to media authenticity and cultural appropriateness.
+
 ## Realistic Capability Assessment: Where We Are vs. Where We Need to Be
 
 ### Short-Form Content (Under 5 Minutes)

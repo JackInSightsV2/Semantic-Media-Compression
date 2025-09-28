@@ -28,6 +28,8 @@ This roadmap establishes a practical four-phase implementation strategy for sema
 
 **Cultural Context Preservation**: AI models exhibit significant bias toward Western cultural contexts, lacking the nuanced understanding required for accurate global cultural representation.
 
+**Expression Detection Limitations**: Current AI models cannot detect or recreate the sophisticated layers of human expression - micro-expressions, body language nuances, vocal inflections, and cultural communication patterns - that carry semantic meaning beyond explicit content and determine whether regenerated content feels authentic and culturally appropriate.
+
 **Real-Time Processing**: Current semantic analysis requires 10-30 seconds per minute of content, making real-time compression impossible with existing computational architectures.
 
 ## Phased Implementation Strategy

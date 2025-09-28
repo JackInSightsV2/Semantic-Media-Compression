@@ -134,6 +134,8 @@ The compression pipeline must handle content ranging from short clips to full-le
 
 **Cultural Context Preservation**: AI models trained on predominantly Western datasets struggle with accurate representation of diverse cultural contexts, leading to stereotypical or inaccurate cultural elements in regenerated content.
 
+**Expression Detection Limitations**: Current AI models lack the sophistication to detect and preserve the subtle layers of human expression that carry significant semantic meaning - micro-expressions, cultural body language patterns, vocal inflections, and musical expression nuances that audiences unconsciously process and that contribute significantly to media authenticity and cultural appropriateness.
+
 ### Accuracy and Reliability
 
 The semantic extraction process must be robust enough to handle diverse content types, production qualities, and artistic styles while maintaining consistent accuracy.

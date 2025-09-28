@@ -34,6 +34,8 @@ The system extracts meaning from visual content through sophisticated computer v
 
 **Character State Recognition** analyzes character appearance, body language, facial expressions, and positioning to understand emotional states, relationship dynamics, and character development moments.
 
+**Advanced Expression Detection** captures the sophisticated layers of human communication including micro-expressions lasting 1/25th to 1/5th of a second, subtle body language nuances, cultural gesture meanings, vocal inflections that convey emotional subtext, and musical expression patterns that create emotional impact beyond explicit content.
+
 **Action and Interaction Mapping** identifies not just what actions occur, but their narrative significance - whether actions advance plot, reveal character, establish relationships, or serve symbolic functions.
 
 #### Layer 3: Audio Semantic Decomposition

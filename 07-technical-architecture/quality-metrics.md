@@ -172,7 +172,7 @@ The system measures quality through sophisticated comparison methodologies:
 
 **Semantic Distance Measurement** calculates the semantic similarity between original and regenerated content using both human-readable description comparison and mathematical vector similarity calculations (cosine similarity, euclidean distance) that understand narrative, emotional, and cultural context.
 
-**Vector Consistency Validation** uses embedded semantic vectors to mathematically validate character consistency (similarity scores > 0.85), cultural adaptation accuracy, and narrative coherence through vector space operations without requiring complex natural language processing.
+**Native Semantic Validation** leverages AI models with built-in semantic vector understanding to mathematically validate character consistency (similarity scores > 0.85), cultural adaptation accuracy, and narrative coherence as core model capabilities rather than external validation processes.
 
 **Narrative Function Preservation Scoring** evaluates whether each regenerated scene achieves the same storytelling goals as the original, measuring plot advancement, character development, and emotional impact effectiveness.
 

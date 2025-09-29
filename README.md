@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project explores semantic media compression - a new way to store any meaningful content. Instead of saving raw data (which takes gigabytes), we save the meaning, structure, and intent in small files combining human-readable JSON descriptions with embedded vector mathematics (just megabytes). AI can then recreate the content in different styles and formats from these "meaning blueprints" while allowing mathematical operations for cultural adaptation, consistency validation, and cross-media transformation.
+This project explores semantic media compression - a new way to store any meaningful content. Instead of saving raw data (which takes gigabytes), we save the meaning, structure, and intent in small semantic blueprint files (just megabytes). AI models with native semantic understanding can then recreate the content in different styles and formats from these "meaning blueprints" while performing cultural adaptation, consistency validation, and cross-media transformation as built-in mathematical operations on semantic meaning.
 
 **Important Note**: This concept requires significant advances in AI model accuracy and semantic understanding capabilities. Current AI technology is not yet sophisticated enough to achieve production-quality semantic compression, but the potential is revolutionary if these technical challenges can be solved.
 

@@ -1,0 +1,19 @@
+{
+  "test_type": "semantic_extraction",
+  "timestamp": "2025-09-29T22:59:23.971554",
+  "test_id": "historical_test_4",
+  "result_count": 1,
+  "results": [
+    {
+      "test_id": "historical_test_4",
+      "model_name": "gpt4_vision",
+      "extraction_data": {
+        "test": "data_4"
+      },
+      "accuracy_score": 0.88,
+      "processing_time": 13.0,
+      "cost": 0.16,
+      "timestamp": "2025-09-23T22:59:23.947370"
+    }
+  ]
+}

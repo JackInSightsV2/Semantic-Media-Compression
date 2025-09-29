@@ -1,0 +1,73 @@
+# Test Configuration for Semantic Compression Testing Framework
+# This file defines test suite configurations with environment variable substitution
+
+test_suites:
+  semantic_extraction:
+    enabled: true
+    models: ["gpt4_vision", "claude_sonnet"]
+    accuracy_threshold: 0.75
+    video_folder: "${VIDEO_FOLDER}"
+    expected_video_count: 5
+    
+  json_generation:
+    enabled: true
+    models: ["claude_sonnet"]
+    schema_types: ["hierarchical", "character_centric", "temporal", "cultural"]
+    completeness_threshold: 0.85
+    compression_ratio_target: 500
+    schema_compliance_requirement: 1.0  # 100% compliance required
+    
+  content_regeneration:
+    enabled: true
+    models: ["dalle3", "midjourney", "stable_diffusion"]
+    consistency_threshold: 0.80
+    max_regeneration_cycles: 5
+    max_quality_degradation: 0.20  # 20% max loss over cycles
+    cultural_approval_target: 0.70  # 70% community approval
+    
+  code_extraction:
+    enabled: true
+    models: ["gpt4", "claude_sonnet"]
+    languages: ["python", "javascript", "java", "go", "csharp", "php"]
+    equivalence_threshold: 0.95
+    business_logic_preservation_target: 0.98
+    architectural_pattern_fidelity_target: 0.90
+
+# Global test settings
+global_settings:
+  # Budget controls (can be overridden by environment variables)
+  default_total_budget: 200.0
+  default_per_test_budget: 50.0
+  warning_threshold: 0.8
+  
+  # Rate limiting
+  api_rate_limits:
+    gpt4_max_requests_per_minute: 10
+    claude_max_requests_per_minute: 15
+    dalle3_max_requests_per_minute: 5
+    
+  # File paths (with environment variable substitution)
+  video_folder: "${VIDEO_FOLDER}"
+  test_data_folder: "test-data"
+  results_folder: "results"
+  
+  # Quality targets
+  target_thresholds:
+    semantic_accuracy: 0.75
+    json_completeness: 0.85
+    character_consistency: 0.80
+    code_equivalence: 0.95
+    
+  # Test execution settings
+  execution:
+    parallel_execution: false
+    max_concurrent_tests: 3
+    retry_failed_tests: true
+    max_retries: 2
+    
+  # Reporting settings
+  reporting:
+    generate_html_reports: true
+    generate_csv_exports: true
+    include_visualizations: true
+    detailed_failure_analysis: true

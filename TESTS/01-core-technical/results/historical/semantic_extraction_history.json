@@ -1,0 +1,56 @@
+[
+  {
+    "timestamp": "2025-09-29T22:53:37.537892",
+    "test_type": "semantic_extraction",
+    "model_name": "gpt4_vision",
+    "test_id": "test_001",
+    "accuracy_score": 0.85,
+    "processing_time": 12.5,
+    "cost": 0.15
+  },
+  {
+    "timestamp": "2025-09-29T22:59:23.947387",
+    "test_type": "semantic_extraction",
+    "model_name": "gpt4_vision",
+    "test_id": "historical_test_0",
+    "accuracy_score": 0.8,
+    "processing_time": 15.0,
+    "cost": 0.2
+  },
+  {
+    "timestamp": "2025-09-29T22:59:23.954122",
+    "test_type": "semantic_extraction",
+    "model_name": "gpt4_vision",
+    "test_id": "historical_test_1",
+    "accuracy_score": 0.8200000000000001,
+    "processing_time": 14.5,
+    "cost": 0.19
+  },
+  {
+    "timestamp": "2025-09-29T22:59:23.959501",
+    "test_type": "semantic_extraction",
+    "model_name": "gpt4_vision",
+    "test_id": "historical_test_2",
+    "accuracy_score": 0.8400000000000001,
+    "processing_time": 14.0,
+    "cost": 0.18000000000000002
+  },
+  {
+    "timestamp": "2025-09-29T22:59:23.966068",
+    "test_type": "semantic_extraction",
+    "model_name": "gpt4_vision",
+    "test_id": "historical_test_3",
+    "accuracy_score": 0.8600000000000001,
+    "processing_time": 13.5,
+    "cost": 0.17
+  },
+  {
+    "timestamp": "2025-09-29T22:59:23.971554",
+    "test_type": "semantic_extraction",
+    "model_name": "gpt4_vision",
+    "test_id": "historical_test_4",
+    "accuracy_score": 0.88,
+    "processing_time": 13.0,
+    "cost": 0.16
+  }
+]

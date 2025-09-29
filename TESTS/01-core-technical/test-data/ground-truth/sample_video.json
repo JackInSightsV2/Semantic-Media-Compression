@@ -1,0 +1,39 @@
+{
+  "micro_expressions": {
+    "timestamp_0_5": {
+      "facial_expressions": [
+        "slight_smile",
+        "raised_eyebrow"
+      ],
+      "confidence": 0.8
+    }
+  },
+  "body_language": {
+    "timestamp_0_5": {
+      "gestures": [
+        "hand_wave",
+        "open_posture"
+      ],
+      "confidence": 0.7
+    }
+  },
+  "cultural_signals": {
+    "cultural_markers": [
+      "western_business_attire",
+      "formal_setting"
+    ],
+    "cultural_context": "professional_american"
+  },
+  "vocal_layers": {
+    "tone": "confident",
+    "pace": "moderate",
+    "emotional_undertones": [
+      "enthusiasm",
+      "slight_nervousness"
+    ]
+  },
+  "temporal_consistency": {
+    "character_appearance": 0.9,
+    "scene_continuity": 0.85
+  }
+}

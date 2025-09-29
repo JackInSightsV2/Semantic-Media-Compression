@@ -9,6 +9,7 @@
 ## 01 - Theoretical Validation 🏗️
 **Entry Point**: [theoretical-foundation-overview.md](./01-theoretical-validation/theoretical-foundation-overview.md)
 - `detailed-compression-scenarios.md` - Concrete compression examples
+- `energy-environmental-trade-off-analysis.md` - Energy costs vs. efficiency benefits analysis
 
 ## 02 - Interdisciplinary Integration 🎓
 **Entry Point**: [academic-integration-overview.md](./02-interdisciplinary-integration/academic-integration-overview.md)
@@ -48,6 +49,12 @@
 - `enterprise-corporate.md` - Corporate and enterprise use cases
 - `content-industry-transformation.md` - Content industry transformation (entertainment, music, publishing, gaming)
 - `new-business-models.md` - Novel business model opportunities
+
+## 10 - Philosophical Implications 🤔
+**Entry Point**: [philosophical-framework-overview.md](./10-philosophical-implications/philosophical-framework-overview.md)
+- `ontological-analysis.md` - The Ship of Theseus problem: identity and existence in semantic media
+- `aesthetic-philosophy.md` - Beauty, consistency, and artistic value in non-deterministic media
+- `memory-identity-philosophy.md` - Personal identity and authentic experience with regenerable memories
 - `practical-examples-case-studies.md` - Theoretical case studies and practical examples
 
 ## 07 - Technical Architecture 🔧
@@ -56,6 +63,7 @@
 - `advanced-expression-detection.md` - Advanced expression and emotion detection
 - `ai-model-integration.md` - AI model coordination and integration
 - `compression-pipeline.md` - Compression process architecture
+- `computational-efficiency-optimization.md` - Hardware and algorithmic optimization pathways
 - `data-structures.md` - Information architecture and storage
 - `file-format-design.md` - File format and data structure design principles
 - `implementation-roadmap.md` - Development strategy and timeline

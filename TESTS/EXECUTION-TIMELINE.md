@@ -74,7 +74,34 @@
 
 **Day 3 Goal**: Honest, data-driven assessment for public white paper
 
-## Total Program Cost: £60 (£40 under budget)
+## Day 4: Code Semantic Compression Validation
+
+### Morning (2 hours): Legacy Code Analysis
+- **Select realistic legacy business logic**: Simple payroll calculation or e-commerce pricing
+- **Extract semantic business rules** using GPT-4
+- **Generate semantic blueprint JSON** structure
+- **Document algorithm patterns** and business constraints
+- **Validate semantic accuracy** against original code logic
+- **Cost**: ~£5
+
+### Afternoon (3 hours): Cross-Language Generation
+- **Generate Spring Boot service** from semantic blueprint
+- **Generate Node.js/TypeScript equivalent** implementation
+- **Generate Python FastAPI equivalent** implementation
+- **Test functional equivalence** across all implementations
+- **Measure development time savings** vs manual rewrite approach
+- **Cost**: ~£5
+
+### Evening (1 hour): Enterprise Value Assessment
+- **Calculate potential migration cost savings** for typical enterprise
+- **Assess legacy system modernization** applications and market size
+- **Document cross-platform development efficiency** gains
+- **Identify enterprise use cases** and commercial opportunities
+- **Plan enterprise POC** for realistic legacy system migration
+
+**Day 4 Goal**: Validate code semantic compression for enterprise applications
+
+## Total Program Cost: £70 (£30 under budget)
 
 ## Realistic Success Criteria (For White Paper Data)
 

@@ -2,15 +2,15 @@
 
 ## Overview
 
-Building on the established theoretical foundation, academic grounding, cultural analysis, and ethical framework, we now examine the complex legal landscape that semantic media compression must navigate. This technology operates at the intersection of copyright law, AI-generated content rights, and transformative use doctrine, creating unprecedented legal questions that existing frameworks struggle to address.
+Based on the established theoretical foundation, academic research, cultural analysis, and ethical framework, we now look at the complex legal landscape that semantic media compression must navigate. This technology operates at the intersection of copyright law, AI-generated content rights, and transformative use doctrine, creating new legal questions that existing frameworks struggle to address.
 
 ## The Legal Innovation Challenge
 
-Semantic media compression challenges fundamental copyright concepts by operating precisely at the boundary between protected expression and unprotectable ideas. When we compress a movie into semantic meaning and regenerate it through AI, we create legal ambiguities that require new frameworks:
+Semantic media compression challenges basic copyright concepts by operating precisely at the boundary between protected expression and unprotectable ideas. When we compress a movie into semantic meaning and recreate it through AI, we create legal ambiguities that require new frameworks:
 
 **Expression vs. Ideas**: Traditional copyright protects expression but not ideas. Semantic compression extracts ideas and meaning, then generates new expressions - challenging this fundamental distinction.
 
-**Derivative Works**: Are AI-regenerated versions derivative works of the original, or entirely new creations based on unprotectable semantic information?
+**Derivative Works**: Are AI-recreated versions derivative works of the original, or entirely new creations based on unprotectable semantic information?
 
 **Fair Use**: Does semantic compression constitute transformative use that qualifies for fair use protection, especially when enabling cultural adaptation and accessibility?
 

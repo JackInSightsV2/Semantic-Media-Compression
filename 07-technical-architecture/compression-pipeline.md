@@ -2,7 +2,7 @@
 
 ## Overview
 
-The compression pipeline represents the fundamental transformation process that converts traditional media files into semantic blueprints. This process shifts from preserving pixels and audio waves to capturing meaning, intent, and regenerable instructions that AI models can interpret and reconstruct.
+The compression pipeline represents the basic transformation process that converts traditional media files into vector-enhanced semantic blueprints. This process shifts from preserving pixels and audio waves to capturing meaning, intent, and recreatable instructions in both human-readable JSON descriptions and mathematically precise vector embeddings that AI models can interpret, manipulate, and reconstruct.
 
 ## Conceptual Framework
 
@@ -104,15 +104,19 @@ The system must understand the story being told, not just the events being shown
 
 **Pacing and Rhythm Analysis** captures the temporal flow of the narrative, understanding when scenes should build tension, provide relief, or deliver emotional impact.
 
-### Stage 4: Semantic Blueprint Generation
+### Stage 4: Dual-Layer Semantic Blueprint Generation
 
-The final stage synthesizes all analyzed elements into a structured, compressible format:
+The final stage synthesizes all analyzed elements into a structured, compressible format combining human accessibility with mathematical precision:
 
-**Hierarchical Information Organization** structures the extracted semantic information in a way that balances compression efficiency with regeneration fidelity. This includes creating reference systems for recurring elements and optimizing data representation.
+**Hierarchical Information Organization** structures the extracted semantic information in both human-readable JSON descriptions and embedded vector representations that balance compression efficiency with regeneration fidelity while enabling mathematical operations.
 
-**Consistency Validation** ensures that all extracted information maintains logical coherence and that character, setting, and narrative elements remain consistent throughout the blueprint.
+**Vector Embedding Generation** converts semantic analysis into high-dimensional vectors that capture mathematical relationships between characters, emotions, cultural contexts, and narrative elements for computational processing.
 
-**Quality Metrics Integration** embeds confidence scores and quality assessments that can guide regeneration systems in making appropriate trade-offs between different output requirements.
+**Dual-Layer Synchronization** ensures alignment between human descriptions and vector representations, maintaining consistency scores above 90% to guarantee mathematical operations reflect intended semantic meaning.
+
+**Consistency Validation** ensures that all extracted information maintains logical coherence through both human review of descriptions and mathematical validation of vector relationships throughout the blueprint.
+
+**Quality Metrics Integration** embeds confidence scores and quality assessments in both human-readable and vector formats that can guide regeneration systems in making appropriate trade-offs between different output requirements.
 
 ## Technical Considerations
 

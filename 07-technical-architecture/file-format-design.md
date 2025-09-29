@@ -16,15 +16,21 @@ Semantic media compression requires sophisticated file formats and data structur
 
 **Cultural Sensitivity Integration** incorporates mechanisms for representing cultural context and adaptation guidelines.
 
+**Portable Vector Integration** embeds high-dimensional semantic vectors directly in files for mathematical semantic relationships without external database dependencies.
+
+**Self-Contained Distribution** ensures complete semantic blueprints can be shared via email, messaging, or any file transfer method with all necessary regeneration data included.
+
 ### Hierarchical Information Organization
 
-**Global Metadata Layer** contains overarching information about the work including title, duration, cultural context, and rights information.
+**Global Metadata Layer** contains overarching information about the work including title, duration, cultural context, rights information, and global semantic vectors that define the overall work's meaning space.
 
-**Entity Definition Layer** establishes consistent representations of characters, locations, objects, and concepts.
+**Entity Definition Layer** establishes consistent representations of characters, locations, objects, and concepts with embedded semantic vectors for mathematical similarity calculations and consistency checking.
 
-**Scene Structure Layer** organizes temporal flow into manageable segments with clear boundaries and relationships.
+**Scene Structure Layer** organizes temporal flow into manageable segments with time-based vector sequences that capture narrative progression, emotional arcs, and temporal semantic relationships.
 
-**Element Detail Layer** preserves fine-grained information about dialogue, actions, visual composition, and audio elements.
+**Element Detail Layer** preserves fine-grained information about dialogue, actions, visual composition, and audio elements with micro-level semantic vectors for precise regeneration control.
+
+**Vector Embedding Integration** stores high-dimensional semantic representations directly within each layer, enabling mathematical operations for cultural adaptation, style transfer, and consistency validation without external dependencies.
 
 ## Compression Standards and Quality Levels
 

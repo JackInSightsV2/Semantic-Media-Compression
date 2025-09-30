@@ -1,0 +1,348 @@
+/* Legacy CSS Styles - Accumulated over 8+ years */
+/* This file has grown significantly and contains many legacy styles */
+
+/* Legacy reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Legacy body styles */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* Legacy header styles */
+#header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 3px solid #e74c3c;
+}
+
+#header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+#header p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Legacy navigation styles */
+#navigation {
+    background-color: #34495e;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2c3e50;
+}
+
+#navigation a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+#navigation a:hover {
+    background-color: #e74c3c;
+}
+
+/* Legacy main content styles */
+#main-content {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    min-height: 500px;
+}
+
+/* Legacy section styles */
+.feature-section, .statistics-section, .search-section, .employee-list-section, .payroll-list-section, .actions-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.feature-section h3, .statistics-section h3, .search-section h3, .employee-list-section h3, .payroll-list-section h3, .actions-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border-bottom: 2px solid #e74c3c;
+    padding-bottom: 5px;
+}
+
+/* Legacy form styles */
+.search-form {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.search-form td {
+    padding: 8px;
+    vertical-align: top;
+}
+
+.search-form td:first-child {
+    font-weight: bold;
+    width: 150px;
+}
+
+/* Legacy table styles */
+.employee-table, .payroll-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border: 1px solid #dee2e6;
+}
+
+.employee-table th, .payroll-table th {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #e74c3c;
+}
+
+.employee-table td, .payroll-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.employee-table tr:nth-child(even), .payroll-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.employee-table tr:hover, .payroll-table tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Legacy pagination styles */
+.pagination {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 2px;
+    background-color: #2c3e50;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #e74c3c;
+}
+
+.pagination span {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 2px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 3px;
+}
+
+/* Legacy button styles */
+input[type="submit"], input[type="button"], .commandButton {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover, input[type="button"]:hover, .commandButton:hover {
+    background-color: #e74c3c;
+}
+
+/* Legacy input styles */
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="number"], select, textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: #e74c3c;
+    outline: none;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+}
+
+/* Legacy message styles */
+.error-messages {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 3px;
+}
+
+.success-messages {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 3px;
+}
+
+/* Legacy footer styles */
+#footer {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 50px;
+    border-top: 3px solid #e74c3c;
+}
+
+#footer p {
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+/* Legacy responsive styles */
+@media (max-width: 768px) {
+    #main-content {
+        padding: 10px;
+    }
+    
+    .employee-table, .payroll-table {
+        font-size: 12px;
+    }
+    
+    .employee-table th, .payroll-table th,
+    .employee-table td, .payroll-table td {
+        padding: 6px 4px;
+    }
+}
+
+/* Legacy utility classes */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.p-10 {
+    padding: 10px;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+/* Legacy legacy-specific styles */
+.legacy-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 3px;
+}
+
+.legacy-info {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 3px;
+}
+
+/* Legacy form validation styles */
+.field-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.field-success {
+    color: #28a745;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Legacy loading styles */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2c3e50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Legacy print styles */
+@media print {
+    #header, #navigation, #footer {
+        display: none;
+    }
+    
+    #main-content {
+        padding: 0;
+    }
+    
+    .employee-table, .payroll-table {
+        border: 1px solid #000;
+    }
+    
+    .employee-table th, .payroll-table th {
+        background-color: #000 !important;
+        color: white !important;
+    }
+}

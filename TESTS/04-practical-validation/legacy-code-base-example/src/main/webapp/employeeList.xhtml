@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+    <h:head>
+        <title>Employee List - Legacy Employee Management System</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <!-- Legacy CSS -->
+        <h:outputStylesheet name="css/legacy-styles.css" />
+        <h:outputStylesheet name="css/legacy-forms.css" />
+        <h:outputStylesheet name="css/legacy-tables.css" />
+        
+        <!-- Legacy JavaScript -->
+        <h:outputScript name="js/legacy-functions.js" />
+        <h:outputScript name="js/legacy-validation.js" />
+    </h:head>
+    
+    <h:body>
+        <!-- Legacy header -->
+        <div id="header">
+            <h1>Employee List</h1>
+            <p>Legacy Employee Management System</p>
+        </div>
+        
+        <!-- Legacy navigation -->
+        <div id="navigation">
+            <h:form>
+                <h:commandLink value="Home" action="index" />
+                <h:commandLink value="Employees" action="employeeList" />
+                <h:commandLink value="Payroll" action="payrollList" />
+                <h:commandLink value="Reports" action="reports" />
+                <h:commandLink value="Admin" action="admin" />
+            </h:form>
+        </div>
+        
+        <!-- Legacy main content -->
+        <div id="main-content">
+            <!-- Legacy search form -->
+            <div class="search-section">
+                <h3>Search Employees</h3>
+                <h:form>
+                    <table class="search-form">
+                        <tr>
+                            <td>First Name:</td>
+                            <td><h:inputText value="#{employeeController.searchFirstName}" /></td>
+                        </tr>
+                        <tr>
+                            <td>Last Name:</td>
+                            <td><h:inputText value="#{employeeController.searchLastName}" /></td>
+                        </tr>
+                        <tr>
+                            <td>Department:</td>
+                            <td>
+                                <h:selectOneMenu value="#{employeeController.searchDepartment}">
+                                    <f:selectItem itemLabel="All Departments" itemValue="" />
+                                    <f:selectItem itemLabel="IT" itemValue="IT" />
+                                    <f:selectItem itemLabel="HR" itemValue="HR" />
+                                    <f:selectItem itemLabel="Finance" itemValue="FINANCE" />
+                                    <f:selectItem itemLabel="Operations" itemValue="OPERATIONS" />
+                                    <f:selectItem itemLabel="Sales" itemValue="SALES" />
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Status:</td>
+                            <td>
+                                <h:selectOneMenu value="#{employeeController.searchActive}">
+                                    <f:selectItem itemLabel="All" itemValue="" />
+                                    <f:selectItem itemLabel="Active" itemValue="true" />
+                                    <f:selectItem itemLabel="Inactive" itemValue="false" />
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h:commandButton value="Search" action="#{employeeController.searchEmployees}" />
+                                <h:commandButton value="Clear" action="#{employeeController.loadEmployees}" />
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+            </div>
+            
+            <!-- Legacy employee list -->
+            <div class="employee-list-section">
+                <h3>Employee List</h3>
+                
+                <!-- Legacy pagination -->
+                <div class="pagination">
+                    <h:form>
+                        <h:commandLink value="&lt;&lt;" action="#{employeeController.loadEmployees}" />
+                        <h:commandLink value="&lt;" action="#{employeeController.loadEmployees}" />
+                        <span>Page #{employeeController.currentPage} of #{employeeController.totalPages}</span>
+                        <h:commandLink value="&gt;" action="#{employeeController.loadEmployees}" />
+                        <h:commandLink value="&gt;&gt;" action="#{employeeController.loadEmployees}" />
+                    </h:form>
+                </div>
+                
+                <!-- Legacy employee table -->
+                <h:dataTable value="#{employeeController.employeeList}" var="employee" 
+                            styleClass="employee-table" rendered="#{not empty employeeController.employeeList}">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        #{employee.id}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Name</f:facet>
+                        #{employee.fullName}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Email</f:facet>
+                        #{employee.email}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Department</f:facet>
+                        #{employee.department}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Job Title</f:facet>
+                        #{employee.jobTitle}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Salary</f:facet>
+                        $#{employee.baseSalary}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Status</f:facet>
+                        #{employee.active ? 'Active' : 'Inactive'}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:form>
+                            <h:commandLink value="Edit" action="#{employeeController.loadEmployee(employee.id)}" />
+                            <h:commandLink value="Delete" action="#{employeeController.deleteEmployee(employee.id)}" 
+                                         onclick="return confirm('Are you sure you want to delete this employee?')" />
+                        </h:form>
+                    </h:column>
+                </h:dataTable>
+                
+                <!-- Legacy empty message -->
+                <h:outputText value="No employees found" rendered="#{empty employeeController.employeeList}" />
+            </div>
+            
+            <!-- Legacy actions -->
+            <div class="actions-section">
+                <h:form>
+                    <h:commandButton value="Add New Employee" action="createEmployee" />
+                    <h:commandButton value="Export Employees" action="#{employeeController.exportEmployees}" />
+                    <h:commandButton value="Import Employees" action="#{employeeController.importEmployees}" />
+                </h:form>
+            </div>
+            
+            <!-- Legacy error messages -->
+            <h:messages globalOnly="true" styleClass="error-messages" />
+            
+            <!-- Legacy success messages -->
+            <h:messages globalOnly="true" styleClass="success-messages" />
+        </div>
+        
+        <!-- Legacy footer -->
+        <div id="footer">
+            <p>&copy; 2008-2016 Legacy Enterprise Systems. All rights reserved.</p>
+        </div>
+    </h:body>
+</html>

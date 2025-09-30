@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+    <h:head>
+        <title>Legacy Employee Management System</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <!-- Legacy CSS -->
+        <h:outputStylesheet name="css/legacy-styles.css" />
+        <h:outputStylesheet name="css/legacy-forms.css" />
+        <h:outputStylesheet name="css/legacy-tables.css" />
+        
+        <!-- Legacy JavaScript -->
+        <h:outputScript name="js/legacy-functions.js" />
+        <h:outputScript name="js/legacy-validation.js" />
+    </h:head>
+    
+    <h:body>
+        <!-- Legacy header -->
+        <div id="header">
+            <h1>Legacy Employee Management System</h1>
+            <p>Version 1.0 - Built with Java EE 6 and JSF 2.1</p>
+        </div>
+        
+        <!-- Legacy navigation -->
+        <div id="navigation">
+            <h:form>
+                <h:commandLink value="Home" action="home" />
+                <h:commandLink value="Employees" action="employeeList" />
+                <h:commandLink value="Payroll" action="payrollList" />
+                <h:commandLink value="Reports" action="reports" />
+                <h:commandLink value="Admin" action="admin" />
+            </h:form>
+        </div>
+        
+        <!-- Legacy main content -->
+        <div id="main-content">
+            <h2>Welcome to the Legacy Employee Management System</h2>
+            
+            <p>This is a legacy Java EE 6 application with accumulated technical debt over 8+ years of development.</p>
+            
+            <!-- Legacy features -->
+            <div class="feature-section">
+                <h3>System Features</h3>
+                <ul>
+                    <li>Employee Management</li>
+                    <li>Payroll Processing</li>
+                    <li>Time Tracking</li>
+                    <li>Benefits Administration</li>
+                    <li>Performance Reviews</li>
+                    <li>Tax Calculations</li>
+                </ul>
+            </div>
+            
+            <!-- Legacy statistics -->
+            <div class="statistics-section">
+                <h3>System Statistics</h3>
+                <h:form>
+                    <h:commandButton value="Load Statistics" action="#{employeeController.loadEmployees}" />
+                </h:form>
+                
+                <h:dataTable value="#{employeeController.employeeList}" var="employee" rendered="#{not empty employeeController.employeeList}">
+                    <h:column>
+                        <f:facet name="header">Employee ID</f:facet>
+                        #{employee.id}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Name</f:facet>
+                        #{employee.fullName}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Department</f:facet>
+                        #{employee.department}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Status</f:facet>
+                        #{employee.active ? 'Active' : 'Inactive'}
+                    </h:column>
+                </h:dataTable>
+            </div>
+            
+            <!-- Legacy error messages -->
+            <h:messages globalOnly="true" styleClass="error-messages" />
+            
+            <!-- Legacy success messages -->
+            <h:messages globalOnly="true" styleClass="success-messages" />
+        </div>
+        
+        <!-- Legacy footer -->
+        <div id="footer">
+            <p>&copy; 2008-2016 Legacy Enterprise Systems. All rights reserved.</p>
+            <p>Built with Java EE 6, JSF 2.1, PrimeFaces 3.5, and Hibernate 3.6</p>
+        </div>
+    </h:body>
+</html>

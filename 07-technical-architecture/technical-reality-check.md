@@ -172,6 +172,123 @@ Success Criteria:
 4. Build community validation networks for cultural accuracy
 5. Test iterative compression-regeneration cycles
 
+## Research Question: Specific Technical Capability Gaps
+
+### Current AI Capabilities vs Requirements
+
+**To enable Phase 2 (Vector-Enhanced) semantic compression**, specific technical capabilities must be achieved. These represent open research questions rather than engineering problems.
+
+#### 1. Character Consistency Across Long-Form Content
+
+**Current State**:
+- Text-to-image: ~15-30 seconds before character drift
+- Text-to-video: ~5-10 seconds of consistent character appearance
+- No current model maintains character identity across 90+ minutes
+
+**Required for Phase 2**:
+- 90+ minute feature-length consistency (540× improvement)
+- Cross-scene character memory (persistent identity vectors)
+- Emotional state continuity within character identity
+
+**Research Questions**:
+- Can temporal attention mechanisms extend to feature-length sequences?
+- Do identity vectors provide sufficient constraint for consistent regeneration?
+- What is the theoretical limit of character consistency in generative models?
+
+**Measurable Benchmark**: Generate 90-minute content where same character appears >50 times with <5% visual drift from initial appearance
+
+#### 2. Cultural Context Understanding and Adaptation
+
+**Current State**:
+- Translation models: 85-90% linguistic accuracy
+- Cultural nuance detection: 40-50% accuracy
+- Stereotype avoidance: 60-70% success rate
+- Cultural adaptation without stereotyping: Not reliably achieved
+
+**Required for Phase 2**:
+- >90% cultural nuance detection
+- >95% stereotype avoidance
+- Validated cultural adaptation by community experts
+
+**Research Questions**:
+- Can AI distinguish cultural transformation from cultural stereotyping?
+- Is mathematical cultural adaptation (vector operations) feasible?
+- What level of cultural understanding is achievable vs requires human oversight?
+
+**Measurable Benchmark**: Adapt content across 10 cultures with >80% community expert approval rating
+
+#### 3. Computational Efficiency for Economic Viability
+
+**Current State**:
+- Feature-length regeneration cost: $50-500 (GPU inference)
+- Text-based regeneration: $0.10-1.00 per document
+- Real-time regeneration: Not economically feasible
+
+**Required for Phase 2**:
+- Feature-length cost: <$5 per regeneration
+- Text-based cost: <$0.01 per document
+- Near-real-time capability for interactive content
+
+**Research Questions**:
+- What is the thermodynamic limit on semantic regeneration energy?
+- Can specialized hardware achieve 100× efficiency improvements?
+- Are there algorithmic breakthroughs that reduce computational requirements?
+
+**Measurable Benchmark**: Regenerate feature-length content for <$5 on commodity hardware within 10 minutes
+
+#### 4. Semantic Fidelity Across Regenerations
+
+**Current State**:
+- Narrative coherence: Degrades after 2-3 regeneration cycles
+- Semantic drift: Noticeable after multiple adaptations
+- Quality degradation: Compounds with each transformation
+
+**Required for Phase 2**:
+- Maintain semantic fidelity across 10+ regeneration cycles
+- Prevent drift in multi-step cultural adaptations
+- Preserve core meaning through complex transformations
+
+**Research Questions**:
+- Is semantic drift inevitable in generative models?
+- Can mathematical constraints prevent quality degradation?
+- What is the theoretical limit on regeneration cycles before fidelity loss?
+
+**Measurable Benchmark**: 10 sequential regenerations with <10% semantic drift from original
+
+### Timeline for Research Questions
+
+**Near-term (2024-2026)**: Phase 1 answers
+- Can semantic descriptions guide acceptable regeneration quality for short-form content?
+- What types of content achieve >70% user acceptance with current AI?
+- Which domains (code, docs, scientific) have deterministic validation?
+
+**Medium-term (2026-2028)**: Phase 2 research
+- Character consistency breakthroughs for 30+ minute sequences?
+- Cultural adaptation validation frameworks established?
+- Computational efficiency improvements of 50-100×?
+
+**Long-term (2028-2030)**: Phase 2 viability
+- Feature-length consistency achieved?
+- Community-validated cultural adaptation at scale?
+- Economic viability thresholds met?
+
+### Success Criteria for Phase Transitions
+
+**Phase 1 → Phase 2 Criteria**:
+- ✅ Semantic descriptions demonstrably improve content adaptation
+- ✅ User acceptance >60% for knowledge/documentation domains
+- ✅ Technical validation that semantic approach has merit
+
+**Phase 2 → Phase 3 Criteria**:
+- ✅ Character consistency achieves >80% across feature-length
+- ✅ Cultural adaptation achieves >75% community validation
+- ✅ Computational costs below economic viability threshold (<$5/feature)
+- ✅ Commercial adoption demonstrates sufficient demand
+
+**These are research questions, not engineering specifications** - answering them determines the framework's ultimate viability.
+
+---
+
 ## Specific Technical Gaps and Research Priorities
 
 ### Critical Gap 1: Long-Term Character Memory Systems

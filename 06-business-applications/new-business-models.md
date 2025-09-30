@@ -1,8 +1,10 @@
 # New Business Models and Economic Paradigms
 
+> **Theoretical Analysis**: This document explores hypothetical business models that could emerge if semantic compression becomes viable. These are conceptual frameworks for understanding potential economic structures, not business plans or market validation.
+
 ## Overview
 
-Semantic media compression enables entirely new business models and economic structures that were previously impossible or impractical. These models leverage the unique characteristics of semantic content - its compressibility, regenerability, and adaptability - to create novel value propositions and revenue streams.
+Semantic media compression could enable entirely new business models and economic structures that are currently impossible or impractical. These models leverage the unique theoretical characteristics of semantic content - its compressibility, regenerability, and adaptability - to create novel value propositions and revenue streams.
 
 ## Platform Economy Evolution
 

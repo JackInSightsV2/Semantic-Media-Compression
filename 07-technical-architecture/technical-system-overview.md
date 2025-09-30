@@ -10,6 +10,20 @@ Based on the [theoretical foundation](../01-theoretical-validation/theoretical-f
 - Ethical constraints from [Ethical Framework](../04-ethical-considerations/ethical-framework-overview.md)
 - Legal compliance needs from [Legal Framework](../05-legal-copyright/legal-framework-analysis.md)
 
+## Critical Clarification: Three Progressive Implementation Pathways
+
+**Important**: Semantic media compression encompasses **three distinct technical approaches** that represent an evolutionary progression from today's capabilities to future vision. These are **not alternative methods** but rather **sequential phases** where each enables the next:
+
+### **→ See [Progressive Implementation Pathways](./progressive-implementation-pathways.md) for complete framework**
+
+**Phase 1: Human-Readable JSON (2024-2027)** - Works with existing AI models today
+**Phase 2: Vector-Enhanced JSON (2027-2030)** - Requires AI breakthroughs for production quality  
+**Phase 3: Native Semantic AI (2030+)** - Fundamental architecture redesign enabled by Phase 2 adoption
+
+**This section covers the complete technical vision**, but practical implementation **starts with Phase 1** - using existing AI models and human-crafted descriptions to prove the concept.
+
+> **⚠️ Core Assumption**: The technical architecture assumes partial semantic universality - that meaning can be separated from cultural expression and adapted mathematically. This assumption may be wrong. See [Semantic Universality Critique](../02-interdisciplinary-integration/semantic-universality-critique.md) for critical examination.
+
 ## Technical Implementation Challenge
 
 The technical architecture must bridge the gap between theoretical possibility and practical implementation, addressing:
@@ -20,7 +34,9 @@ The technical architecture must bridge the gap between theoretical possibility a
 **Quality Assurance**: How to maintain semantic fidelity across compression and regeneration cycles
 **Scalability**: How to process and regenerate content at commercial scale with acceptable costs
 
-**Critical AI Accuracy Requirements**: The entire concept depends on achieving AI model accuracies far beyond current capabilities. Current models struggle with consistent character representation, cultural nuance, and semantic fidelity across long-form content. Most critically, current AI lacks the sophistication to detect and recreate the subtle layers of human expression - micro-expressions, body language nuances, vocal inflections, and cultural communication patterns - that carry significant semantic meaning and determine whether regenerated content feels authentic and culturally appropriate. Significant breakthroughs in AI understanding and generation are required for this to work at production quality.
+**Critical AI Accuracy Requirements**: The entire concept depends on achieving AI model accuracies far beyond current capabilities. Current models struggle with consistent character representation, cultural nuance, and semantic fidelity across long-form content. Most critically, current AI lacks the sophistication to detect and recreate the subtle layers of human expression - micro-expressions, body language nuances, vocal inflections, and cultural communication patterns - that carry significant semantic meaning and determine whether regenerated content feels authentic and culturally appropriate. 
+
+**However**: Phase 1 (human-readable JSON with existing AI) is achievable today for short-form content, proving the concept while building toward future capabilities.
 
 ## Detailed Technical Analysis
 

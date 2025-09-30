@@ -21,6 +21,22 @@ Semantic compression operates on a fundamental philosophical assumption: **meani
 - **Essence vs. Accident**: The compressed meaning represents essential properties, while visual/audio elements become accidental properties
 - **Universal vs. Particular**: The semantic vector captures universal meaning that can manifest in infinite particular expressions
 
+### ⚠️ The Deepest Philosophical Assumption: Semantic Universality
+
+**Critical Recognition**: The framework implicitly assumes that **meaning can be separated from cultural expression** and represented in a culturally-neutral intermediate format.
+
+**The Anthropological Challenge**: Cultural relativists argue this is impossible - meaning IS cultural expression, not something that exists independently. "Romantic love" isn't a universal emotion with culturally-specific expressions; it's a Western cultural construct that doesn't exist in arranged-marriage cultures.
+
+**→ Complete Analysis: [Semantic Universality Critique](../02-interdisciplinary-integration/semantic-universality-critique.md)**
+
+**The Framework's Position**: Weak universalism with cultural humility:
+- Some semantic elements are more universal (basic emotions, physical causality)
+- Some are deeply cultural (specific value systems, spiritual concepts)  
+- Community validation determines what can/cannot translate
+- Adaptation is transformation, not perfect translation
+
+**This assumption may be wrong** - it's explicitly acknowledged as the framework's core philosophical commitment and most important empirical question.
+
 ### The Recreation Equivalence Problem
 
 When AI regenerates media from semantic blueprints, we face the philosophical challenge of **functional equivalence without material identity**. This raises questions about:

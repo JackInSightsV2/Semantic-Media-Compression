@@ -10,6 +10,22 @@ Based on the [theoretical viability established](../01-theoretical-validation/th
 
 ## Academic Discipline Integration
 
+### [Critical Philosophical Assumption: Semantic Universality](./semantic-universality-critique.md)
+
+**⚠️ Essential Reading**: Before diving into the framework, understand its deepest philosophical assumption:
+
+The semantic compression framework assumes that meaning can be extracted into a **culturally-neutral intermediate format**. Cultural anthropologists and linguistic relativists would challenge this - arguing that **meaning IS culture**, not something separate.
+
+**Key questions addressed**:
+- Can "universal semantic elements" exist independent of culture?
+- Is "romantic love" a universal emotion or Western cultural construct?
+- When does cultural adaptation become cultural transformation?
+- What are the boundaries of semantic translatability?
+
+**The framework's position**: Weak universalism with cultural humility - some elements are more universal than others, validated empirically through community acceptance.
+
+**This assumption may be wrong** - making it explicit allows honest evaluation.
+
 ### [Information Theory and Mathematical Foundations](./information-theory-foundations.md)
 
 Grounding semantic compression in established mathematical and computational theory:

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+              version="2.1">
+    
+    <!-- Legacy managed beans -->
+    <managed-bean>
+        <managed-bean-name>employeeController</managed-bean-name>
+        <managed-bean-class>com.legacy.enterprise.controller.EmployeeController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>userController</property-name>
+            <value>#{userController}</value>
+        </managed-property>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>payrollController</managed-bean-name>
+        <managed-bean-class>com.legacy.enterprise.controller.PayrollController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>userController</property-name>
+            <value>#{userController}</value>
+        </managed-property>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>userController</managed-bean-name>
+        <managed-bean-class>com.legacy.enterprise.controller.UserController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <!-- Legacy navigation rules -->
+    <navigation-rule>
+        <from-view-id>/employeeList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>editEmployee</from-outcome>
+            <to-view-id>/editEmployee.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>createEmployee</from-outcome>
+            <to-view-id>/createEmployee.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/editEmployee.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>employeeList</from-outcome>
+            <to-view-id>/employeeList.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/createEmployee.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>employeeList</from-outcome>
+            <to-view-id>/employeeList.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/payrollList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>payrollDetail</from-outcome>
+            <to-view-id>/payrollDetail.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>processPayroll</from-outcome>
+            <to-view-id>/processPayroll.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/processPayroll.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>payrollList</from-outcome>
+            <to-view-id>/payrollList.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <!-- Legacy validators -->
+    <validator>
+        <validator-id>legacyEmployeeValidator</validator-id>
+        <validator-class>com.legacy.enterprise.validator.LegacyEmployeeValidator</validator-class>
+    </validator>
+    
+    <validator>
+        <validator-id>legacyPayrollValidator</validator-id>
+        <validator-class>com.legacy.enterprise.validator.LegacyPayrollValidator</validator-class>
+    </validator>
+    
+    <!-- Legacy converters -->
+    <converter>
+        <converter-id>legacyDateConverter</converter-id>
+        <converter-class>com.legacy.enterprise.converter.LegacyDateConverter</converter-class>
+    </converter>
+    
+    <converter>
+        <converter-id>legacyBigDecimalConverter</converter-id>
+        <converter-class>com.legacy.enterprise.converter.LegacyBigDecimalConverter</converter-class>
+    </converter>
+    
+    <!-- Legacy renderers -->
+    <render-kit>
+        <renderer>
+            <component-family>javax.faces.Input</component-family>
+            <renderer-type>javax.faces.Text</renderer-type>
+            <renderer-class>com.legacy.enterprise.renderer.LegacyTextRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    
+    <!-- Legacy application configuration -->
+    <application>
+        <resource-bundle>
+            <base-name>com.legacy.enterprise.messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+        
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>en</supported-locale>
+            <supported-locale>es</supported-locale>
+            <supported-locale>fr</supported-locale>
+        </locale-config>
+        
+        <message-bundle>com.legacy.enterprise.messages</message-bundle>
+    </application>
+    
+    <!-- Legacy lifecycle -->
+    <lifecycle>
+        <phase-listener>com.legacy.enterprise.listener.LegacyPhaseListener</phase-listener>
+    </lifecycle>
+</faces-config>

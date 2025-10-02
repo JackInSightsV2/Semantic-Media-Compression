@@ -158,6 +158,28 @@ Explores the breakthrough innovation of AI models with built-in semantic underst
 - **Built-In Cultural Adaptation**: Real-time cultural sensitivity and adaptation as core model capabilities
 - **Unified Content Pipeline**: Single AI system handling generation, adaptation, validation, and format conversion
 
+### [Blockchain Storage Architecture for Semantic Blueprints](./blockchain-storage-architecture.md)
+
+Explores using blockchain as the primary storage medium for semantic blueprints, creating immutable, globally accessible content archives, covering:
+
+- **Optimal File Size Match**: Vector-enhanced blueprints (6-10MB) and JSON blueprints (50-200MB) perfectly suited for blockchain storage
+- **Immutable Content Preservation**: Permanent, cryptographically verified storage ensuring blueprints cannot be altered or lost
+- **Integrated Rights Management**: Storage and rights verification combined in single blockchain system eliminating complex licensing processes
+- **Global Cultural Archives**: Decentralized preservation of cultural content with community-controlled access and governance systems
+- **Economic Efficiency**: Cost-effective permanent storage compared to traditional cloud services for multi-year content distribution
+- **Decentralized Regeneration Network**: Blockchain-coordinated AI services with automatic quality assurance and rights verification
+
+### [Blockchain-AI Integration: Technical Architecture](./blockchain-ai-integration.md)
+
+Demonstrates how blockchain verification integrates directly with existing AI processing pipelines for semantic compression, covering:
+
+- **Transparent AI Integration**: Blockchain verification operates as invisible layer around existing AI systems without requiring specialized frameworks
+- **Automatic Blueprint Authentication**: Every AI operation begins with cryptographic verification of blueprint integrity and rights authorization
+- **Real-Time Rights Verification**: Continuous authorization checking throughout AI processing with smart contract integration
+- **Vector Processing with Blockchain Constraints**: Mathematical operations enhanced with blockchain-enforced cultural sensitivity and adaptation limits
+- **Distributed AI Coordination**: Multiple AI systems processing blueprints with blockchain-coordinated rights management and quality assurance
+- **Smart Contract Automation**: AI systems automatically interact with smart contracts for payment, royalty distribution, and quality verification
+
 ### [Architectural Convergence Analysis](./architectural-convergence-analysis.md)
 
 Examines how semantic compression naturally converges with established neural network architectures while transcending their limitations, covering:

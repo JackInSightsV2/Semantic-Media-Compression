@@ -1,0 +1,38 @@
+{
+  "content_id": "copycat-2",
+  "content_type": "image",
+  "file_url": "/demo-images/copycat-2.jpg",
+  "semantic_fingerprint": {
+    "narrative": {
+      "genre": "inspirational drama",
+      "story_arc": "underdog conquering challenges through determination",
+      "themes": ["resilience", "personal growth", "metamorphosis"],
+      "dramatic_progression": "hardship → epiphany → victory"
+    },
+    "characters": {
+      "protagonist": {
+        "archetype": "everyperson hero",
+        "traits": ["persistent", "sensitive", "creative", "optimistic"],
+        "arc": "struggling → ascending → triumphant"
+      }
+    },
+    "themes": {
+      "primary": "persistence through hardship",
+      "secondary": ["discovering inner power", "support systems", "self-belief"],
+      "emotional_tone": "difficult yet inspiring",
+      "visual_metaphors": ["ascending mountain", "sunrise emerging", "obstacles being surmounted"]
+    }
+  },
+  "embeddings": {
+    "narrative_vector": [0.615, 0.282, 0.937, 0.425, 0.792, 0.159, 0.826, 0.448, 0.681, 0.294, 0.537, 0.870],
+    "character_vector": [0.726, 0.192, 0.648, 0.515, 0.879, 0.237, 0.601, 0.734, 0.426, 0.692, 0.315, 0.948],
+    "thematic_vector": [0.459, 0.826, 0.270, 0.694, 0.381, 0.917, 0.545, 0.190, 0.729, 0.462, 0.634, 0.301]
+  },
+  "metadata": {
+    "created_at": "2025-01-22T16:45:00Z",
+    "creator_address": "0x9C8a3b91D5E9F8b7C6A4D2E1B9F7C5A3D8E6B4C2",
+    "title": "Ascending Heights",
+    "description": "A journey of perseverance and self-realization"
+  }
+}
+

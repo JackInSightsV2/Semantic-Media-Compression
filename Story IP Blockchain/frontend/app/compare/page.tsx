@@ -4,14 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import SemanticDisplay from '@/components/SemanticDisplay';
 import SimilarityScore from '@/components/SimilarityScore';
+import { fetchFromIPFS } from '@/lib/ipfs';
 
 // Import mock data
-import original1 from '@/../demo-data/original-1-semantic.json';
-import original2 from '@/../demo-data/original-2-semantic.json';
-import original3 from '@/../demo-data/original-3-semantic.json';
-import copycat1 from '@/../demo-data/copycat-1-semantic.json';
-import copycat2 from '@/../demo-data/copycat-2-semantic.json';
-import copycat3 from '@/../demo-data/copycat-3-semantic.json';
+import original1 from '@/demo-data/original-1-semantic.json';
+import original2 from '@/demo-data/original-2-semantic.json';
+import original3 from '@/demo-data/original-3-semantic.json';
+import copycat1 from '@/demo-data/copycat-1-semantic.json';
+import copycat2 from '@/demo-data/copycat-2-semantic.json';
+import copycat3 from '@/demo-data/copycat-3-semantic.json';
 
 const allContent = {
   'original-1': original1,
@@ -35,6 +36,10 @@ export default function ComparePage() {
   const [suspected, setSuspected] = useState<keyof typeof allContent>('copycat-1');
   const [comparing, setComparing] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [useIPFS, setUseIPFS] = useState(false);
+  const [originalIPFSHash, setOriginalIPFSHash] = useState('');
+  const [suspectedIPFSHash, setSuspectedIPFSHash] = useState('');
+  const [ipfsError, setIpfsError] = useState('');
   
   const originalData = allContent[original];
   const suspectedData = allContent[suspected];
@@ -42,54 +47,83 @@ export default function ComparePage() {
   async function handleCompare() {
     setComparing(true);
     setResults(null);
+    setIpfsError('');
     
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Calculate actual similarity from embeddings
-    const narrativeSim = cosineSimilarity(
-      originalData.embeddings.narrative_vector,
-      suspectedData.embeddings.narrative_vector
-    );
-    const characterSim = cosineSimilarity(
-      originalData.embeddings.character_vector,
-      suspectedData.embeddings.character_vector
-    );
-    const thematicSim = cosineSimilarity(
-      originalData.embeddings.thematic_vector,
-      suspectedData.embeddings.thematic_vector
-    );
-    
-    const overall = (narrativeSim * 0.4 + characterSim * 0.4 + thematicSim * 0.2);
-    
-    // Generate matching elements based on similarity
-    const matchingElements = [];
-    if (narrativeSim > 0.85) {
-      matchingElements.push(`Identical narrative structure: ${originalData.semantic_fingerprint.narrative.story_arc}`);
-      matchingElements.push(`Matching genre: ${originalData.semantic_fingerprint.narrative.genre}`);
+    try {
+      let origData = originalData;
+      let suspData = suspectedData;
+      
+      // Fetch from IPFS if enabled
+      if (useIPFS) {
+        try {
+          if (!originalIPFSHash || !suspectedIPFSHash) {
+            throw new Error('Please provide both IPFS hashes');
+          }
+          
+          console.log('📥 Fetching from IPFS...');
+          const [orig, susp] = await Promise.all([
+            fetchFromIPFS(originalIPFSHash),
+            fetchFromIPFS(suspectedIPFSHash)
+          ]);
+          
+          origData = orig;
+          suspData = susp;
+          console.log('✅ Fetched from IPFS successfully');
+        } catch (ipfsErr: any) {
+          setIpfsError(`IPFS fetch failed: ${ipfsErr.message}. Using mock data instead.`);
+          console.warn('⚠️ IPFS fetch failed, falling back to mock data');
+          // Fall back to mock data
+        }
+      }
+      
+      // Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Calculate actual similarity from embeddings
+      const narrativeSim = cosineSimilarity(
+        origData.embeddings.narrative_vector,
+        suspData.embeddings.narrative_vector
+      );
+      const characterSim = cosineSimilarity(
+        origData.embeddings.character_vector,
+        suspData.embeddings.character_vector
+      );
+      const thematicSim = cosineSimilarity(
+        origData.embeddings.thematic_vector,
+        suspData.embeddings.thematic_vector
+      );
+      
+      const overall = (narrativeSim * 0.4 + characterSim * 0.4 + thematicSim * 0.2);
+      
+      // Generate matching elements based on similarity
+      const matchingElements = [];
+      if (narrativeSim > 0.85) {
+        matchingElements.push(`Identical narrative structure: ${origData.semantic_fingerprint.narrative.story_arc}`);
+        matchingElements.push(`Matching genre: ${origData.semantic_fingerprint.narrative.genre}`);
+      }
+      if (characterSim > 0.85) {
+        matchingElements.push(`Same character archetype: ${origData.semantic_fingerprint.characters.protagonist.archetype}`);
+      }
+      if (thematicSim > 0.85) {
+        matchingElements.push(`Matching primary theme: ${origData.semantic_fingerprint.themes.primary}`);
+      }
+      if (overall > 0.85) {
+        matchingElements.push(`Similar emotional progression across all dimensions`);
+      }
+      
+      setResults({
+        overall,
+        dimensions: {
+          narrative: narrativeSim,
+          character: characterSim,
+          thematic: thematicSim,
+        },
+        level: overall > 0.85 ? 'HIGH' : overall > 0.70 ? 'MODERATE' : 'LOW',
+        matching_elements: matchingElements,
+      });
+    } finally {
+      setComparing(false);
     }
-    if (characterSim > 0.85) {
-      matchingElements.push(`Same character archetype: ${originalData.semantic_fingerprint.characters.protagonist.archetype}`);
-    }
-    if (thematicSim > 0.85) {
-      matchingElements.push(`Matching primary theme: ${originalData.semantic_fingerprint.themes.primary}`);
-    }
-    if (overall > 0.85) {
-      matchingElements.push(`Similar emotional progression across all dimensions`);
-    }
-    
-    setResults({
-      overall,
-      dimensions: {
-        narrative: narrativeSim,
-        character: characterSim,
-        thematic: thematicSim,
-      },
-      level: overall > 0.85 ? 'HIGH' : overall > 0.70 ? 'MODERATE' : 'LOW',
-      matching_elements: matchingElements,
-    });
-    
-    setComparing(false);
   }
   
   return (
@@ -107,6 +141,53 @@ export default function ComparePage() {
       </nav>
       
       <main className="max-w-7xl mx-auto px-4 pb-12">
+        {/* IPFS Mode Toggle */}
+        <div className="mb-6 bg-white rounded-lg p-4 shadow-md">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useIPFS}
+              onChange={(e) => setUseIPFS(e.target.checked)}
+              className="w-5 h-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
+            />
+            <div>
+              <span className="font-semibold text-gray-900">Fetch from IPFS</span>
+              <p className="text-sm text-gray-600">Use registered content from IPFS instead of mock data</p>
+            </div>
+          </label>
+          
+          {useIPFS && (
+            <div className="mt-4 grid md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Original IPFS Hash</label>
+                <input
+                  type="text"
+                  value={originalIPFSHash}
+                  onChange={(e) => setOriginalIPFSHash(e.target.value)}
+                  placeholder="Qm..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Suspected IPFS Hash</label>
+                <input
+                  type="text"
+                  value={suspectedIPFSHash}
+                  onChange={(e) => setSuspectedIPFSHash(e.target.value)}
+                  placeholder="Qm..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          )}
+          
+          {ipfsError && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm text-yellow-800">{ipfsError}</p>
+            </div>
+          )}
+        </div>
+        
         {/* Side-by-side comparison */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Original Content */}

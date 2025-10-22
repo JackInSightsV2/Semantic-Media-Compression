@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 export default function Dashboard() {
@@ -221,12 +222,12 @@ export default function Dashboard() {
             <h2 className="text-xs font-bold text-gray-700">CONTENT PROTECTION</h2>
             
             <div className="mt-3 space-y-1">
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <Link href="/register" className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <span className="text-sm">Register Content</span>
-              </button>
+              </Link>
               
               <button className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <div className="flex items-center gap-3">
@@ -327,10 +328,10 @@ export default function Dashboard() {
             </div>
             
             <div className="flex flex-col sm:flex-row items-stretch gap-3">
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-3">
+              <Link href="/register" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-3">
                 <span className="text-xl font-light">+</span>
                 <span className="font-medium">Register New Content</span>
-              </button>
+              </Link>
               
               <button className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -524,7 +525,7 @@ export default function Dashboard() {
             <h2 className="text-lg font-bold text-gray-900 mb-6">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Register Content */}
-              <button className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 hover:bg-blue-50 transition-all text-center">
+              <Link href="/register" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 hover:bg-blue-50 transition-all text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -532,10 +533,10 @@ export default function Dashboard() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-2">Register Content</div>
                 <div className="text-sm text-gray-600">Upload and protect new content</div>
-              </button>
+              </Link>
               
               {/* Quick Scan */}
-              <button className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-yellow-400 hover:bg-yellow-50 transition-all text-center">
+              <Link href="/compare" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-yellow-400 hover:bg-yellow-50 transition-all text-center">
                 <div className="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -543,10 +544,10 @@ export default function Dashboard() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-2">Quick Scan</div>
                 <div className="text-sm text-gray-600">Check for potential matches</div>
-              </button>
+              </Link>
               
               {/* File Dispute */}
-              <button className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-red-400 hover:bg-red-50 transition-all text-center">
+              <Link href="/dispute" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-red-400 hover:bg-red-50 transition-all text-center">
                 <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
@@ -554,7 +555,7 @@ export default function Dashboard() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-2">File Dispute</div>
                 <div className="text-sm text-gray-600">Start legal action process</div>
-              </button>
+              </Link>
               
               {/* View Reports */}
               <button className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-green-400 hover:bg-green-50 transition-all text-center">
@@ -743,26 +744,26 @@ export default function Dashboard() {
                   <tr className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center gap-3">
-                        <img 
-                          src="https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=100&h=100&fit=crop" 
-                          alt="Life Paths Choice" 
+                        <img
+                          src="https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=100&h=100&fit=crop"
+                          alt="Situational Awareness"
                           className="w-10 h-10 rounded-lg object-cover"
                         />
                         <div>
-                          <div className="font-semibold text-gray-900">Life Paths Choice</div>
-                          <div className="text-sm text-gray-500">Motivational video concept</div>
+                          <div className="font-semibold text-gray-900">Situational Awareness</div>
+                          <div className="text-sm text-gray-500">AI Timeline Essay</div>
                         </div>
                       </div>
                     </td>
                     <td className="py-4 px-4">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        Video
+                        Essay
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-sm text-gray-700">Oct 15, 2024</td>
+                    <td className="py-4 px-4 text-sm text-gray-700">Jun 1st, 2024</td>
                     <td className="py-4 px-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                        3 High
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                        1 Medium
                       </span>
                     </td>
                     <td className="py-4 px-4">
@@ -788,26 +789,26 @@ export default function Dashboard() {
                   <tr className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center gap-3">
-                        <img 
-                          src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=100&h=100&fit=crop" 
-                          alt="Morning Routine Transformation" 
+                        <img
+                          src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=100&h=100&fit=crop"
+                          alt="My K-pop Secret"
                           className="w-10 h-10 rounded-lg object-cover"
                         />
                         <div>
-                          <div className="font-semibold text-gray-900">Morning Routine Transformation</div>
-                          <div className="text-sm text-gray-500">Productivity methodology</div>
+                          <div className="font-semibold text-gray-900">My K-pop Secret</div>
+                          <div className="text-sm text-gray-500">Radish Fiction Novel</div>
                         </div>
                       </div>
                     </td>
                     <td className="py-4 px-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Article
+                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Mini-Novel
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-sm text-gray-700">Oct 12, 2024</td>
+                    <td className="py-4 px-4 text-sm text-gray-700">Oct 12, 2022</td>
                     <td className="py-4 px-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                        1 Medium
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                        3 High
                       </span>
                     </td>
                     <td className="py-4 px-4">

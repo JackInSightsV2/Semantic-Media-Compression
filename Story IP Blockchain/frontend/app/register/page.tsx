@@ -28,16 +28,20 @@ export default function RegisterPage() {
   
   const currentData = situationalAwareness;
 
-  // Restore state from sessionStorage on mount
+  // Restore state from sessionStorage on mount (only if coming from view-json)
   useEffect(() => {
     const savedStep = sessionStorage.getItem('registerStep');
-    if (savedStep) {
+    const fromViewJson = sessionStorage.getItem('fromViewJson');
+    
+    if (savedStep && fromViewJson === 'true') {
       setCurrentStep(savedStep as RegistrationStep);
       // If we're returning to a step after upload, create a mock file
       if (savedStep !== 'upload') {
         const mockFile = new File([''], 'situational_awareness.pdf', { type: 'application/pdf' });
         setUploadedFile(mockFile);
       }
+      // Clear the flag after restoring
+      sessionStorage.removeItem('fromViewJson');
     }
   }, []);
 

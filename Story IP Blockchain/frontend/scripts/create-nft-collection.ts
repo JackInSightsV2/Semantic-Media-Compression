@@ -13,7 +13,7 @@ import { resolve } from 'path';
 // Load .env file from the frontend directory
 config({ path: resolve(__dirname, '../.env') });
 
-import { createSPGNFTCollection } from '../lib/nftCollection';
+import { createSPGNFTCollection } from '../blocklibs/nftCollection';
 
 async function main() {
   console.log('========================================');

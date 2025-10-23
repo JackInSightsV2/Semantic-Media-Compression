@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import SemanticDisplay from '@/components/SemanticDisplay';
 import SimilarityScore from '@/components/SimilarityScore';
-import { fetchFromIPFS } from '@/lib/ipfs';
+import { fetchFromIPFS } from '@/blocklibs/ipfs';
 
 // Import mock data
 import situationalAwareness from '@/demo-data/situational_awareness.json';

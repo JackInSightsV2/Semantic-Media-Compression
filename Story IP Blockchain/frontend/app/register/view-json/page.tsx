@@ -258,7 +258,14 @@ export default function ViewJsonPage() {
         <main className="flex-1 p-4 md:p-8 overflow-y-auto relative">
           <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-5 pointer-events-none" style={{ backgroundImage: 'url(/graph1.jpg)', left: 'auto', right: 0, width: 'calc(100% - 256px)' }}></div>
           <div className="relative z-10">
-            <Link href="/register" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6">
+            <Link 
+              href="/register" 
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6"
+              onClick={() => {
+                // Set flag to restore state when returning to register
+                sessionStorage.setItem('fromViewJson', 'true');
+              }}
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>

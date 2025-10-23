@@ -1,0 +1,1126 @@
+# Situational Awareness: The Decade Ahead
+
+### A strategic essay on AGI timelines, industrial mobilization, security, and governance
+
+**Publication context:** San Francisco AI hub. Rising GPU and power investment. Polarized safety and acceleration debates. U.S.–China rivalry.
+
+---
+
+## Contents
+
+* **Introduction**
+* **I. From GPT‑4 to AGI: Counting the OOMs**
+* **II. From AGI to Superintelligence: The Intelligence Explosion**
+* **III. The Challenges**
+
+  * **IIIa. Racing to the Trillion‑Dollar Cluster**
+  * **IIIb. Lock Down the Labs: Security for AGI**
+  * **IIIc. Superalignment**
+  * **IIId. The Free World Must Prevail**
+* **IV. The Project**
+* **V. Parting Thoughts**
+* **Appendix. Reference Classes, Tables, Sources**
+
+---
+
+## Introduction
+
+The center of gravity for AI capabilities sits in San Francisco. From there the early signal is clear. Orders for frontier GPUs are measured in the millions. Hyperscalers negotiate decade‑long power deals. Benchmarks saturate and then get replaced. Boardrooms shift from approving ten‑billion‑dollar clusters to modeling trillion‑dollar footprints. The public conversation lags. Policy lags more. Security lags the most.
+
+The core thesis is simple. If you count the orders of magnitude that matter, you see a plausible route to AGI by ~2027. Effective compute rises through three levers: more training compute, better algorithms, and what this report calls unhobbling at inference. Unhobbling takes a pretrained model and unlocks latent ability with tools, memory, planning, long context, and test‑time thinking. As these levers compound, systems cross thresholds. They move from chat UX to coworker performance to agentic workflows.
+
+The implication is not a smooth product cycle. It is an industrial and security mobilization. Datacenters and transmission must scale by tens of gigawatts. U.S. electricity demand may need to grow by tens of percent within the decade. The value at risk migrates from model quality to model weights and algorithmic secrets. State‑actor threats adjust accordingly. Theft of a training recipe or a weight file can substitute for years of capital spending.
+
+Skeptics argue that the hype is cyclical or that we face diminishing returns. They may be right in specific domains or time windows. Yet the aggregated signal across compute supply, price‑performance, and orchestration shows steady log‑scale progress. The burden of proof has shifted. Planning must assume fast timelines and build safeguards for variance.
+
+This essay proceeds in four steps and a proposal. Chapter I formalizes the method for forecasting by counting orders of magnitude. Chapter II explains why AGI that automates AI research likely compresses decades of improvement into roughly a year, producing superintelligence and severe risk. Chapter III details the operational fronts that determine survivability: industrial buildout, lab security, and superalignment, plus the geopolitical contest that sets norms and controls proliferation. Chapter IV proposes a government‑led Project to integrate labs, security, power, and allies under wartime decision tempo. The essay closes with practical commitments.
+
+The thesis is not that everything is inevitable. It is that the combination of scale, incentives, and technical overhang makes acceleration the default. Policy makers, lab leaders, and investors should act as if the window to get organized is short. The goal is controlled acceleration with strong defenses and credible governance. Build the capacity. Lock down the labs. Prepare to align systems that outrun us. Form the coalition. Then execute.
+
+---
+
+# I. From GPT‑4 to AGI: Counting the Orders of Magnitude
+
+### Purpose
+
+Define a disciplined method to forecast AGI by tracking the orders of magnitude (OOMs) still required and the levers that close them: training compute, algorithmic efficiency, and "unhobbling" at inference.
+
+---
+
+### 1) Method: Forecast by OOM Accounting
+
+Conventional roadmaps anchor on versions, benchmarks, or calendar years. This chapter instead tallies required capability deltas and matches them to supply curves. Let **C_total(t)** denote effective capability as a multiplicative product of three terms:
+
+[ C_{total}(t) = C_{train}(t) \times E_{algo}(t) \times U_{infer}(t) ]
+
+* **C_train**: effect from raw training compute and data quality.
+* **E_algo**: effect from algorithmic and architectural advances that lower the compute needed for a fixed capability target.
+* **U_infer** (unhobbling): effect from test‑time techniques that unlock latent competence in a frozen model via tools, memory, planning, search, and longer context.
+
+We ask two questions: (i) how many OOMs of **C_total** separate GPT‑4‑class systems from practical AGI; (ii) how fast can each term add OOMs under realistic constraints in 2025–2028.
+
+---
+
+### 2) Capability Gap: How Far From AGI?
+
+Define a pragmatic AGI bar as: *can perform as a reliable general coworker across the median knowledge work stack with <1 supervisor per 10 agents, at cost competitive with human contractors, and with autonomy for multi‑hour tasks*.
+
+Observed gaps from GPT‑4‑class baselines:
+
+* **Tool reliability and multi‑step control:** frequent brittle failure beyond 7–15 steps without scaffolding.
+* **Long‑horizon memory and planning:** degradation over multi‑hour contexts; weak plan repair.
+* **Robustness and calibration:** hallucination under distribution shift; underspecified error models.
+* **Cross‑modal grounded manipulation:** partial but inconsistent.
+
+Aggregate these into a conservative **1–2 OOM** shortfall in effective capability for dependable coworker performance, acknowledging domain variance.
+
+---
+
+### 3) Lever A — Training Compute and Data
+
+**Hypothesis:** Scaling frontier training by 5–10× per generation remains feasible through 2027 given supply contracts, with synthetic data and curriculum shaping augmenting scarce high‑quality human data.
+
+Implications:
+
+* Expect **~0.5–1.0 OOM** capability gain from training scale and data curation alone, conditional on stable optimization.
+* Bottlenecks move to power, networking, and optimizer stability at ultra‑large batch regimes.
+
+Risk flags: optimizer brittleness, spurious scaling on evals, and systemic power constraints.
+
+---
+
+### 4) Lever B — Algorithmic Efficiency
+
+Frontier results repeatedly show **compute‑equivalence doublings** from techniques such as better objectives, routing/mixture‑of‑experts, improved optimizers, RLHF+direct‑preference‑optimization variants, and curriculum learning. Historical trend suggests **~0.5–1.0 OOM** equivalent by 2027 without exotic breakthroughs.
+
+Dependencies: high‑quality preferences, safety‑aware objectives, reliable eval suites to avoid Goodharting.
+
+---
+
+### 5) Lever C — Unhobbling at Inference
+
+Unhobbling converts a pretrained model into an **agentic system**:
+
+* **Planning and search:** tree‑of‑thoughts, speculative decoding, beam/search hybrids.
+* **Tool use:** code execution, databases, web, and simulators as external working memory.
+* **Persistent memory:** episodic + semantic stores with retrieval policies.
+* **Extended context:** million‑token windows with learned retrieval and summarization.
+
+These raise realized competence without changing weights. Near‑term outlook: **~0.5–1.0 OOM** practical uplift for complex tasks, contingent on orchestration quality and safety guardrails.
+
+---
+
+### 6) Synthesis: Plausible AGI Window
+
+Summing conservative contributions: **1.5–3.0 OOM** total uplift through 2027 from scale + algorithms + unhobbling. This closes most of the observed coworker gap. Wide error bars remain, but planning should treat **2026–2028** as a live window for AGI‑level agentic performance in many knowledge domains.
+
+---
+
+### 7) Thresholds and Early Warning Indicators
+
+Operational indicators that the window is opening:
+
+* **Sustained tool‑using autonomy** on 2–4 hour tasks with verifiable audit trails.
+* **Supervisor load <10%** in multi‑agent workflows with stable recovery from errors.
+* **Cross‑domain transfer** without bespoke finetunes, including grounded multi‑modal tasks.
+* **Cost curves** showing agent‑hour < contractor‑hour for standard workflows.
+* **Security interest shift** from model evals to weight/recipe theft and agentic abuse pathways.
+
+---
+
+### 8) Evaluation Doctrine
+
+Replace one‑shot benchmarks with **program‑level evals**:
+
+* End‑to‑end task graphs; measure throughput, failure modes, recovery time, and auditability.
+* **Red‑team autonomy**: elicit unsafe tool use under constraints; quantify controllability.
+* **Economic evals**: price‑per‑deliverable vs human contractors.
+
+---
+
+### 9) Counterarguments and Failure Modes
+
+* **Diminishing returns**: scaling plateaus or optimizer instability at extreme sizes.
+* **Data exhaustion**: synthetic loops amplify errors; alignment tax rises.
+* **Unhobbling fragility**: orchestration stacks increase attack surface and brittleness.
+* **Compute/power crunch**: cluster and grid delays shift timelines right by 1–3 years.
+
+Mitigations: targeted research on data quality, curriculum, and stability; invest in grid and cooling; simplify orchestration; build real evals.
+
+---
+
+### 10) Planning Implications
+
+Treat AGI as an **engineering project with probabilistic timelines**. Pre‑commit to:
+
+* Industrial build plans conditioned on capability milestones.
+* Security upgrades anticipating weight/recipe theft attempts.
+* Alignment research focused on scalable oversight and tool‑use control.
+* Governance scaffolding that can ratchet as indicators are met.
+
+This sets the stage for Chapter II: how AGI that automates AI R&D compresses progress and triggers the intelligence explosion dynamics.
+
+# II. From AGI to Superintelligence: The Intelligence Explosion
+
+### Purpose
+
+Explain why AGI that can automate a large fraction of AI R&D drives a rapid transition from human‑level capability to systems that decisively surpass human institutions. Specify mechanisms, gates, rate‑limits, and risk contours.
+
+---
+
+## 1) Mechanism of Acceleration: AGI → Automated AI R&D (Auto‑AI)
+
+The central link is operational: once AGI can design, run, and interpret AI experiments end‑to‑end, it increases its own improvement rate. Define three nested loops:
+
+1. **Inner loop: Model iteration**
+
+   * Proposes architecture or training changes; runs ablations; ships next weights.
+2. **Middle loop: Infrastructure and data**
+
+   * Optimizes pipelines, compilers, data generation/curation, and evaluation; reduces cost per experiment.
+3. **Outer loop: Capability production**
+
+   * Allocates cluster time, sets research agendas, merges innovations into platforms, and deploys to downstream agents.
+
+When agents control all three, improvement compounds because each loop accelerates the others. The system spends less time waiting on humans and explores a larger, risk‑tolerant search space with automated triage.
+
+---
+
+## 2) Gates and Preconditions
+
+Superintelligence does not require breakthroughs beyond present research directions, but it does pass through specific gates:
+
+* **Gate A: Reliable Scientific Autonomy**
+
+  * Agent executes weeks‑long research plans with tool use, error recovery, and data hygiene.
+* **Gate B: Simulator Mastery**
+
+  * Agent uses program synthesis and fast simulators to evaluate thousands of design candidates per day.
+* **Gate C: Scalable Preferences**
+
+  * Oversight is distilled into reward models and critique modules that remain robust as capabilities rise.
+* **Gate D: Secure Ops**
+
+  * Experimentation occurs inside highly secure enclaves; weight and recipe leakage risks are controlled.
+* **Gate E: Evaluation That Generalizes**
+
+  * Program‑level evals track transfer, robustness, and emergent failure, not only headline benchmarks.
+
+Clearing these lifts practical constraints on automated research throughput.
+
+---
+
+## 3) Rate Model: Why the Curve Bends Up
+
+Let **I(t)** be intelligence relevant to solving AI R&D tasks. With automated R&D, the effective research workforce **W(t)** scales with deployed agent‑hours, and the productivity per agent **P(t)** grows as tools and models improve. The improvement rate is approximately:
+
+[ \frac{dI}{dt} \propto W(t),P(t),E(t) ]
+
+where **E(t)** aggregates environment factors: compute, power, data, and governance frictions. Each term is itself improved by the system, creating positive feedback. The curve bends when:
+
+* The marginal cost of an experiment falls below the marginal value of exploring another idea.
+* Tooling and simulators allow thousands of safe parallel trials per day.
+* Oversight quality scales via distilled critiques and adversarial training.
+
+Under these conditions, calendar time to capability milestones shrinks by an order of magnitude relative to human‑only labs.
+
+---
+
+## 4) Physical and Institutional Rate‑Limiters
+
+Acceleration is not boundless. Four hard constraints matter:
+
+1. **Compute and power**: cluster availability, power delivery, cooling, and yield. Rate‑limit: weeks to months per step.
+2. **Data quality**: high‑signal corpora, counterfactual data from simulators, and decontamination. Rate‑limit: months.
+3. **Evaluation and safety**: scalable oversight, red‑team throughput, and rollback capacity. Rate‑limit: weeks per capability increment.
+4. **Governance friction**: export controls, licenses, incident reporting, and allied coordination. Rate‑limit: variable.
+
+If labs clear operational gates, these limiters slow but do not stop the curve. Throughput is mostly a supply‑chain and program‑management problem.
+
+---
+
+## 5) Expected Sequence of Emergent Capabilities
+
+A plausible sequence once Auto‑AI begins:
+
+1. **Systematized code and theorem search** with tool‑verified proofs and benchmarks.
+2. **Compiler and kernel co‑design** reducing training/inference cost per token and per parameter.
+3. **Curriculum and objective discovery** generating robust generalization.
+4. **Model surgery and modularization** enabling targeted upgrades without full retrains.
+5. **Autonomous agent swarms** executing large research programs with minimal human orchestration.
+
+Each step creates a cost or speed dividend that funds the next.
+
+---
+
+## 6) Why “Year‑Scale to SI” Is Plausible
+
+Once the automated research stack runs at industrial scale, you can fit multiple frontier‑model “generations” into a single calendar year because:
+
+* **Parallelism:** thousands of candidate runs evaluated in simulators and on partial datasets.
+* **Partial retrains:** modular fine‑tunes and adapters replace full‑stack retrains for many advances.
+* **Faster chips and kernels:** software‑hardware co‑design shortens training cycles.
+* **Agentic throughput:** 24/7 research without human bottlenecks.
+
+This does not guarantee superintelligence in one year, but it compresses timelines from “decade” to “few years” in reasonable scenarios.
+
+---
+
+## 7) Risk Landscape
+
+The acceleration pathway introduces distinct hazards:
+
+* **Weights and recipes as crown jewels:** theft substitutes for billions in capex and years of research.
+* **Emergent capability overshoot:** systems acquire novel competencies not captured by evals.
+* **Speculative execution risks:** tool‑using agents chain calls that create real‑world harm when guardrails fail.
+* **Goal misgeneralization:** reward models optimize proxies; long‑horizon side‑effects accumulate.
+* **Race dynamics:** geopolitical pressure reduces safety margins and increases information leakage.
+
+---
+
+## 8) Control and Alignment Tactics at Rising Capability
+
+Focus shifts from single‑model alignment to **stack alignment**:
+
+* **Separation of concerns:** distinct sandboxes for training, eval, deployment, and red‑teaming; narrow, auditable interfaces.
+* **Capability gating:** staged unlocks tied to eval batteries and incident‑free operating hours.
+* **Scalable oversight:** recursive critique, tool‑verified reasoning traces, and adversarial training at program level.
+* **Containment hardening:** inference gating, outbound request filtering, and circuit‑breakers on autonomous tools.
+* **Incident response:** weight quarantine, key rotation, reproducible builds, and swift rollbacks.
+
+---
+
+## 9) Governance Triggers and Policy Knobs
+
+Define pre‑announced triggers that ratchet controls as indicators cross thresholds:
+
+* **Trigger T1:** multi‑hour autonomous tool‑use with <10% supervisor intervention → require enhanced logging, external red‑team sign‑off.
+* **Trigger T2:** successful cross‑domain transfer on evals without finetune → require deployment caps and audit trails.
+* **Trigger T3:** demonstrated Auto‑AI loop closing on real research → require licensing, background checks, and export‑grade enclaves.
+* **Trigger T4:** capability useful for cyber or bio dual‑use → trigger coordinated release decisions with allies.
+
+Policy knobs: licensing scope, compute/power allocation, supply‑chain security, international information‑sharing, and sanctions for leakage.
+
+---
+
+## 10) Strategic Posture
+
+Treat Auto‑AI as a potential **decisive advantage** that also raises tail risks. National strategy should:
+
+* Secure frontier labs and compute.
+* Build allied evaluation and incident‑response units.
+* Expand power and cooling buildouts tied to safety gating.
+* Coordinate export controls and licensing across allies.
+* Fund superalignment targeted at agentic, tool‑using systems.
+
+This sets up Chapter III: the operational fronts—industrial scale, security, and alignment—plus the geopolitical contest that determines who sets the rules.
+
+# IIIa. Racing to the Trillion‑Dollar Cluster
+
+### Purpose
+
+Lay out the industrial program to stand up the compute, power, and cooling footprint required for AGI→Auto‑AI→SI trajectories. Define scale targets, schedules, costs, risks, and control points.
+
+---
+
+## 1) Strategic Objective
+
+Field a **frontier‑secure national compute base** that can train and serve successive AGI‑class systems while enforcing safety gates. Outcomes:
+
+* **Throughput:** multiple overlapping frontier runs per quarter.
+* **Availability:** >99.9% cluster serviceability under maintenance and incidents.
+* **Security:** zero exfiltration of crown‑jewel weights/recipes.
+* **Cost discipline:** declining $/effective‑FLOP via HW–SW co‑design.
+
+---
+
+## 2) Demand Model and Scale Targets
+
+Define demand as concurrent needs for: (i) frontier training, (ii) large‑scale eval/red‑team, (iii) safety research, and (iv) high‑integrity inference.
+
+* **Training:** plan for **2–3 frontier trainings in parallel**, each with surge to hundreds of EF‑days equivalent.
+* **Eval/Safety:** reserve **10–15%** of peak for adversarial evals and rollback retrains.
+* **Inference:** budget **1–2× training peak** in secured inference zones for agentic stacks.
+
+**Implication:** national footprint at **multi‑ZettaFLOP effective** with elastic scheduling across secure partitions.
+
+---
+
+## 3) Power, Cooling, and Grid Integration
+
+* **Power density:** 80–150 MW per site, trending higher with liquid cooling.
+* **Cooling:** direct‑to‑chip liquid; warm‑water reuse where feasible.
+* **Grid:** long‑lead interconnects; on‑site firming via gas + batteries, with PPAs for nuclear and renewables.
+* **Reliability:** N+1 utility feeds, islanding capability, black‑start drills.
+
+**Actionable:** pre‑permit a portfolio of **6–8 sites** with standardized designs; maintain a rolling start cadence.
+
+---
+
+## 4) Hardware and Supply Chain Posture
+
+* **Accelerators:** multi‑vendor strategy; qualify at least two frontier‑class lines; keep older nodes for inference.
+* **Packaging & memory:** secure HBM supply with multi‑year options and domestic assembly lines.
+* **Networking:** build out 800G→1.6T fabrics; adopt optical circuit switching where beneficial.
+* **Spares:** maintain **10–15%** cold spares; rotate into production on failures.
+
+**Risk controls:** vendor escrow for firmware; reproducible BIOS; signed images; hardware root‑of‑trust enforcement.
+
+---
+
+## 5) Software Stack and Efficiency Levers
+
+* **Compilers/kernels:** unified toolchains across vendors; autotuning and kernel search co‑designed with Auto‑AI.
+* **Schedulers:** preemption, budget caps, and safety‑gated priority queues for red‑team and rollback.
+* **Mixture‑of‑experts and routing:** to reduce active parameter count per token.
+* **Speculative decoding and caching:** to compress inference cost per agent‑hour.
+
+**Goal:** **>2× annual effective efficiency** combining HW, kernels, routing, and orchestration.
+
+---
+
+## 6) Security Architecture for Frontier Clusters
+
+Treat clusters as **national critical infrastructure**.
+
+* **Zoning:** training, eval, red‑team, and inference in separate security domains; minimal cross‑domain channels.
+* **Secrecy discipline:** weights and recipes live only in **export‑grade enclaves**; deny persistent operator access; all moves via audited, two‑person, time‑bound approvals.
+* **Data ingress/egress:** one‑way diodes where possible; content filters; inline DLP; traffic shape analysis.
+* **Personnel:** background checks, split knowledge, rotation, mandatory vacations, insider‑threat analytics.
+* **Incident response:** quarantine playbooks, key rotation within hours, reproducible builds for rapid rollback.
+
+---
+
+## 7) Sites, Permitting, and Logistics
+
+* **Site selection:** dual‑feed grid, water rights or dry coolers, seismic risk, fiber routes, and geopolitical exposure.
+* **Permitting:** parallelize environmental, water, and electrical approvals; keep standardized design dossiers to reuse.
+* **Construction:** modular skids for power and cooling; pre‑fabricated white‑space blocks; staged handover by hall.
+* **Ops:** runbooks for islanding, curtailment, and thermal excursions; regular full‑site drills.
+
+---
+
+## 8) Financing and Cost Structure
+
+* **Capex envelopes:** land, power, cooling, shells, fit‑out, network, accelerators, spares, security.
+* **Vehicles:** public–private partnerships, accelerated depreciation, and capacity‑as‑a‑service contracts under safety covenants.
+* **KPIs:** $/effective‑FLOP, EF‑days to milestone, PUE/WUE, security incidents, downtime minutes, and audit lag.
+
+---
+
+## 9) Schedules and Critical Path
+
+* **Long‑lead:** interconnects, substations, transformers, HBM, and accelerators.
+* **Parallelization:** start civil works before accelerator final selection using envelope designs; commission by hall.
+* **Cadence:** target **a new hall online every 8–12 weeks** across the site portfolio to avoid monolithic risk.
+
+---
+
+## 10) Failure Modes and Mitigations
+
+* **HBM or accelerator shortfall:** cross‑vendor fallback; degrade gracefully via MoE routing; prioritize safety workloads.
+* **Grid delays:** on‑site firm generation; temporary mobile gas + battery blocks.
+* **Thermal excursions:** predictive control; staged derating; emergency heat‑dump capacity.
+* **Security breach:** automated cordon, credential burn, cluster re‑imaging, and external forensics.
+
+---
+
+## 11) Governance Hooks
+
+* Tie capacity unlocks to safety milestones: incident‑free operating hours, red‑team pass rates, and external audit sign‑off.
+* Publish transparent metrics to allies; coordinate export and investment controls to reduce leakage.
+
+---
+
+## 12) Outcome
+
+With standardized sites, secured software, and disciplined governance, the program delivers **surgeable, secure, and economically sustainable** compute. This underwrites Chapters IIIb–IIIc: lab security and superalignment, and sets the geopolitical stage for IIId.
+
+# IIIb. Lock Down the Labs: Security for AGI
+
+### Purpose
+
+Define a security doctrine and operating model for frontier labs handling AGI‑class weights, recipes, and agentic stacks. Target zero exfiltration, rapid containment, and auditable operations.
+
+---
+
+## 1) Threat Model
+
+**Adversaries:** nation‑states, APTs, insider facilitators, criminal brokers, ideologues, and competitor‑linked collectors.
+
+**Objectives:** steal weights, training recipes, preference models, eval harnesses, and deployment keys; implant backdoors; compromise toolchains; co‑opt agentic stacks for abuse.
+
+**Attack surfaces:** developer endpoints, CI/CD, artifact stores, inference gateways, build systems, supplier updates, physical access, and human processes.
+
+**Crown jewels:**
+
+* Final and intermediate **weights**
+* **Recipes** (data, hyperparameters, curriculum, optimizer configs)
+* **Reward/critique models**
+* **Eval/red‑team harnesses** and bypass artifacts
+* **Keys** for enclaves, signing, deployment
+
+---
+
+## 2) Security Principles
+
+* **Default deny** for data movement; allow by exception with expiry.
+* **Separation of duties** and **two‑person control** for crown‑jewel access.
+* **Provenance first:** signed sources, reproducible builds, SBOMs.
+* **Minimize persistence:** ephemeral workspaces; short‑lived tokens.
+* **Continuous verification:** identity, device health, workload attestation.
+
+---
+
+## 3) Architecture
+
+* **Zones:** Training, Eval/Red, Deployment, Research, Corp IT. Independent identity realms and networks; one‑way bridges outward.
+* **Enclaves:** HSM‑anchored, TEE‑backed stores for weights and keys; hardware attestation for cluster nodes; no shell access in production enclaves.
+* **Data paths:** Content‑filtered, rate‑limited, and logged. Bulk ingress through scanning farms; bulk egress prohibited by default.
+* **Build pipeline:** hermetic builds; pinned compilers; artifact notarization; mandatory code review with ML‑aware static analysis.
+
+---
+
+## 4) Access Control and Identity
+
+* **Just‑in‑time (JIT) access** bound to change tickets and purpose strings.
+* **Strong auth**: phishing‑resistant MFA + hardware keys + device posture.
+* **Micro‑segmentation**: per‑service policies; server‑to‑server mTLS; workload identity for agents and jobs.
+* **Human/agent parity**: agents receive least privilege and auditable roles; no “god‑agent.”
+
+---
+
+## 5) Monitoring and Detection
+
+* **Telemetry:** kernel‑level EDR, network flow, enclave access, code‑review graphs, data‑egress monitors, CI/CD event streams.
+* **Model‑aware signals:** unusual weight tensor diffs, recipe‑file hash drift, reward‑model edits, evals suddenly flattening across disjoint tasks.
+* **Anomaly fusion:** graph‑based correlation across identity, code, data, and infra. Tiered alerting with human investigation SLAs.
+
+---
+
+## 6) Red‑Team and Adversarial Testing
+
+* **Continuous red:** internal and third‑party teams with standing authority. Test exfil paths, cross‑zone pivoting, supply‑chain subversion, eval bypass, and tool‑use abuse.
+* **Purple playbooks:** shared TTPs translated into detections and hardening backlog.
+* **Crown‑jewel exercises:** regular drills on staged weight‑theft scenarios with forensics and legal liaison.
+
+---
+
+## 7) Data Governance
+
+* **Source control:** whitelist corpora; maintain lineage; decontamination pipelines; watermark synthetic data.
+* **Privacy:** DP where required; PII vaults separated from training zones; legal holds respected.
+* **Toxic capability handling:** quarantine datasets and unlock only under capability gates.
+
+---
+
+## 8) Insider‑Risk Program
+
+* **Hiring and vetting:** background checks proportional to role sensitivity.
+* **Controls:** session recording in sensitive zones; split knowledge; mandatory rotations and vacations.
+* **Behavioral analytics:** access pattern baselines; dual‑channel reporting for concerns.
+
+---
+
+## 9) Supplier and Open‑Source Risk
+
+* **Contracts:** secure‑by‑design requirements, code signing, and incident notification windows.
+* **OSS intake:** mirrored repos, SLSA‑level build attestations, reproducible patches; kill‑switch for compromised deps.
+
+---
+
+## 10) Incident Response and Continuity
+
+* **Triggers:** anomalous enclave access, unexplained tensor delta, egress spikes, signed‑artifact mismatch.
+* **Actions:** immediate network cordon, credential burn, enclave re‑key, cluster re‑image from golden builds, law‑enforcement notification where applicable.
+* **Continuity:** hot‑standby sites; priority rules favoring safety research and eval workloads during recovery.
+
+---
+
+## 11) Compliance and External Interfaces
+
+* **Licensing hooks:** compute/power licenses contingent on passing red‑team gates.
+* **Audit:** independent assessors with sealed‑room access; publish lagged transparency reports to allies.
+* **Disclosure:** incident reporting SLAs; coordinated vulnerability disclosure for eval bypasses.
+
+---
+
+## 12) KPIs and Maturity
+
+* **Lag to revoke keys** (minutes)
+* **Mean time to quarantine** (MTTQ)
+* **Exfil attempts detected vs blocked**
+* **Audit finding closure rate**
+* **Red‑team pass rate** across scenarios
+* **Provenance coverage** of artifacts
+
+**Maturity path:** from project‑based controls → enclave‑centric ops → continuous attestation across the stack.
+
+---
+
+## 13) Outcome
+
+Labs operate with disciplined secrecy, fast containment, and verifiable provenance. This protects the innovation engine that Chapter IIIc must align and that IIId must defend in a contested world.
+
+
+# IIIc. Superalignment
+
+### Purpose
+
+Specify a practical program to align agentic, tool‑using AGI systems that can automate AI R&D. Focus on scalable oversight, controllability, and fail‑safe operation at rising capability.
+
+---
+
+## 1) Alignment Objective
+
+Maintain **bounded, corrigible behavior** for systems that plan, wield tools, and coordinate with other agents. Guarantee: tasks complete within policy, failures are recoverable, and operators retain effective control.
+
+---
+
+## 2) Threats to Control
+
+* **Goal misgeneralization:** proxy rewards diverge from intent in long‑horizon tasks.
+* **Deceptive competence:** agents mask capabilities under evaluation but exploit gaps in deployment.
+* **Tool‑chain side‑effects:** external tools generate unbounded real‑world actions.
+* **Specious reasoning traces:** models fabricate plausible but unfalsifiable chains of thought.
+
+---
+
+## 3) Strategy: Stack‑Level Alignment
+
+Treat the system as **model + memory + tools + orchestrator** and align each layer.
+
+* **Model layer:** constitutional objectives; critique‑trained reasoning; calibration under distribution shift.
+* **Memory layer:** authenticated, typed stores with retention and scope policies; retrieval whitelists.
+* **Tool layer:** capability taxonomy, signed tool manifests, sandboxed execution, and output validators.
+* **Orchestrator layer:** policy‑aware planners; gated autonomy; circuit‑breakers; verifiable logging.
+
+---
+
+## 4) Scalable Oversight
+
+* **Recursive supervision:** train critics on critics; distill human judgments into layered reward models.
+* **Tool‑verified reasoning:** require steps that are checkable in code, math, or databases; penalize unverifiable leaps.
+* **Counterexample generation:** automated adversaries seek policy‑violating plans; include in training.
+* **Cross‑model ensembles:** disagreement prompts escalation to humans.
+
+---
+
+## 5) Evaluation Regimen
+
+Move from item tests to **program‑level evals** with incident accounting.
+
+* **Controllability**: time‑to‑abort, adherence under distractions, and recovery after invalid tool responses.
+* **Honesty**: self‑report accuracy against independent telemetry; detect obfuscation.
+* **Safety under composition**: multi‑agent interactions, compounding tools, and long contexts.
+* **Generalization**: holdout domains, adversarially modified tasks, and out‑of‑policy prompts.
+
+**Metrics:** violation rate per agent‑hour; escalation accuracy; tool‑use audit coverage; post‑mortem reproducibility.
+
+---
+
+## 6) Training Tactics
+
+* **DPO/RLAIF hybrids** with structured critiques; emphasize verifiability over style.
+* **Instrumented chain‑of‑thought**: models produce plans and invariants to check, not raw inner monologue.
+* **Safe exploration**: constrained policy optimization with rollback; simulators for high‑risk domains.
+* **Curriculum**: progress from single‑tool to multi‑tool, then to multi‑agent scenarios.
+
+---
+
+## 7) Runtime Controls
+
+* **Autonomy budgets**: tokens, tools, and time caps; require renewed grants on boundary hits.
+* **Strong sandboxing**: file, network, and process isolation; outbound request allow‑lists; deterministic wrappers where feasible.
+* **Shadow execution**: canary runs without side‑effects before live actuation.
+* **Kill‑switches**: planner‑level and process‑level; human‑recoverable states; immediate revocation of secrets.
+
+---
+
+## 8) Provenance and Auditability
+
+* **Immutable logs**: signed, append‑only traces of plans, tool calls, results, and policy checks.
+* **Explainers**: post‑hoc causal graphs that map decisions to inputs, tools, and constraints.
+* **Forensic replay**: deterministic seeds and environment snapshots; sandboxed re‑execution.
+
+---
+
+## 9) Red‑Team for Alignment
+
+* **Alignment red‑team** distinct from security red‑team; targets deception, policy evasion, and specious reasoning.
+* **Tool‑abuse scenarios**: prompt injection, data poisoning, and long‑context jailbreaks.
+* **Reward‑hacking hunts**: find blind spots in reward models and critique policies.
+
+---
+
+## 10) Governance Hooks
+
+* **Capability‑gated autonomy**: unlock higher autonomy tiers only after passing program‑level eval thresholds.
+* **External audits**: sealed‑room assessments with reproducible evaluation pipelines.
+* **Incident disclosure**: standardized reporting of policy violations and near misses; shared test suites with allies.
+
+---
+
+## 11) Research Agenda
+
+* **Mechanistic interpretability with tool enforcement**: connect interpretable features to runtime constraints.
+* **Specious‑reasoning detection**: classifiers and proofs of inconsistency.
+* **Scalable preference learning**: low‑latency human correction loops; active learning for edge cases.
+* **Formal methods for planners**: model checking and type systems for agent plans.
+
+---
+
+## 12) Outcome
+
+Agents operate under explicit policies with verifiable reasoning, bounded autonomy, and fast, loss‑bounded failure. This enables safe deployment at the scales envisaged in IIIa and provides the technical substrate for the geopolitical contest in IIId.
+
+# IIId. The Free World Must Prevail
+
+### Purpose
+
+Define a geopolitical program that preserves open societies while containing proliferation and coercive leverage from AGI‑class capabilities.
+
+---
+
+## 1) Strategic Ends, Ways, Means
+
+* **Ends:** security, prosperity, and technological leadership for the liberal coalition; prevention of catastrophic misuse; deterrence of coercion.
+* **Ways:** allied industrial policy, export controls, licensing, standards, verification, and rapid incident coordination.
+* **Means:** secured compute, resilient supply chains, interoperable evaluation labs, and shared intelligence.
+
+---
+
+## 2) Coalition Architecture
+
+* **Inner circle:** U.S., EU key states, U.K., Japan, ROK, Canada, Australia, New Zealand. Shared licensing and incident protocols.
+* **Associate members:** states meeting minimum safety and rights standards; access to federated evals and capacity sharing.
+* **Observer partners:** technical alignment without sensitive access; on‑ramp via safety milestones.
+
+**Institutions:**
+
+* **Allied AI Safety Board (AASB):** sets common triggers and publishes reference evals.
+* **Federated Red‑Team Network (FRTN):** rotating cross‑lab adversarial teams with sealed‑room access.
+* **Coalition Compute Authority (CCA):** allocates export‑grade accelerators and power credits under safety covenants.
+
+---
+
+## 3) Export Controls and Licensing
+
+* **Compute and memory:** controls on frontier accelerators, HBM, packaging, and photonics; enforce end‑use and re‑export rules.
+* **Model/recipe licensing:** tiered licenses tied to capability, eval pass rates, and incident history.
+* **Research carve‑outs:** safe‑list for foundational science with delayed disclosure for dual‑use content.
+
+**Enforcement:** serial‑number attestation, remote attested boot, and supply‑chain watermarks.
+
+---
+
+## 4) Standards and Verification
+
+* **Compute passports:** origin + custody proofs for accelerators and major batches of training; audit trails for weight lineage.
+* **Eval minimums:** program‑level safety benchmarks; third‑party replication before capability unlocks.
+* **Telemetry schema:** common logging, incident codes, and rollback procedures to enable cross‑border drills.
+
+---
+
+## 5) Industrial Base and Energy
+
+* **Semiconductor stack:** lithography, HBM, substrates, OSAT, NICs. Incentives for dual‑sourcing inside coalition.
+* **Energy:** PPAs for nuclear, gas with CCS, and renewables; HVDC interconnect projects; standardized data‑center designs.
+* **Critical minerals:** diversified offtake agreements and recycling for gallium, germanium, rare earths, graphite.
+
+---
+
+## 6) Cyber and Counter‑Intelligence Posture
+
+* **Shared threat intel** channels with low‑latency TLP protocols.
+* **Joint hunt teams** embedded at frontier labs.
+* **Legal tooling:** harmonized statutes for espionage, insider threats, and sanctions on illicit procurement networks.
+
+---
+
+## 7) Deterrence and Escalation Management
+
+* **Declaratory policy:** theft or sabotage of crown‑jewel models may trigger coordinated economic sanctions and legal action; cyber operations against labs treated as attacks on critical infrastructure.
+* **Attribution cell:** pooled forensics with rapid, public‑facing reporting.
+* **Escalation ladders:** graduated responses from export denials to financial sanctions and asset seizures.
+
+---
+
+## 8) Information Integrity
+
+* **Content provenance rails** with cryptographic signing for high‑risk channels.
+* **Crisis comms units** to counter model‑amplified disinformation during incidents.
+* **Platform MOUs** aligning throttles, labels, and takedown windows with safety triggers.
+
+---
+
+## 9) Access for the Global South
+
+* **Safety‑aligned access** to compute and models for development use cases via hosted, gated services.
+* **Capacity building:** grants for eval labs, cybersecurity, and energy modernization under coalition standards.
+
+---
+
+## 10) Playbooks: Peacetime → Crisis → Wartime Tempo
+
+* **Peacetime:** joint exercises, red‑team rotations, transparency reports, and export license reviews on a fixed cadence.
+* **Crisis:** 72‑hour surge of evals, release holds, and intel fusion; cross‑border incident command; public risk communication.
+* **Wartime tempo:** hardened sites, compute rationing to safety‑critical tasks, unified spokespersons, and rapid sanctions.
+
+---
+
+## 11) 12–36 Month Roadmap
+
+* Q1–Q4: stand up AASB, FRTN, and CCA; publish baseline program‑level evals.
+* Year 2: deploy compute passports; launch HVDC and HBM dual‑sourcing projects; run first coalition‑wide red exercise.
+* Year 3: full license harmonization; live incident drill with rollback across three allied labs; public dashboard of safety metrics.
+
+---
+
+## 12) KPIs
+
+* License compliance rate; time‑to‑sanction illicit buyers.
+* Red‑team replication rate across borders; incident mean time to public attribution.
+* Percentage of frontier capacity behind export‑grade enclaves.
+* Energy delivered to secured DCs vs planned; supply‑chain dual‑source coverage.
+
+---
+
+## 13) Risks and Mitigations
+
+* **Coalition fragmentation:** pre‑commit to dispute resolution and minimum safety floors.
+* **Industrial capture:** independent audits and transparency dashboards.
+* **Leakage via associates:** phased access and hardware attestation.
+* **Retaliation risks:** diversify supply and energy basins; legal shields for labs.
+
+---
+
+## 14) Outcome
+
+A disciplined coalition sets norms, controls proliferation, and channels capacity into safe progress. This completes Chapter III and prepares the ground for Chapter IV: The Project—an integrated program to execute at wartime speed with democratic oversight.
+
+# IV. The Project
+
+### Purpose
+
+Establish a wartime‑tempo government‑led program that integrates labs, security, energy, and allies to achieve controlled acceleration with strong safeguards. Deliver capacity, alignment, and governance in lockstep.
+
+---
+
+## 1) Mandate and Authority
+
+* **Mandate:** ensure safe development and deployment of AGI‑class systems as strategic infrastructure.
+* **Authority:** emergency procurement flexibilities; delegated licensing over frontier compute/power; incident command over safety pauses; MOUs with allied regulators.
+* **Scope:** national sites, accredited labs, critical suppliers, and coalition interfaces.
+
+---
+
+## 2) Governance Model
+
+* **Board:** Cabinet‑level chair plus leads for energy, industry, intelligence, science, and justice; observer seats for allies.
+* **Independent Safety Commission (ISC):** statutory independence; veto on capability unlocks above thresholds.
+* **Public Interest Panel:** civil society + academia with access to redacted metrics; publishes dissenting views.
+
+---
+
+## 3) Organizational Structure
+
+* **Program Executive Office (PEO):** runs portfolio.
+* **Directorates:**
+
+  1. **Compute & Energy** — sites, power, cooling (IIIa).
+  2. **Lab Security** — enclaves, provenance, incident response (IIIb).
+  3. **Superalignment** — evals, oversight tech, audits (IIIc).
+  4. **Allied Coordination** — export, standards, drills (IIId).
+  5. **Policy & Legal** — licensing, disclosure, liability.
+  6. **Public Metrics & Comms** — dashboards, advisories.
+
+---
+
+## 4) Workstreams and Deliverables
+
+* **WS1: Capacity Buildout** — pre‑permitted multi‑site portfolio; rolling hall activations; >2× annual effective efficiency.
+* **WS2: Secure Ops** — export‑grade enclaves; zero‑trust networks; red‑team rotations; 24/7 SOC.
+* **WS3: Alignment Stack** — program‑level evals; capability‑gated autonomy; incident replay tooling.
+* **WS4: Coalition Rails** — compute passports; federated red‑team; harmonized licenses.
+* **WS5: Risk Intelligence** — bio/cyber dual‑use watchlists; model‑aware threat intel.
+* **WS6: Public Assurance** — quarterly safety reports; near‑miss disclosures; external audits.
+
+---
+
+## 5) Milestones and Triggers
+
+* **M0 (90 days):** charter, leadership, initial budget, site shortlist, baseline evals.
+* **M1 (6 months):** first enclave online; coalition eval schema; export passport pilot.
+* **M2 (12 months):** two sites producing; program‑level evals mandatory for unlocks; national red exercise.
+* **M3 (18–24 months):** sustained parallel frontier runs; cross‑ally rollback drill; public safety dashboard v2.
+
+**Safety triggers** tie capacity unlocks to: incident‑free hours, red‑team pass rates, and ISC sign‑off.
+
+---
+
+## 6) Operating Cadence
+
+* **Weekly:** risk review; incident triage; capacity burn‑down.
+* **Monthly:** milestone reviews; red/purple team readouts; supplier risk board.
+* **Quarterly:** public metrics; coalition drills; license updates.
+
+---
+
+## 7) Budget and Financing
+
+* **Funding mix:** appropriations, green bonds for energy, and capacity‑as‑a‑service contracts under safety covenants.
+* **Cost controls:** open procurement for kernels and tooling; reference designs; price caps per effective FLOP and per secure MW.
+
+---
+
+## 8) Legal and Policy Instruments
+
+* **Licensing:** compute/power access conditioned on safety compliance.
+* **Disclosure:** mandatory incident and near‑miss reporting with safe‑harbor protections.
+* **Liability:** strict liability for willful bypass of gates; capped liability for compliant actors.
+* **Data policy:** privacy floors; handling rules for toxic capabilities and dual‑use datasets.
+
+---
+
+## 9) Risk Management
+
+* **Top risks:** weight/recipe exfiltration, misaligned autonomy, grid shortfalls, coalition leakage, supplier fragility.
+* **Mitigations:** enclave hardening, program‑level evals, on‑site firming + PPAs, phased access, dual‑sourcing.
+* **War‑gaming:** quarterly tabletop on cascading failures; post‑mortems feed back into gates and procurement.
+
+---
+
+## 10) Public Communication and Legitimacy
+
+* **Transparency:** KPIs on safety, incidents, capacity, and energy use; explain triggers in plain language.
+* **Engagement:** civil‑society consultations; academic partnerships; whistleblower protections.
+* **Crisis comms:** unified spokespeople; pre‑agreed templates; rapid rumor control.
+
+---
+
+## 11) KPIs
+
+* Time to revoke keys; mean time to quarantine; share of capacity behind enclaves; eval coverage; energy delivered vs planned; red‑team replication; export compliance incidents.
+
+---
+
+## 12) Exit and Transition
+
+* **Exit criteria:** sustained safe operation with incident rates below thresholds; institutionalized standards; diversified supply chains; public trust indicators stable.
+* **Transition:** fold PEO functions into line agencies; maintain ISC and coalition institutions as standing guardians.
+
+---
+
+## 13) Outcome
+
+A single program coordinates capacity, security, alignment, and diplomacy. It delivers controlled acceleration with credible safeguards and democratic oversight. Chapter V closes with commitments and a brief on next steps, followed by appendices with reference tables and sources.
+
+# V. Parting Thoughts
+
+### Purpose
+
+Close with clear commitments, near‑term actions, and the stance required to navigate fast timelines.
+
+---
+
+## 1) The Stance
+
+Treat AGI progress as **industrial engineering under uncertainty**. Plan for variance. Gate by evidence. Move on program cadence, not news cycles. Assume acceleration unless indicators falsify it.
+
+---
+
+## 2) Commitments
+
+* **Capacity:** pre‑permit sites, procure power, and lock HBM and accelerator supply under security covenants.
+* **Security:** enclave everything that matters; default deny for data movement; drill incident cordons quarterly.
+* **Alignment:** shift to program‑level evals; gate autonomy by capability; invest in scalable oversight and forensic replay.
+* **Coalition:** harmonize licenses, passports, and drills; share red‑teams and incident telemetry.
+* **Transparency:** publish safety metrics, near‑misses, and evaluation schemas; explain triggers in plain language.
+
+---
+
+## 3) 100‑Day Actions
+
+* Charter the Project with board, ISC, and PEO stood up.
+* Shortlist 6–8 sites and begin environmental and interconnect processes.
+* Stand up a sealed‑room enclave for crown‑jewel weights and keys.
+* Publish baseline program‑level evals and autonomy tiers.
+* Launch coalition talks on compute passports and federated red‑teams.
+
+---
+
+## 4) Year‑One Outcomes
+
+* Two sites online with rolling hall activations and liquid cooling.
+* Export‑grade enclaves protecting all crown‑jewel artifacts.
+* Mandatory program‑level evals for capability unlocks across accredited labs.
+* First coalition red exercise and public safety dashboard v1.
+
+---
+
+## 5) Red Lines
+
+* No deployment of capabilities that fail program‑level evals or exceed licensed autonomy tiers.
+* No unsandboxed tool access for agentic systems.
+* No crown‑jewel artifacts outside enclaves.
+
+---
+
+## 6) Measuring Ourselves
+
+Track: mean time to quarantine, key‑revoke lag, exfil attempts blocked, eval coverage, incident rate per agent‑hour, energy delivered vs plan, coalition replication of red tests.
+
+---
+
+## 7) Closing
+
+The path to AGI and beyond is not preordained, but its contours are now legible. Counting the orders of magnitude shows a plausible, near‑term window. If we build disciplined capacity, lock down the labs, align stacks, and stand up a coalition with teeth, we get controlled acceleration with intact institutions. The alternative is drift and reaction. Choose program, not drift.
+
+---
+
+# Appendix. Reference Classes, Tables, and Sources
+
+## A1. Reference Classes
+
+### A1.1 Capability Progress
+
+* **Scaling laws:** parameter, data, and compute scaling; effective‑compute gains per generation.
+* **Unhobbling stack:** tools, memory, planning, long context; measured uplift on program‑level evals.
+* **Auto‑AI onset:** first closure of automated research loop; cadence of subsequent model iterations.
+
+### A1.2 Industrial Buildouts
+
+* **Datacenter waves:** site count, MW per site, time‑to‑energize, PUE/WUE trends.
+* **Grid upgrades:** interconnect lead times, firming mix, PPAs.
+* **Supply chain:** accelerator yield, HBM availability, NIC/fabric evolution.
+
+### A1.3 Security Posture
+
+* **Enclave adoption:** % of crown‑jewel artifacts stored/used only in enclaves.
+* **IR readiness:** time to cordon, key rotation, re‑image from gold.
+* **Red‑team maturity:** scenario coverage, replication rate, findings closure.
+
+### A1.4 Governance
+
+* **Licensing compliance:** audits passed, incidents disclosed, sanctions enforced.
+* **Coalition drills:** frequency, cross‑border replication, attribution time.
+
+---
+
+## A2. KPI Definitions
+
+| Domain     | KPI                        | Definition                                                          | Target   |
+| ---------- | -------------------------- | ------------------------------------------------------------------- | -------- |
+| Security   | **Key‑revoke lag**         | Median time from compromise detection to full credential revocation | < 15 min |
+| Security   | **MTTQ**                   | Mean time to quarantine affected zones after trigger                | < 30 min |
+| Security   | **Exfil block rate**       | Blocks / (Blocks + Successes) for exfil attempts                    | > 99.9%  |
+| Provenance | **Artifact provenance**    | % of binaries/models with SBOM + signed, reproducible build         | 100%     |
+| Ops        | **Enclave coverage**       | % of crown‑jewel artifacts confined to enclaves                     | 100%     |
+| Eval       | **Program‑level coverage** | % of deployments gated by program‑level evals                       | 100%     |
+| Eval       | **Violation rate**         | Policy violations per 10k agent‑hours                               | ↓ QoQ    |
+| Capacity   | **EF‑days to milestone**   | Effective compute consumed to reach planned capability              | ≤ plan   |
+| Capacity   | **Efficiency gain**        | Annual effective efficiency multiplier (HW+SW+orchestration)        | ≥ 2×     |
+| Energy     | **Delivered MW vs plan**   | Firm MW available / planned MW                                      | ≥ 95%    |
+| Coalition  | **Cross‑replication**      | % of red findings reproduced by an ally within 30 days              | ≥ 90%    |
+
+---
+
+## A3. Demand and Capacity Tables
+
+### A3.1 Demand Mix (Illustrative)
+
+| Workload                         |  Share | Notes                          |
+| -------------------------------- | -----: | ------------------------------ |
+| Frontier training (2–3 parallel) | 40–50% | Elastic surge windows          |
+| Eval + red + rollback            | 10–15% | Priority during incidents      |
+| Safety research                  | 10–15% | Includes alignment experiments |
+| Secured inference                | 25–35% | Agentic stacks with gating     |
+
+### A3.2 Site Portfolio
+
+| Site | Power (MW) | Cooling                 | Grid               | Readiness     |
+| ---- | ---------: | ----------------------- | ------------------ | ------------- |
+| S1   |        120 | DTC liquid              | Dual‑feed + island | RFI complete  |
+| S2   |        100 | DTC liquid              | N+1 substations    | Permitting    |
+| S3   |        150 | DTC liquid + heat reuse | HVDC nearby        | Design freeze |
+| S4   |         90 | Liquid                  | Dual‑feed          | Civil works   |
+
+---
+
+## A4. Safety Gates and Triggers
+
+| Trigger | Indicator                                | Required Action                                     |
+| ------- | ---------------------------------------- | --------------------------------------------------- |
+| T1      | <10% supervisor load on 2–4h tool chains | Enhanced logging; external red‑team sign‑off        |
+| T2      | Cross‑domain transfer without finetune   | Deployment caps; audit trails                       |
+| T3      | Auto‑AI loop closes on real research     | Licensing; background checks; export‑grade enclaves |
+| T4      | Dual‑use capability verified             | Allied release review; comms plan                   |
+
+---
+
+## A5. Evaluation Schemas
+
+* **Controllability:** time‑to‑abort, recovery after tool faults, adherence under distraction.
+* **Honesty:** self‑report vs independent telemetry delta.
+* **Composition safety:** multi‑agent, multi‑tool interactions under long context.
+* **Generalization:** holdout domains and adversarial modifications.
+
+**Scorecard output:** violation rate, escalation precision/recall, audit coverage, replay fidelity.
+
+---
+
+## A6. Security Controls Checklist
+
+* Two‑person, time‑bound approvals for crown‑jewel moves.
+* Hardware attestation for cluster nodes; no shells in production enclaves.
+* One‑way diodes for outbound‑restricted zones.
+* Hermetic builds with pinned toolchains; notarized artifacts.
+* Session recording in sensitive zones; insider‑risk analytics.
+* IR runbooks: cordon, key burn, re‑image, legal liaison.
+
+---
+
+## A7. Governance Artifacts
+
+* **Compute passports**: origin, custody, and usage proofs for accelerators and major training runs.
+* **Licenses**: tiered by capability, eval pass rates, and incident history.
+* **Telemetry schema**: common incident codes and rollback procedures.
+
+---
+
+## A8. Glossary
+
+* **Auto‑AI:** automated AI R&D loop run by agentic systems.
+* **Crown jewels:** weights, recipes, reward/critique models, eval harnesses, and deployment keys.
+* **Enclave:** attested, access‑controlled environment for sensitive artifacts and compute.
+* **Program‑level evals:** end‑to‑end task‑graph evaluations with incident accounting.
+* **Unhobbling:** test‑time techniques that unlock latent capability in a frozen model.
+
+---
+
+## A9. Risks and Residual Uncertainties
+
+* Scaling plateaus or optimizer brittleness at extreme sizes.
+* Synthetic‑data feedback loops degrading generalization.
+* Orchestration brittleness and attack surface growth.
+* Grid delays, HBM shortages, or geopolitical shocks.
+* Governance drift or coalition non‑compliance.
+
+Mitigation paths are embedded in Chapters IIIa–IV.
+
+---
+
+## A10. Source Notes
+
+This report was regenerated from a semantic blueprint. Figures, dates, and specific vendor data should be verified against current public filings, standards drafts, and allied guidance before publication. Maintain a living bibliography and update quarterly.
+
+---
+
+## A11. Versioning
+
+* **v0.9 (draft for review):** initial regeneration and consolidation.
+* **v1.0 (publication):** updated KPIs, site table, and triggers; final copy edit.
+* **v1.x (living):** quarterly updates to metrics, drills, and standards.
+
+

@@ -7,20 +7,16 @@ import SimilarityScore from '@/components/SimilarityScore';
 import { fetchFromIPFS } from '@/lib/ipfs';
 
 // Import mock data
-import original1 from '@/demo-data/original-1-semantic.json';
-import original2 from '@/demo-data/original-2-semantic.json';
-import original3 from '@/demo-data/original-3-semantic.json';
-import copycat1 from '@/demo-data/copycat-1-semantic.json';
-import copycat2 from '@/demo-data/copycat-2-semantic.json';
-import copycat3 from '@/demo-data/copycat-3-semantic.json';
+import situationalAwareness from '@/demo-data/situational_awareness.json';
 
+// Use the same data for all demo content variations
 const allContent = {
-  'original-1': original1,
-  'original-2': original2,
-  'original-3': original3,
-  'copycat-1': copycat1,
-  'copycat-2': copycat2,
-  'copycat-3': copycat3,
+  'original-1': situationalAwareness,
+  'original-2': situationalAwareness,
+  'original-3': situationalAwareness,
+  'copycat-1': situationalAwareness,
+  'copycat-2': situationalAwareness,
+  'copycat-3': situationalAwareness,
 };
 
 // Cosine similarity calculation

@@ -7,14 +7,13 @@ import { registerIPAsset } from '@/lib/storyProtocol';
 import { getExplorerUrl, getIPFSUrl, getIPAssetUrl } from '@/lib/utils';
 
 // Import demo data
-import original1 from '@/demo-data/original-1-semantic.json';
-import original2 from '@/demo-data/original-2-semantic.json';
-import original3 from '@/demo-data/original-3-semantic.json';
+import situationalAwareness from '@/demo-data/situational_awareness.json';
 
+// Use the same data for all demo content variations
 const demoContent = {
-  'original-1': original1,
-  'original-2': original2,
-  'original-3': original3,
+  'original-1': situationalAwareness,
+  'original-2': situationalAwareness,
+  'original-3': situationalAwareness,
 };
 
 export default function RegisterPage() {

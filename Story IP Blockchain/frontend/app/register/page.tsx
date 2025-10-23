@@ -1,33 +1,52 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { uploadToIPFS } from '@/lib/ipfs';
-import { registerIPAsset } from '@/lib/storyProtocol';
-import { getExplorerUrl, getIPFSUrl, getIPAssetUrl } from '@/lib/utils';
+import { uploadToIPFS } from '@/blocklibs/ipfs';
+import { registerIPAsset } from '@/blocklibs/StoryProtocol';
+import { getExplorerUrl, getIPFSUrl, getIPAssetUrl } from '@/blocklibs/utils';
+import { useRegisteredContent } from '@/context/RegisteredContentContext';
 
 // Import demo data
 import situationalAwareness from '@/demo-data/situational_awareness.json';
 
-// Use the same data for all demo content variations
-const demoContent = {
-  'original-1': situationalAwareness,
-  'original-2': situationalAwareness,
-  'original-3': situationalAwareness,
-};
+type RegistrationStep = 'upload' | 'analyze' | 'build' | 'preview' | 'approved' | 'registered';
 
 export default function RegisterPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Registration flow state
-  const [selected, setSelected] = useState<keyof typeof demoContent>('original-1');
-  const [fingerprintApproved, setFingerprintApproved] = useState(false);
+  const [currentStep, setCurrentStep] = useState<RegistrationStep>('upload');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [buildingFingerprint, setBuildingFingerprint] = useState(false);
   const [registering, setRegistering] = useState(false);
-  const [registered, setRegistered] = useState(false);
   const [result, setResult] = useState<any>(null);
   
-  const currentData = demoContent[selected];
+  const { registerContent } = useRegisteredContent();
+  
+  const currentData = situationalAwareness;
+
+  // Restore state from sessionStorage on mount
+  useEffect(() => {
+    const savedStep = sessionStorage.getItem('registerStep');
+    if (savedStep) {
+      setCurrentStep(savedStep as RegistrationStep);
+      // If we're returning to a step after upload, create a mock file
+      if (savedStep !== 'upload') {
+        const mockFile = new File([''], 'situational_awareness.pdf', { type: 'application/pdf' });
+        setUploadedFile(mockFile);
+      }
+    }
+  }, []);
+
+  // Save state to sessionStorage whenever currentStep changes
+  useEffect(() => {
+    if (currentStep !== 'upload') {
+      sessionStorage.setItem('registerStep', currentStep);
+    }
+  }, [currentStep]);
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -48,12 +67,39 @@ export default function RegisterPage() {
     };
   }, [isSidebarOpen]);
 
-  // Handler for approving fingerprint (Step 2)
-  function handleApproveFingerprint() {
-    setFingerprintApproved(true);
-  }
+  // Handle file upload
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Clear any saved state when starting new upload
+      sessionStorage.removeItem('registerStep');
+      setUploadedFile(file);
+      setCurrentStep('analyze');
+      
+      // Mock analyzing PDF (2 seconds)
+      setTimeout(() => {
+        setCurrentStep('build');
+      }, 2000);
+    }
+  };
 
-  // Handler for registering on blockchain (Step 3)
+  // Handle building semantic fingerprint
+  const handleBuildFingerprint = () => {
+    setBuildingFingerprint(true);
+    
+    // Mock building fingerprint (10 seconds)
+    setTimeout(() => {
+      setBuildingFingerprint(false);
+      setCurrentStep('preview');
+    }, 10000);
+  };
+
+  // Handle approving fingerprint
+  const handleApproveFingerprint = () => {
+    setCurrentStep('approved');
+  };
+
+  // Handle blockchain registration
   async function handleRegister() {
     setRegistering(true);
     
@@ -70,8 +116,8 @@ export default function RegisterPage() {
         
         // 2. Register on Story Protocol
         const { ipAssetId, txHash, tokenId } = await registerIPAsset({
-          name: currentData.metadata.title,
-          description: currentData.metadata.description,
+          name: currentData.document_metadata.title,
+          description: currentData.document_metadata.purpose,
           ipfsHash: ipfsHash,
         });
         
@@ -101,11 +147,23 @@ export default function RegisterPage() {
         });
       }
       
-      setRegistered(true);
+      // Register in context so it appears on dashboard
+      registerContent('situational-awareness');
+      setCurrentStep('registered');
+      // Clear saved state when registration is complete
+      sessionStorage.removeItem('registerStep');
     } finally {
       setRegistering(false);
     }
   }
+
+  const progressPercentage = 
+    currentStep === 'upload' ? 0 :
+    currentStep === 'analyze' ? 10 :
+    currentStep === 'build' ? 15 :
+    currentStep === 'preview' ? 33 :
+    currentStep === 'approved' ? 66 :
+    currentStep === 'registered' ? 100 : 0;
 
   return (
     <div className="h-screen bg-gray-50 overflow-hidden flex flex-col">
@@ -113,12 +171,10 @@ export default function RegisterPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 md:gap-8 flex-1">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900">SemanticGuard</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                Semantic IP Protection + Story 
+                <img src="/symbol-dark.png" alt="Story Protocol" className="h-6 md:h-8 inline-block" />
+              </h1>
             </div>
 
             <div className="flex items-center gap-6">
@@ -313,50 +369,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Recent Projects */}
-          <div className="mt-6">
-            <h2 className="text-xs font-bold text-gray-700">RECENT PROJECTS</h2>
-
-            <div className="mt-3 space-y-1">
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-left">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0 text-left">
-                  <div className="font-medium text-gray-900 text-sm">Q4 Sales Analysis</div>
-                  <div className="text-xs text-gray-500">Updated 2h ago</div>
-                </div>
-              </button>
-
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-left">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0 text-left">
-                  <div className="font-medium text-gray-900 text-sm">User Engagement</div>
-                  <div className="text-xs text-gray-500">Updated 5h ago</div>
-                </div>
-              </button>
-
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-left">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0 text-left">
-                  <div className="font-medium text-gray-900 text-sm">Product Launch</div>
-                  <div className="text-xs text-gray-500">Updated 1d ago</div>
-                </div>
-              </button>
-            </div>
-          </div>
-
           <div className="absolute bottom-[36px] right-4">
             <button className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,12 +378,14 @@ export default function RegisterPage() {
           </div>
         </aside>
 
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto relative">
+          <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-5 pointer-events-none" style={{ backgroundImage: 'url(/graph1.jpg)', left: 'auto', right: 0, width: 'calc(100% - 256px)' }}></div>
+          <div className="relative z-10">
           <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            <span>Back</span>
+            <span>Back to Dashboard</span>
           </Link>
 
           <div className="mb-8">
@@ -381,322 +395,441 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Select Content Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-lg">1</span>
+          {/* Step 1: Upload Content */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/documents.jpg)' }}></div>
+            <div className="flex items-center gap-3 mb-6 relative z-10">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                currentStep !== 'upload' ? 'bg-green-600' : 'bg-blue-600'
+              }`}>
+                {currentStep !== 'upload' ? (
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <span className="text-white font-bold text-lg">1</span>
+                )}
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Select Content</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Upload Content</h2>
             </div>
 
-            {/* Content Card with Gradient */}
-            <div className="bg-gradient-to-r from-blue-50 to-pink-50 rounded-lg border border-blue-100 p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-4 flex-1">
-                  <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            {currentStep === 'upload' ? (
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-400 transition-colors relative z-10">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  accept=".pdf,.doc,.docx"
+                  className="hidden"
+                />
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Your Content</h3>
+                  <p className="text-gray-600 mb-6">Select a PDF or document file to register</p>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+                  >
+                    Choose File
+                  </button>
+                  <p className="text-sm text-gray-500 mt-4">Supported formats: PDF, DOC, DOCX</p>
+                </div>
+              </div>
+            ) : currentStep === 'analyze' ? (
+              <div className="bg-blue-50 rounded-lg p-8 text-center relative z-10">
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 animate-pulse">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Analyzing PDF...</h3>
+                  <p className="text-gray-600">Extracting content and metadata</p>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-r from-green-50/60 to-blue-50/60 rounded-lg border border-green-100 p-6 relative z-10">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Demo Content 1: The Crossroads Decision</h3>
-                    <p className="text-gray-600 mb-4">Selected content ready for semantic fingerprint generation</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{currentData.document_metadata.title}</h3>
+                    <p className="text-gray-600 mb-4">{currentData.document_metadata.purpose}</p>
 
-                    <div className="flex items-center gap-4">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white">
-                        Selected
-                      </span>
-                      <span className="text-gray-600 text-sm">Content Type: Narrative</span>
-                      <span className="text-gray-600 text-sm">Genre: Psychological Thriller</span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-gray-700 font-medium text-sm">Document Type:</span>
+                        <p className="text-gray-900">{currentData.document_metadata.document_type}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-700 font-medium text-sm">Domain:</span>
+                        <p className="text-gray-900">{currentData.document_metadata.domain.split(', ')[0]}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-700 font-medium text-sm">Publication Date:</span>
+                        <p className="text-gray-900">{currentData.document_metadata.publication_context.date}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-700 font-medium text-sm">File Name:</span>
+                        <p className="text-gray-900">{uploadedFile?.name || 'situational_awareness.pdf'}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button className="text-blue-600 hover:text-blue-700 p-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-600 text-white">
+                    ✓ Uploaded
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Preview Semantic Fingerprint Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-lg">2</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Preview Semantic Fingerprint</h2>
-            </div>
-
-            {/* Content Preview Card */}
-            <div className="bg-gray-100 rounded-lg p-6 mb-6">
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">🎬</div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">The Crossroads Decision</h3>
-                  <p className="text-gray-600">A visual exploration of moral choices and their consequences</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Grid of 4 Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              {/* Narrative Structure */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                  <h4 className="font-bold text-gray-900">Narrative Structure</h4>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Genre</span>
-                    <span className="text-gray-600 text-right">psychological thriller</span>
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Story Arc</span>
-                    <span className="text-gray-600 text-right">individual confronting moral crisis</span>
-                  </div>
-                  <div>
-                    <div className="text-gray-700 font-medium mb-2">Themes</div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">choice and consequence</span>
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">identity under pressure</span>
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">isolation</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Progression</span>
-                    <span className="text-gray-600 text-right">contemplation → crisis → resolution</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Character Essence */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  <h4 className="font-bold text-gray-900">Character Essence</h4>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Archetype</span>
-                    <span className="text-gray-600 text-right">reluctant hero</span>
-                  </div>
-                  <div>
-                    <div className="text-gray-700 font-medium mb-2">Traits</div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">analytical</span>
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">conflicted</span>
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">determined</span>
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">introspective</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Character Arc</span>
-                    <span className="text-gray-600 text-right">isolated → forced to engage → transformed</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Thematic Content */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                  </svg>
-                  <h4 className="font-bold text-gray-900">Thematic Content</h4>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Primary Theme</span>
-                    <span className="text-gray-600 text-right">consequences of choice</span>
-                  </div>
-                  <div>
-                    <div className="text-gray-700 font-medium mb-2">Secondary Themes</div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">isolation vs connection</span>
-                      <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">duty vs desire</span>
-                      <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">truth vs comfort</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-gray-700 font-medium">Emotional Tone</span>
-                    <span className="text-gray-600 text-right">tense contemplation building to resolve</span>
-                  </div>
-                  <div>
-                    <div className="text-gray-700 font-medium mb-2">Visual Metaphors</div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">crossroads</span>
-                      <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">heights suggesting risk</span>
-                      <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">shadows representing doubt</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Fingerprint Summary */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <h4 className="font-bold text-gray-900">Fingerprint Summary</h4>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-gray-700 font-medium mb-2">Semantic Hash</div>
-                    <div className="bg-gray-50 rounded p-3 font-mono text-xs break-all text-gray-700">
-                      0x4a7b8c9d2e3f4g5h6i7j8k910m1n2o3p4q5r6s7t8u9v0w1x2y3z
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-blue-50 rounded-lg p-4 text-center">
-                      <div className="text-3xl font-bold text-blue-600 mb-1">94%</div>
-                      <div className="text-sm text-gray-600">Uniqueness Score</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-4 text-center">
-                      <div className="text-3xl font-bold text-green-600 mb-1">High</div>
-                      <div className="text-sm text-gray-600">Protection Level</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Approve Button */}
-            <div className="flex justify-end">
-              <button 
-                onClick={handleApproveFingerprint}
-                disabled={fingerprintApproved}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  fingerprintApproved
-                    ? 'bg-green-600 text-white cursor-default'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
-                }`}
-              >
-                {fingerprintApproved ? '✅ Fingerprint Approved' : 'Approve Fingerprint'}
-              </button>
-            </div>
-          </div>
-
-          {/* Register on Blockchain Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                registered ? 'bg-green-600' : fingerprintApproved ? 'bg-blue-600' : 'bg-gray-400'
-              }`}>
-                <span className="text-white font-bold text-lg">3</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Register on Blockchain</h2>
-            </div>
-
-            {/* Content Area */}
-            <div className="bg-gray-50 rounded-lg p-12 text-center">
-              {/* Shield Icon */}
-              <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-              </div>
-
-              <h3 className="text-2xl font-bold text-gray-700 mb-2">Register IP Asset on Story Protocol</h3>
-              <p className="text-gray-600 mb-8">Complete the fingerprint approval to proceed with blockchain registration</p>
-
-              {/* Benefits Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <div className="flex justify-center mb-3">
-                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          {/* Step 2: Build & Preview Semantic Fingerprint */}
+          {['build', 'preview', 'approved', 'registered'].includes(currentStep) && (
+            <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 relative overflow-hidden">
+              <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/protected.png)' }}></div>
+              <div className="flex items-center gap-3 mb-6 relative z-10">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  ['approved', 'registered'].includes(currentStep) ? 'bg-green-600' : 'bg-blue-600'
+                }`}>
+                  {['approved', 'registered'].includes(currentStep) ? (
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                  </div>
-                  <h4 className="font-bold text-gray-700 mb-1">Immutable Protection</h4>
-                </div>
-
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <div className="flex justify-center mb-3">
-                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-bold text-gray-700 mb-1">Global Recognition</h4>
-                </div>
-
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <div className="flex justify-center mb-3">
-                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-bold text-gray-700 mb-1">Proof of Ownership</h4>
-                </div>
-              </div>
-
-              {/* Register Button */}
-              <div className="flex flex-col items-center">
-                <button 
-                  onClick={handleRegister}
-                  disabled={!fingerprintApproved || registering || registered}
-                  className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 mb-2 transition-colors ${
-                    !fingerprintApproved
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : registered
-                      ? 'bg-green-600 text-white cursor-default'
-                      : registering
-                      ? 'bg-blue-400 text-white cursor-wait'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
-                  }`}
-                >
-                  {registering ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                      Processing Transaction...
-                    </>
-                  ) : registered ? (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Successfully Registered!
-                    </>
                   ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                      Register IP Asset
-                    </>
+                    <span className="text-white font-bold text-lg">2</span>
                   )}
-                </button>
-                <p className="text-sm text-gray-500">
-                  {!fingerprintApproved 
-                    ? 'Complete previous steps to enable registration'
-                    : registered
-                    ? 'IP asset successfully registered on Story Protocol'
-                    : 'Click to register on Story Protocol blockchain'
-                  }
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Build & Preview Semantic Fingerprint</h2>
+              </div>
+
+              {currentStep === 'build' && !buildingFingerprint && (
+                <div className="bg-gradient-to-r from-purple-50/60 to-blue-50/60 rounded-lg p-12 text-center relative z-10">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Build Semantic IP</h3>
+                    <p className="text-gray-600 mb-6">Generate a unique semantic fingerprint for your content</p>
+                    <button
+                      onClick={handleBuildFingerprint}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Build Semantic IP
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {buildingFingerprint && (
+                <div className="bg-gradient-to-r from-purple-50/60 to-blue-50/60 rounded-lg p-8 text-center relative z-10">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mb-4 animate-pulse">
+                      <svg className="w-8 h-8 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Building Semantic Fingerprint...</h3>
+                    <p className="text-gray-600 mb-1">LLM analyzing and distilling semantic meaning</p>
+                    <p className="text-sm text-gray-500">This may take a few moments...</p>
+                  </div>
+                </div>
+              )}
+
+              {['preview', 'approved', 'registered'].includes(currentStep) && (
+                <>
+                  {/* Semantic Fingerprint Cards */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 relative z-10">
+                    {/* Card 1: Document Profile */}
+                    <div className="bg-white rounded-lg border border-black p-6 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/documents.jpg)' }}></div>
+                      <div className="flex items-center gap-2 mb-4 relative z-10">
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h4 className="font-bold text-gray-900">Document Profile</h4>
+                      </div>
+
+                      <div className="space-y-3 relative z-10">
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-700 font-medium">Document Type</span>
+                          <span className="text-gray-600 text-right">{currentData.document_metadata.document_type}</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-700 font-medium">Domain</span>
+                          <span className="text-gray-600 text-right text-sm">{currentData.document_metadata.domain}</span>
+                        </div>
+                        <div>
+                          <div className="text-gray-700 font-medium mb-2">Intended Audience</div>
+                          <div className="flex flex-wrap gap-2">
+                            {currentData.document_metadata.intended_audience.slice(0, 3).map((audience: string, idx: number) => (
+                              <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">{audience}</span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-700 font-medium">Publication Date</span>
+                          <span className="text-gray-600 text-right">{currentData.document_metadata.publication_context.date}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Core Thesis & Themes */}
+                    <div className="bg-white rounded-lg border border-black p-6 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/documents.jpg)' }}></div>
+                      <div className="flex items-center gap-2 mb-4 relative z-10">
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <h4 className="font-bold text-gray-900">Core Thesis & Themes</h4>
+                      </div>
+
+                      <div className="space-y-3 relative z-10">
+                        <div>
+                          <div className="text-gray-700 font-medium mb-1">Core Thesis</div>
+                          <p className="text-gray-600 text-sm">{currentData.global_context.core_thesis.substring(0, 150)}...</p>
+                        </div>
+                        <div>
+                          <div className="text-gray-700 font-medium mb-2">Key Themes</div>
+                          <div className="flex flex-wrap gap-2">
+                            {currentData.global_context.key_themes.slice(0, 4).map((theme: string, idx: number) => (
+                              <span key={idx} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">{theme}</span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-700 font-medium">Narrative Arc</span>
+                          <span className="text-gray-600 text-right text-sm">{currentData.global_context.narrative_arc.structure}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Semantic Elements */}
+                    <div className="bg-white rounded-lg border border-black p-6 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/jsoncode.jpg)' }}></div>
+                      <div className="flex items-center gap-2 mb-4 relative z-10">
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                        </svg>
+                        <h4 className="font-bold text-gray-900">Semantic Elements</h4>
+                      </div>
+
+                      <div className="space-y-3 relative z-10">
+                        <div>
+                          <div className="text-gray-700 font-medium mb-2">Primary Arguments</div>
+                          <div className="flex flex-wrap gap-2">
+                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">AGI by ~2027</span>
+                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">intelligence explosion</span>
+                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">industrial mobilization</span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-700 font-medium mb-2">Key Concepts</div>
+                          <div className="flex flex-wrap gap-2">
+                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">scaling laws</span>
+                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">OOMs</span>
+                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">unhobbling</span>
+                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">The Project</span>
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-700 font-medium">Emotional Tone</span>
+                          <span className="text-gray-600 text-right text-sm">urgent, analytical, forward-looking</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-700 font-medium">Rhetorical Style</span>
+                          <span className="text-gray-600 text-right text-sm">evidence-based argumentation</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Fingerprint Summary */}
+                    <div className="bg-white rounded-lg border border-black p-6 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/protected.png)' }}></div>
+                      <div className="flex items-center gap-2 mb-4 relative z-10">
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                        </svg>
+                        <h4 className="font-bold text-gray-900">Fingerprint Summary</h4>
+                      </div>
+
+                      <div className="space-y-4 relative z-10">
+                        <div>
+                          <div className="text-gray-700 font-medium mb-2">Semantic Hash</div>
+                          <div className="bg-gray-50 rounded p-3 font-mono text-xs break-all text-gray-700">
+                            {`0x${Math.random().toString(16).substring(2, 50).padEnd(48, '0')}`}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-blue-50 rounded-lg p-4 text-center">
+                            <div className="text-3xl font-bold text-blue-600 mb-1">96%</div>
+                            <div className="text-sm text-gray-600">Uniqueness Score</div>
+                          </div>
+                          <div className="bg-green-50 rounded-lg p-4 text-center">
+                            <div className="text-xl font-bold text-green-600 mb-1">Very High</div>
+                            <div className="text-sm text-gray-600">Protection Level</div>
+                          </div>
+                        </div>
+
+                        <div className="bg-purple-50 rounded-lg p-4 text-center">
+                          <div className="text-xl font-bold text-purple-600 mb-1">High</div>
+                          <div className="text-sm text-gray-600">Complexity Score</div>
+                          <div className="text-xs text-gray-500 mt-1">(strategic policy document)</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Approve Button */}
+                  {currentStep === 'preview' && (
+                    <div className="flex justify-between items-center relative z-10">
+                      <Link
+                        href="/register/view-json"
+                        className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                      >
+                        View JSON
+                      </Link>
+                      <button
+                        onClick={handleApproveFingerprint}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                      >
+                        Approve Fingerprint
+                      </button>
+                    </div>
+                  )}
+
+                  {['approved', 'registered'].includes(currentStep) && (
+                    <div className="flex justify-end relative z-10">
+                      <div className="inline-flex items-center px-6 py-3 rounded-lg bg-green-100 text-green-700 font-medium">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Fingerprint Approved
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Step 3: Register on Blockchain */}
+          {['approved', 'registered'].includes(currentStep) && (
+            <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 relative overflow-hidden">
+              <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/blockchain.jpg)' }}></div>
+              <div className="flex items-center gap-3 mb-6 relative z-10">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  currentStep === 'registered' ? 'bg-green-600' : 'bg-blue-600'
+                }`}>
+                  {currentStep === 'registered' ? (
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <span className="text-white font-bold text-lg">3</span>
+                  )}
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Register on Blockchain</h2>
+              </div>
+
+              <div className="bg-gray-50/50 rounded-lg p-12 text-center relative z-10">
+                <div className="flex justify-center mb-6">
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center ${
+                    registering ? 'bg-blue-200 animate-pulse' : currentStep === 'registered' ? 'bg-green-200' : 'bg-gray-200'
+                  }`}>
+                    <img 
+                      src="/symbol-dark.png" 
+                      alt="Story Protocol" 
+                      className="w-12 h-12 object-contain"
+                    />
+                  </div>
+                </div>
+
+                <h3 className="text-2xl font-bold text-gray-700 mb-2">
+                  {registering ? 'Registering on Story Protocol...' : currentStep === 'registered' ? 'Successfully Registered!' : 'Register IP Asset on Story Protocol'}
+                </h3>
+                <p className="text-gray-600 mb-8">
+                  {registering ? 'Processing blockchain transaction...' : currentStep === 'registered' ? 'Your content is now protected on the blockchain' : 'Secure your content with immutable blockchain protection'}
                 </p>
+
+                {currentStep === 'approved' && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                      <div className="bg-white/60 rounded-lg border border-gray-200 p-6">
+                        <div className="flex justify-center mb-3">
+                          <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                        </div>
+                        <h4 className="font-bold text-gray-700 mb-1">Immutable Protection</h4>
+                      </div>
+
+                      <div className="bg-white/60 rounded-lg border border-gray-200 p-6">
+                        <div className="flex justify-center mb-3">
+                          <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <h4 className="font-bold text-gray-700 mb-1">Global Recognition</h4>
+                      </div>
+
+                      <div className="bg-white/60 rounded-lg border border-gray-200 p-6">
+                        <div className="flex justify-center mb-3">
+                          <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                        </div>
+                        <h4 className="font-bold text-gray-700 mb-1">Proof of Ownership</h4>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleRegister}
+                      disabled={registering}
+                      className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 mx-auto transition-colors ${
+                        registering
+                          ? 'bg-blue-400 text-white cursor-wait'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      {registering ? (
+                        <>
+                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Processing Transaction...
+                        </>
+                      ) : (
+                        <>
+                          <img 
+                            src="/symbol-dark.png" 
+                            alt="Story Protocol" 
+                            className="w-5 h-5 object-contain"
+                          />
+                          Register IP Asset
+                        </>
+                      )}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
-          </div>
+          )}
 
           {/* Registration Progress */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
@@ -704,24 +837,25 @@ export default function RegisterPage() {
 
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-900 font-medium">
-                Step {registered ? 3 : fingerprintApproved ? 2 : 1} of 3 Complete
+                {currentStep === 'registered' ? 'Complete!' : `Step ${
+                  currentStep === 'upload' || currentStep === 'analyze' ? '1' :
+                  currentStep === 'build' || currentStep === 'preview' || currentStep === 'approved' ? '2' : '3'
+                } in progress`}
               </span>
               <div className="flex items-center gap-6">
                 <span className="text-gray-900 font-bold">
-                  {registered ? 100 : fingerprintApproved ? 67 : 33}%
+                  {Math.round(progressPercentage)}%
                 </span>
                 <div className="text-right">
                   <div className="font-bold text-gray-900">
-                    {registered ? 'Complete!' : registering ? 'Processing...' : 'Estimated Time'}
+                    {currentStep === 'registered' ? 'Complete!' : registering ? 'Processing...' : 'In Progress'}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {registered 
+                    {currentStep === 'registered' 
                       ? 'IP asset registered successfully'
                       : registering
                       ? 'Please wait...'
-                      : fingerprintApproved
-                      ? '1-2 minutes remaining'
-                      : '2-3 minutes remaining'
+                      : 'Follow the steps above'
                     }
                   </div>
                 </div>
@@ -729,38 +863,15 @@ export default function RegisterPage() {
             </div>
 
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className={`h-2 rounded-full transition-all duration-500 ${registered ? 'bg-green-600' : 'bg-blue-600'}`}
-                style={{width: `${registered ? 100 : fingerprintApproved ? 67 : 33}%`}}
+              <div
+                className={`h-2 rounded-full transition-all duration-500 ${currentStep === 'registered' ? 'bg-green-600' : 'bg-blue-600'}`}
+                style={{width: `${progressPercentage}%`}}
               ></div>
             </div>
           </div>
 
-          {/* Action Buttons - Outside of cards */}
-          <div className="flex items-center justify-between mb-6">
-            <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-              Save as Draft
-            </button>
-
-            <div className="flex items-center gap-3">
-              <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                Previous Step
-              </button>
-              <button 
-                disabled={!registered}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  registered
-                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {registered ? 'View Registration Details' : 'Continue to Registration'}
-              </button>
-            </div>
-          </div>
-
           {/* Success Card - Shows after registration */}
-          {registered && result && (
+          {currentStep === 'registered' && result && (
             <div className="bg-white rounded-lg border-2 border-green-500 p-6 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
@@ -784,13 +895,13 @@ export default function RegisterPage() {
                   </span>
                 )}
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-sm font-semibold text-gray-700 mb-2">IP Asset ID</div>
                   <div className="font-mono text-xs text-gray-900 break-all mb-2">{result.ipAssetId}</div>
                   {result.source === 'blockchain' && (
-                    <a 
+                    <a
                       href={getIPAssetUrl(result.ipAssetId)}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -800,12 +911,12 @@ export default function RegisterPage() {
                     </a>
                   )}
                 </div>
-                
+
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-sm font-semibold text-gray-700 mb-2">IPFS Hash</div>
                   <div className="font-mono text-xs text-gray-900 break-all mb-2">{result.ipfsHash}</div>
                   {result.source === 'blockchain' && (
-                    <a 
+                    <a
                       href={getIPFSUrl(result.ipfsHash)}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -815,12 +926,12 @@ export default function RegisterPage() {
                     </a>
                   )}
                 </div>
-                
+
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-sm font-semibold text-gray-700 mb-2">Transaction Hash</div>
                   <div className="font-mono text-xs text-gray-900 break-all mb-2">{result.txHash}</div>
                   {result.source === 'blockchain' && (
-                    <a 
+                    <a
                       href={getExplorerUrl(result.txHash)}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -830,7 +941,7 @@ export default function RegisterPage() {
                     </a>
                   )}
                 </div>
-                
+
                 {result.tokenId && (
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="text-sm font-semibold text-gray-700 mb-2">Token ID</div>
@@ -838,8 +949,21 @@ export default function RegisterPage() {
                   </div>
                 )}
               </div>
+
+              <div className="flex items-center justify-center">
+                <Link
+                  href="/"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                  Return to Dashboard
+                </Link>
+              </div>
             </div>
           )}
+          </div>
         </main>
       </div>
     </div>

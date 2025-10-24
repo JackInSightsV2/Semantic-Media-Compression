@@ -4,7 +4,7 @@ export function shortenAddress(address: string): string {
    }
    
    export function getExplorerUrl(txHash: string): string {
-    return `https://testnet.storyscan.xyz/tx/${txHash}`;
+    return `https://aeneid.explorer.story.foundation/transactions/${txHash}`;
    }
    
    export function getIPFSUrl(hash: string): string {
@@ -12,7 +12,7 @@ export function shortenAddress(address: string): string {
    }
    
    export function getIPAssetUrl(ipAssetId: string): string {
-    return `https://testnet.storyscan.xyz/address/${ipAssetId}`;
+    return `https://aeneid.explorer.story.foundation/ipa/${ipAssetId}`;
    }
    
    

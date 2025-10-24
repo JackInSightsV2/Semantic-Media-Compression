@@ -1,5 +1,5 @@
 import { StoryClient, StoryConfig } from '@story-protocol/core-sdk';
-import { http } from 'viem';
+import { http, keccak256, toHex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
 let storyClient: StoryClient | null = null;
@@ -48,22 +48,22 @@ export async function registerIPAsset(metadata: {
            commercializerCheckerData: '0x' as `0x${string}`,
            commercialRevShare: 0,
            commercialRevCeiling: 0n,
-           derivativesAllowed: true,
-           derivativesAttribution: true,
-           derivativesApproval: false,
-           derivativesReciprocal: true,
-           derivativeRevCelling: 0n,
-           currency: '0x0000000000000000000000000000000000000000',
+          derivativesAllowed: true,
+          derivativesAttribution: true,
+          derivativesApproval: false,
+          derivativesReciprocal: true,
+          derivativeRevCeiling: 0n,
+          currency: '0x0000000000000000000000000000000000000000',
            uri: '',
          },
        },
      ],
-     ipMetadata: {
-       ipMetadataURI: `ipfs://${metadata.ipfsHash}`,
-       ipMetadataHash: `0x${metadata.ipfsHash}` as `0x${string}`,
-       nftMetadataURI: `ipfs://${metadata.ipfsHash}`,
-       nftMetadataHash: `0x${metadata.ipfsHash}` as `0x${string}`,
-     },
+    ipMetadata: {
+      ipMetadataURI: `ipfs://${metadata.ipfsHash}`,
+      ipMetadataHash: keccak256(toHex(metadata.ipfsHash)),
+      nftMetadataURI: `ipfs://${metadata.ipfsHash}`,
+      nftMetadataHash: keccak256(toHex(metadata.ipfsHash)),
+    },
    });
   
    return {

@@ -514,7 +514,7 @@ export default function RegisterPage() {
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">📥 Download TEST PDF</h3>
                   <p className="text-gray-600 mb-4">
-                    This is a structured test. Download this PDF and use it when choosing a file below. 
+                    This is a structured test. Download one of these PDFs and use it when choosing a file below. 
                     Perfect for testing the semantic registration process!
                   </p>
                   
@@ -527,14 +527,25 @@ export default function RegisterPage() {
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      Download Situational Awareness PDF
+                      Situational Awareness PDF
+                    </a>
+                    
+                    <a
+                      href="/mykpopsecret.pdf"
+                      download="mykpopsecret.pdf"
+                      className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      My K-Pop Secret PDF
                     </a>
                     
                     <div className="flex items-center gap-2 text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>File size: ~150 KB</span>
+                      <span>Two test files available</span>
                     </div>
                   </div>
                 </div>

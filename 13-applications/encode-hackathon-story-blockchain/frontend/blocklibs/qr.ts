@@ -19,18 +19,25 @@
 
 // Generate a QR PNG for the provided data string (returns PNG bytes)
 export async function generateQrPng(data: string, size: number = 512): Promise<Uint8Array> {
-  const { default: QRCode } = await import('qrcode');
+  const QRCode = (await import('qrcode')).default as any;
+  
+  // toDataURL works in both browser and Node.js
   const dataUrl = await QRCode.toDataURL(data, {
     errorCorrectionLevel: 'M',
     margin: 1,
     width: size,
     color: { dark: '#000000', light: '#FFFFFF' },
-    type: 'image/png',
-  } as any);
+  }) as string;
 
-  const res = await fetch(dataUrl);
-  const arrayBuffer = await res.arrayBuffer();
-  return new Uint8Array(arrayBuffer);
+  // Convert data URL to Uint8Array
+  const base64 = dataUrl.split(',')[1];
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  
+  return bytes;
 }
 
 

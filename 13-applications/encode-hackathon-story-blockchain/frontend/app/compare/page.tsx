@@ -31,14 +31,53 @@ import situationalAwareness from '@/demo-data/situational_awareness.json';
 // Get the first object from the array (main document overview)
 const mainDocument = Array.isArray(situationalAwareness) ? situationalAwareness[0] : situationalAwareness;
 
+// Transform the complex JSON structure to match SemanticDisplay's expected format
+function transformToSemanticData(data: any): any {
+  // Extract or generate a semantic fingerprint from the complex data structure
+  const globalContext = data.global_context || {};
+  const narrativeArc = globalContext.narrative_arc || {};
+  const themes = globalContext.key_themes || [];
+  
+  return {
+    ...data,
+    content_id: data.document_metadata?.title || 'unknown',
+    semantic_fingerprint: {
+      narrative: {
+        genre: data.document_metadata?.domain?.split(',')[0] || 'Strategic Essay',
+        story_arc: narrativeArc.structure || 'Complex analytical progression',
+        themes: Array.isArray(themes) ? themes.slice(0, 3) : ['AI capability forecasting', 'strategic analysis', 'future predictions'],
+        dramatic_progression: Array.isArray(narrativeArc.dramatic_progression) 
+          ? narrativeArc.dramatic_progression.join(' → ') 
+          : 'Introduction to analysis to conclusions',
+      },
+      characters: {
+        protagonist: {
+          archetype: 'Analyst/Visionary',
+          traits: ['analytical', 'strategic', 'forward-thinking'],
+          arc: 'Presents evidence and builds toward recommendations',
+        },
+      },
+      themes: {
+        primary: globalContext.core_thesis || 'AI development and strategic implications',
+        secondary: Array.isArray(globalContext.primary_objectives) 
+          ? globalContext.primary_objectives.slice(0, 3)
+          : ['Strategic planning', 'Risk assessment', 'Policy recommendations'],
+        emotional_tone: 'Serious and analytical',
+        visual_metaphors: ['scaling trends', 'capability thresholds', 'strategic competition'],
+      },
+    },
+  };
+}
+
 // Use the same data for all demo content variations
+const transformedDocument = transformToSemanticData(mainDocument);
 const allContent = {
-  'original-1': mainDocument,
-  'original-2': mainDocument,
-  'original-3': mainDocument,
-  'copycat-1': mainDocument,
-  'copycat-2': mainDocument,
-  'copycat-3': mainDocument,
+  'original-1': transformedDocument,
+  'original-2': transformedDocument,
+  'original-3': transformedDocument,
+  'copycat-1': transformedDocument,
+  'copycat-2': transformedDocument,
+  'copycat-3': transformedDocument,
 };
 
 // Cosine similarity calculation
@@ -47,6 +86,55 @@ function cosineSimilarity(a: number[], b: number[]): number {
   const magA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
   const magB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
   return dotProduct / (magA * magB);
+}
+
+// Type for data with embeddings
+type DataWithEmbeddings = any & {
+  embeddings: {
+    narrative_vector: number[];
+    character_vector: number[];
+    thematic_vector: number[];
+  };
+};
+
+// Generate mock embeddings if they don't exist
+function ensureEmbeddings(data: any): DataWithEmbeddings {
+  if (data.embeddings) {
+    return data as DataWithEmbeddings;
+  }
+  
+  // Generate deterministic mock embeddings based on semantic fingerprint
+  const narrative = data.semantic_fingerprint?.narrative || {};
+  const characters = data.semantic_fingerprint?.characters || {};
+  const themes = data.semantic_fingerprint?.themes || {};
+  
+  // Create 128-dimensional vectors with some variation
+  const generateVector = (seed: string, dim: number = 128): number[] => {
+    const vec = [];
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+      hash = hash & hash;
+    }
+    
+    for (let i = 0; i < dim; i++) {
+      const val = Math.sin(hash + i * 0.1) * 0.5 + 0.5;
+      vec.push(val);
+    }
+    
+    // Normalize
+    const mag = Math.sqrt(vec.reduce((sum, v) => sum + v * v, 0));
+    return vec.map(v => v / mag);
+  };
+  
+  return {
+    ...data,
+    embeddings: {
+      narrative_vector: generateVector(JSON.stringify(narrative)),
+      character_vector: generateVector(JSON.stringify(characters)),
+      thematic_vector: generateVector(JSON.stringify(themes)),
+    }
+  } as DataWithEmbeddings;
 }
 
 export default function ComparePage() {
@@ -84,8 +172,8 @@ export default function ComparePage() {
             fetchFromIPFS(suspectedIPFSHash)
           ]);
           
-          origData = orig;
-          suspData = susp;
+          origData = transformToSemanticData(orig);
+          suspData = transformToSemanticData(susp);
           console.log('✅ Fetched from IPFS successfully');
         } catch (ipfsErr: any) {
           setIpfsError(`IPFS fetch failed: ${ipfsErr.message}. Using mock data instead.`);
@@ -97,18 +185,22 @@ export default function ComparePage() {
       // Simulate processing time
       await new Promise(resolve => setTimeout(resolve, 2000));
       
+      // Ensure embeddings exist (generate mock ones if needed)
+      const origDataWithEmbeddings = ensureEmbeddings(origData);
+      const suspDataWithEmbeddings = ensureEmbeddings(suspData);
+      
       // Calculate actual similarity from embeddings
       const narrativeSim = cosineSimilarity(
-        origData.embeddings.narrative_vector,
-        suspData.embeddings.narrative_vector
+        origDataWithEmbeddings.embeddings.narrative_vector,
+        suspDataWithEmbeddings.embeddings.narrative_vector
       );
       const characterSim = cosineSimilarity(
-        origData.embeddings.character_vector,
-        suspData.embeddings.character_vector
+        origDataWithEmbeddings.embeddings.character_vector,
+        suspDataWithEmbeddings.embeddings.character_vector
       );
       const thematicSim = cosineSimilarity(
-        origData.embeddings.thematic_vector,
-        suspData.embeddings.thematic_vector
+        origDataWithEmbeddings.embeddings.thematic_vector,
+        suspDataWithEmbeddings.embeddings.thematic_vector
       );
       
       const overall = (narrativeSim * 0.4 + characterSim * 0.4 + thematicSim * 0.2);
@@ -116,14 +208,14 @@ export default function ComparePage() {
       // Generate matching elements based on similarity
       const matchingElements = [];
       if (narrativeSim > 0.85) {
-        matchingElements.push(`Identical narrative structure: ${origData.semantic_fingerprint.narrative.story_arc}`);
-        matchingElements.push(`Matching genre: ${origData.semantic_fingerprint.narrative.genre}`);
+        matchingElements.push(`Identical narrative structure: ${origDataWithEmbeddings.semantic_fingerprint?.narrative?.story_arc || 'N/A'}`);
+        matchingElements.push(`Matching genre: ${origDataWithEmbeddings.semantic_fingerprint?.narrative?.genre || 'N/A'}`);
       }
       if (characterSim > 0.85) {
-        matchingElements.push(`Same character archetype: ${origData.semantic_fingerprint.characters.protagonist.archetype}`);
+        matchingElements.push(`Same character archetype: ${origDataWithEmbeddings.semantic_fingerprint?.characters?.protagonist?.archetype || 'N/A'}`);
       }
       if (thematicSim > 0.85) {
-        matchingElements.push(`Matching primary theme: ${origData.semantic_fingerprint.themes.primary}`);
+        matchingElements.push(`Matching primary theme: ${origDataWithEmbeddings.semantic_fingerprint?.themes?.primary || 'N/A'}`);
       }
       if (overall > 0.85) {
         matchingElements.push(`Similar emotional progression across all dimensions`);

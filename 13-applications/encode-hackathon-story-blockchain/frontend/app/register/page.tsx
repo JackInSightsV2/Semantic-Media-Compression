@@ -178,8 +178,8 @@ export default function RegisterPage() {
         console.log('✅ Uploaded QR PNG:', qrCid);
 
         // 3) Build IP Metadata (Story IP metadata standard)
-        const title = currentData.document_metadata.title;
-        const description = currentData.document_metadata.purpose;
+        const title = currentData.document_metadata?.title || 'Untitled';
+        const description = currentData.document_metadata?.purpose || 'No description';
         const ipMetadata = {
           title,
           description,
@@ -500,6 +500,48 @@ export default function RegisterPage() {
             </p>
           </div>
 
+          {/* Download Test PDF Card */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200 p-6 mb-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-5" style={{ backgroundImage: 'url(/documents.jpg)' }}></div>
+            <div className="relative z-10">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">📥 Download TEST PDF</h3>
+                  <p className="text-gray-600 mb-4">
+                    This is a structured test. Download this PDF and use it when choosing a file below. 
+                    Perfect for testing the semantic registration process!
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href="/situational_awareness.pdf"
+                      download="situational_awareness.pdf"
+                      className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Download Situational Awareness PDF
+                    </a>
+                    
+                    <div className="flex items-center gap-2 text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>File size: ~150 KB</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Step 1: Upload Content */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 relative overflow-hidden">
             <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style={{ backgroundImage: 'url(/documents.jpg)' }}></div>
@@ -566,21 +608,21 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{currentData.document_metadata.title}</h3>
-                    <p className="text-gray-600 mb-4">{currentData.document_metadata.purpose}</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{currentData.document_metadata?.title || 'Untitled'}</h3>
+                    <p className="text-gray-600 mb-4">{currentData.document_metadata?.purpose || 'No description'}</p>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <span className="text-gray-700 font-medium text-sm">Document Type:</span>
-                        <p className="text-gray-900">{currentData.document_metadata.document_type}</p>
+                        <p className="text-gray-900">{currentData.document_metadata?.document_type || 'Unknown'}</p>
                       </div>
                       <div>
                         <span className="text-gray-700 font-medium text-sm">Domain:</span>
-                        <p className="text-gray-900">{currentData.document_metadata.domain.split(', ')[0]}</p>
+                        <p className="text-gray-900">{currentData.document_metadata?.domain?.split(', ')[0] || 'General'}</p>
                       </div>
                       <div>
                         <span className="text-gray-700 font-medium text-sm">Publication Date:</span>
-                        <p className="text-gray-900">{currentData.document_metadata.publication_context.date}</p>
+                        <p className="text-gray-900">{currentData.document_metadata?.publication_context?.date || 'N/A'}</p>
                       </div>
                       <div>
                         <span className="text-gray-700 font-medium text-sm">File Name:</span>
@@ -671,23 +713,23 @@ export default function RegisterPage() {
                       <div className="space-y-3 relative z-10">
                         <div className="flex justify-between items-start">
                           <span className="text-gray-700 font-medium">Document Type</span>
-                          <span className="text-gray-600 text-right">{currentData.document_metadata.document_type}</span>
+                          <span className="text-gray-600 text-right">{currentData.document_metadata?.document_type || 'Unknown'}</span>
                         </div>
                         <div className="flex justify-between items-start">
                           <span className="text-gray-700 font-medium">Domain</span>
-                          <span className="text-gray-600 text-right text-sm">{currentData.document_metadata.domain}</span>
+                          <span className="text-gray-600 text-right text-sm">{currentData.document_metadata?.domain || 'General'}</span>
                         </div>
                         <div>
                           <div className="text-gray-700 font-medium mb-2">Intended Audience</div>
                           <div className="flex flex-wrap gap-2">
-                            {currentData.document_metadata.intended_audience.slice(0, 3).map((audience: string, idx: number) => (
+                            {(currentData.document_metadata?.intended_audience || []).slice(0, 3).map((audience: string, idx: number) => (
                               <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">{audience}</span>
                             ))}
                           </div>
                         </div>
                         <div className="flex justify-between items-start">
                           <span className="text-gray-700 font-medium">Publication Date</span>
-                          <span className="text-gray-600 text-right">{currentData.document_metadata.publication_context.date}</span>
+                          <span className="text-gray-600 text-right">{currentData.document_metadata?.publication_context?.date || 'N/A'}</span>
                         </div>
                       </div>
                     </div>
@@ -705,19 +747,19 @@ export default function RegisterPage() {
                       <div className="space-y-3 relative z-10">
                         <div>
                           <div className="text-gray-700 font-medium mb-1">Core Thesis</div>
-                          <p className="text-gray-600 text-sm">{currentData.global_context.core_thesis.substring(0, 150)}...</p>
+                          <p className="text-gray-600 text-sm">{(currentData.global_context?.core_thesis || 'No thesis available').substring(0, 150)}...</p>
                         </div>
                         <div>
                           <div className="text-gray-700 font-medium mb-2">Key Themes</div>
                           <div className="flex flex-wrap gap-2">
-                            {currentData.global_context.key_themes.slice(0, 4).map((theme: string, idx: number) => (
+                            {(currentData.global_context?.key_themes || []).slice(0, 4).map((theme: string, idx: number) => (
                               <span key={idx} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">{theme}</span>
                             ))}
                           </div>
                         </div>
                         <div className="flex justify-between items-start">
                           <span className="text-gray-700 font-medium">Narrative Arc</span>
-                          <span className="text-gray-600 text-right text-sm">{currentData.global_context.narrative_arc.structure}</span>
+                          <span className="text-gray-600 text-right text-sm">{currentData.global_context?.narrative_arc?.structure || 'N/A'}</span>
                         </div>
                       </div>
                     </div>

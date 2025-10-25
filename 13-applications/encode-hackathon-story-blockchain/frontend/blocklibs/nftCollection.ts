@@ -1,4 +1,4 @@
-import { getStoryClient } from './storyProtocol';
+import { getStoryClient } from './StoryProtocol';
 
 /**
 * Creates a new SPG NFT Collection for registering IP Assets
@@ -50,12 +50,13 @@ export async function createSPGNFTCollection() {
 */
 export async function isValidNFTCollection(address: string): Promise<boolean> {
  try {
-   const client = getStoryClient();
-   // Try to read from the contract to verify it exists
-   const totalSupply = await client.nftClient.totalSupply({
-     spgNftContract: address as `0x${string}`,
-   });
-   return totalSupply !== undefined;
+   // Basic validation: check if it looks like an Ethereum address
+   if (!address || !address.startsWith('0x') || address.length !== 42) {
+     return false;
+   }
+   // For now, just validate the format. 
+   // Could add more sophisticated checks if needed in the future.
+   return true;
  } catch (error) {
    return false;
  }

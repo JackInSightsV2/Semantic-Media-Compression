@@ -38,6 +38,8 @@ export default function QuickScanPage() {
   const [currentStep, setCurrentStep] = useState<ScanStep>('upload');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [detectedFileType, setDetectedFileType] = useState<UploadedFileType>('unknown');
+  const [urlToScan, setUrlToScan] = useState('');
+  const [scanSourceLabel, setScanSourceLabel] = useState<string>('');
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -63,6 +65,7 @@ export default function QuickScanPage() {
     const file = event.target.files?.[0];
     if (file) {
       setUploadedFile(file);
+      setScanSourceLabel(file.name);
       
       // Detect file type based on filename
       const filename = file.name.toLowerCase();
@@ -84,11 +87,40 @@ export default function QuickScanPage() {
     }
   };
 
+  // Handle URL scan (mock)
+  const handleUrlScan = () => {
+    const trimmed = urlToScan.trim().replace(/^@+/, '');
+    if (!trimmed) return;
+    try {
+      // Basic validation
+      // eslint-disable-next-line no-new
+      new URL(trimmed);
+    } catch {
+      return;
+    }
+    setUploadedFile(null);
+    setScanSourceLabel(trimmed);
+    // Simple platform-based mock detection
+    const lower = trimmed.toLowerCase();
+    if (lower === 'https://www.youtube.com/watch?v=gzjzvosvdjm') {
+      // Hard-map this specific URL to situational awareness mock
+      setDetectedFileType('situational_awareness');
+    } else if (lower.includes('kpop')) {
+      setDetectedFileType('mykpopsecret');
+    } else {
+      setDetectedFileType('situational_awareness');
+    }
+    setCurrentStep('scanning');
+    setTimeout(() => setCurrentStep('scanned'), 10000);
+  };
+
   // Handle reset for another scan
   const handleReset = () => {
     setCurrentStep('upload');
     setUploadedFile(null);
     setDetectedFileType('unknown');
+    setUrlToScan('');
+    setScanSourceLabel('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -104,6 +136,18 @@ export default function QuickScanPage() {
   };
   
   const semanticData = getSemanticData();
+  const isUrlSource = !uploadedFile && !!scanSourceLabel && scanSourceLabel.startsWith('http');
+  const normalizedUrl = (scanSourceLabel || '').replace(/^@+/, '');
+  const isNotebookLMYouTube = isUrlSource && normalizedUrl.toLowerCase() === 'https://www.youtube.com/watch?v=gzjzvosvdjm';
+  const urlPlatform = isUrlSource
+    ? (normalizedUrl.includes('youtube.com') || normalizedUrl.includes('youtu.be'))
+      ? 'YouTube'
+      : normalizedUrl.includes('tiktok.com')
+      ? 'TikTok'
+      : normalizedUrl.includes('instagram.com')
+      ? 'Instagram'
+      : 'Web'
+    : '';
 
   return (
     <div className="h-screen bg-gray-50 overflow-hidden flex flex-col">
@@ -410,29 +454,74 @@ export default function QuickScanPage() {
               </div>
 
               {currentStep === 'upload' ? (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-400 transition-colors relative z-10">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileUpload}
-                    accept=".txt"
-                    className="hidden"
-                  />
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                      <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 md:p-8 lg:p-10 hover:border-blue-400 transition-colors relative z-10">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                    {/* File Upload Card */}
+                    <div className="rounded-lg border border-gray-200 p-6 text-center bg-white/60">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept=".txt"
+                        className="hidden"
+                      />
+                      <div className="flex flex-col items-center">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Content to Scan</h3>
+                        <p className="text-gray-600 mb-6">Select a text file to scan for protected IP</p>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+                        >
+                          Choose File
+                        </button>
+                        <p className="text-sm text-gray-500 mt-4">Supported format: TXT</p>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Content to Scan</h3>
-                    <p className="text-gray-600 mb-6">Select a text file to scan for protected IP</p>
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
-                    >
-                      Choose File
-                    </button>
-                    <p className="text-sm text-gray-500 mt-4">Supported format: TXT</p>
+
+                    {/* URL Scan Card */}
+                    <div className="rounded-lg border border-gray-200 p-6 bg-white/60">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                          <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900 leading-none">Scan from URL</h3>
+                          <p className="text-gray-600 text-sm mt-1">Paste a link (YouTube, TikTok, Instagram)</p>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <input
+                          type="url"
+                          value={urlToScan}
+                          onChange={(e) => {
+                            const next = e.target.value;
+                            if (next.trim() === '$$yt') {
+                              setUrlToScan('https://www.youtube.com/watch?v=GzjZVoSvdJM');
+                            } else {
+                              setUrlToScan(next);
+                            }
+                          }}
+                          placeholder="https://youtu.be/... or https://www.tiktok.com/... or https://www.instagram.com/p/..."
+                          className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white"
+                        />
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={handleUrlScan}
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                            disabled={!urlToScan.trim()}
+                          >
+                            Scan URL
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : currentStep === 'scanning' ? (
@@ -444,7 +533,7 @@ export default function QuickScanPage() {
                       </svg>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Scanning Content...</h3>
-                    <p className="text-gray-600 mb-1">Generating a semantic version of the document for comparison</p>
+                    <p className="text-gray-600 mb-1">Generating a semantic version of the media for comparison</p>
                     <p className="text-sm text-gray-500">This may take a few moments...</p>
                   </div>
                 </div>
@@ -458,17 +547,17 @@ export default function QuickScanPage() {
                     </div>
 
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{uploadedFile?.name || 'situational_awareness_semantic.txt'}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{scanSourceLabel || uploadedFile?.name || 'situational_awareness_semantic.txt'}</h3>
                       <p className="text-gray-600 mb-4">Scan completed successfully</p>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <span className="text-gray-700 font-medium text-sm">File Type:</span>
-                          <p className="text-gray-900">Text Document</p>
+                          <p className="text-gray-900">{uploadedFile ? 'Text Document' : 'URL'}</p>
                         </div>
                         <div>
                           <span className="text-gray-700 font-medium text-sm">File Size:</span>
-                          <p className="text-gray-900">{uploadedFile ? Math.round(uploadedFile.size / 1024) + ' KB' : '52 KB'}</p>
+                          <p className="text-gray-900">{uploadedFile ? Math.round(uploadedFile.size / 1024) + ' KB' : '-'}</p>
                         </div>
                         <div>
                           <span className="text-gray-700 font-medium text-sm">Scan Date:</span>
@@ -478,6 +567,12 @@ export default function QuickScanPage() {
                           <span className="text-gray-700 font-medium text-sm">Status:</span>
                           <p className="text-gray-900">Complete</p>
                         </div>
+                        {isUrlSource && (
+                          <div className="col-span-2">
+                            <span className="text-gray-700 font-medium text-sm">Source URL:</span>
+                            <p className="text-gray-900 break-all">{normalizedUrl}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -540,6 +635,24 @@ export default function QuickScanPage() {
                         </>
                       ) : (
                         <>
+                          {isUrlSource && (
+                            <>
+                              <div className="flex justify-between items-start">
+                                <span className="text-gray-700 font-medium">Source URL</span>
+                                <span className="text-gray-600 text-right break-all text-sm">{normalizedUrl}</span>
+                              </div>
+                              <div className="flex justify-between items-start">
+                                <span className="text-gray-700 font-medium">Platform</span>
+                                <span className="text-gray-600 text-right text-sm">{urlPlatform}</span>
+                              </div>
+                              {isNotebookLMYouTube && (
+                                <div className="flex justify-between items-start">
+                                  <span className="text-gray-700 font-medium">Description</span>
+                                  <span className="text-gray-600 text-right text-sm">NotebookLM podcast of Situational Awareness PDF</span>
+                                </div>
+                              )}
+                            </>
+                          )}
                           <div className="flex justify-between items-start">
                             <span className="text-gray-700 font-medium">Format</span>
                             <span className="text-gray-600 text-right">{(semanticData as any).document_fingerprint?.target_txt?.format || 'linear_prose'}</span>

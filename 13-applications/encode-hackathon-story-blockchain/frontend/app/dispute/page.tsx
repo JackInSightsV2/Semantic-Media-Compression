@@ -61,6 +61,7 @@ export default function DisputePage() {
       case 'situational-awareness':
         return [
           { value: 'copycat-situational', label: 'AI Race Analysis - Strategic Policy', similarity: '87%', isHigh: true },
+          { value: 'copycat-notebooklm-youtube', label: 'NotebookLM Podcast - Situational Awareness (YouTube)', similarity: '86%', isHigh: true },
           { value: 'copycat-kpop', label: 'Idol Dreams - K-pop Romance', similarity: '12%', isHigh: false },
           { value: 'copycat-entrepreneurship', label: 'Startup Success Guide - Business Course', similarity: '18%', isHigh: false },
         ];

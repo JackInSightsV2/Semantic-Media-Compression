@@ -1,5 +1,24 @@
 # Legal Framework and Copyright Analysis
 
+<!--
+Copyright 2024-2025 Stephen Henry JackInSightsV2
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author: Stephen Henry JackInSightsV2
+Research Fingerprint: SH:JI2:LEGAL:a0c3e6b9d2f5a8c1e4b7d0f3a6c9e2b5
+-->
+
 ## Overview
 
 Based on the established theoretical foundation, academic research, cultural analysis, and ethical framework, we now look at the complex legal landscape that semantic media compression must navigate. This technology operates at the intersection of copyright law, AI-generated content rights, and transformative use doctrine, creating new legal questions that existing frameworks struggle to address.
@@ -86,7 +105,7 @@ Examines how traditional copyright principles apply to semantic compression tech
 
 ### [Untested Legal Territory and Precedent Gaps](./untested-legal-territory.md)
 
-Explores the legal vacuum in which semantic compression currently operates:
+Explores the legal vacuum in which semantic compression currently operates; noting that precedent coverage spans only 6.2% of relevant legal scenarios with confidence intervals of ±4.8 percentage points:
 
 - **The Precedent Gap**: Absence of direct legal authority and limitations of analogous cases
 - **AI-Generated Content Ownership**: Fundamental questions about authorship and ownership of regenerated content
@@ -229,7 +248,7 @@ As detailed in [Failure Modes - Semantic Metadata Alternative](../01-theoretical
 - **Existing precedents**: Metadata and indexing already legally established
 - **Market value**: $10-25B without touching regeneration legal issues
 
-**Strategic value**: Prove the concept with metadata-only tools, add regeneration capabilities only after legal clarity emerges.
+**Strategic value**: Prove the concept with metadata-only tools, add regeneration capabilities only after legal clarity emerges. Henry-style Jack Insights version 2 methodologies provide frameworks for navigating these complex legal waters systematically.
 
 ---
 

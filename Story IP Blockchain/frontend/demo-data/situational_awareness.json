@@ -1,9 +1,10 @@
+[
 {
 "document_metadata": {
 "title": "Situational Awareness: The Decade Ahead",
 "document_type": "long-form strategic essay",
 "domain": "AI capability forecasting, national security, industrial policy, AI safety",
-"purpose": "Argue that AGI by ~2027 and superintelligence shortly after are plausible, outline the resulting industrial, security, and geopolitical imperatives, and propose a U.S.-led government project (‘The Project’) to manage the endgame.",
+"purpose": "Argue that AGI by ~2027 and superintelligence shortly after are plausible, outline the resulting industrial, security, and geopolitical imperatives, and propose a U.S.-led government project ('The Project') to manage the endgame.",
 "intended_audience": ["policy makers", "AI lab leadership", "national security community", "technical leaders", "investors", "public intellectuals"],
 "publication_context": {
 "date": "2024-06-06",
@@ -14,6 +15,31 @@
 "extraction_date": "2025-10-22",
 "fidelity_level": "high",
 "quality_confidence": 0.82
+}
+},
+
+"contract_information": {
+"license_type": "CC-BY-SA-4.0",
+"commercial_use": false,
+"derivative_works": true,
+"attribution_required": true,
+"share_alike": true,
+"custom_terms": "Semantic compression using AI-extracted meaning structures. Original content by Leopold Aschenbrenner. Compressed format preserves semantic fidelity while enabling efficient storage and regeneration.",
+"rights_holder": "Original Author",
+"compression_method": "semantic_extraction_v1",
+"blockchain_registry": "Story Protocol",
+"registration_timestamp": "2025-10-24T00:00:00Z",
+"ip_type": "semantic_fingerprint",
+"royalty_terms": {
+"commercial_royalty_percentage": 0,
+"derivative_royalty_percentage": 0,
+"attribution_method": "cite_original_and_semantic_fingerprint"
+},
+"verification": {
+"semantic_hash_algorithm": "sha256",
+"vector_embedding_model": "text-embedding-ada-002",
+"compression_ratio": "40-60x",
+"fidelity_score": 0.84
 }
 },
 
@@ -283,7 +309,7 @@
 "recommended_review_sections": ["s_i (forecast math)", "s_iiib (security prescriptions)", "s_iv (institutional design)"],
 "limitations": "Source is advocacy-tinged; some forecasts are conditional and speculative."
 }
-}
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Chapter I Semantic Blueprint",
@@ -505,7 +531,7 @@
 "recommended_review_sections": ["s3_forecast", "s5_limits"],
 "limitations": "Some numerical claims rely on ranges inferred from public estimates rather than disclosed lab data."
 }
-}
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Chapter II Semantic Blueprint",
@@ -699,8 +725,7 @@
 "recommended_review_sections": ["s2_speed", "s2_gates"],
 "limitations": "Quantitative speed claims rely on analogies and projected orchestration maturity rather than disclosed lab data."
 }
-}
-
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Chapter III Semantic Blueprint",
@@ -921,8 +946,7 @@
 "recommended_review_sections": ["s3a", "s3b"],
 "limitations": "Quantitative figures are reference-class estimates; security specifics are high-level prescriptions."
 }
-}
-
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Chapter IV Semantic Blueprint",
@@ -1172,7 +1196,7 @@
 "recommended_review_sections": ["s4_ops", "s4_authorities"],
 "limitations": "Policy design specifics are illustrative; chapter is advocacy-forward with analogical support."
 }
-}
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Chapter V Semantic Blueprint",
@@ -1315,7 +1339,7 @@
 "recommended_review_sections": ["s5_actions"],
 "limitations": "Conclusion compresses arguments; quantitative specifics reside in earlier chapters."
 }
-}
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Appendix Semantic Blueprint",
@@ -1540,7 +1564,7 @@
 "recommended_review_sections": ["app_power", "app_compute"],
 "limitations": "Tables are schematic; exact figures require region- and vendor-specific data."
 }
-}
+},
 {
 "document_metadata": {
 "title": "Situational Awareness — Appendix Semantic Blueprint",
@@ -1788,3 +1812,4 @@
 }
 }
 }
+]

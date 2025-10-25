@@ -1,12 +1,33 @@
+/**
+ * Copyright 2024-2025 Stephen Henry JackInSightsV2
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author Stephen Henry JackInSightsV2
+ * @fingerprint SH:JI2:a5c8e2b9f6d3a7c0e4f7b2d5a8c1e4f7
+ */
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
-// Import comparison data
+// Import comparison data and semantic data
 import comparisonData from '@/demo-data/semantic_comparison_report.json';
+import mykpopsecret from '@/demo-data/mykpopsecret.json';
 
 type ScanStep = 'upload' | 'scanning' | 'scanned';
+type UploadedFileType = 'situational_awareness' | 'mykpopsecret' | 'unknown';
 
 export default function QuickScanPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +37,7 @@ export default function QuickScanPage() {
   // Scanning flow state
   const [currentStep, setCurrentStep] = useState<ScanStep>('upload');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [detectedFileType, setDetectedFileType] = useState<UploadedFileType>('unknown');
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -41,6 +63,18 @@ export default function QuickScanPage() {
     const file = event.target.files?.[0];
     if (file) {
       setUploadedFile(file);
+      
+      // Detect file type based on filename
+      const filename = file.name.toLowerCase();
+      if (filename.includes('mykpopsecret')) {
+        setDetectedFileType('mykpopsecret');
+      } else if (filename.includes('situational') || filename.includes('awareness')) {
+        setDetectedFileType('situational_awareness');
+      } else {
+        // Default to situational_awareness for unknown files
+        setDetectedFileType('situational_awareness');
+      }
+      
       setCurrentStep('scanning');
       
       // Mock scanning text file (10 seconds)
@@ -54,10 +88,22 @@ export default function QuickScanPage() {
   const handleReset = () => {
     setCurrentStep('upload');
     setUploadedFile(null);
+    setDetectedFileType('unknown');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
+  
+  // Get appropriate semantic data based on detected file type
+  const getSemanticData = () => {
+    if (detectedFileType === 'mykpopsecret') {
+      return Array.isArray(mykpopsecret) ? mykpopsecret[0] : mykpopsecret;
+    }
+    // Default to situational_awareness comparison data
+    return comparisonData;
+  };
+  
+  const semanticData = getSemanticData();
 
   return (
     <div className="h-screen bg-gray-50 overflow-hidden flex flex-col">
@@ -469,26 +515,53 @@ export default function QuickScanPage() {
                     </div>
 
                     <div className="space-y-3 relative z-10">
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Format</span>
-                        <span className="text-gray-600 text-right">{comparisonData.document_fingerprint.target_txt.format}</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Size</span>
-                        <span className="text-gray-600 text-right">{Math.round(comparisonData.document_fingerprint.target_txt.total_size_bytes / 1024)} KB</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Chapters</span>
-                        <span className="text-gray-600 text-right">{comparisonData.document_fingerprint.target_txt.chapters}</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Subsections</span>
-                        <span className="text-gray-600 text-right">{comparisonData.document_fingerprint.target_txt.subsections}</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Narrative Style</span>
-                        <span className="text-gray-600 text-right text-sm">{comparisonData.document_fingerprint.target_txt.narrative_style}</span>
-                      </div>
+                      {detectedFileType === 'mykpopsecret' ? (
+                        <>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Document Type</span>
+                            <span className="text-gray-600 text-right text-sm">{(semanticData as any).document_metadata?.document_type || 'Fiction Narrative'}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Size</span>
+                            <span className="text-gray-600 text-right">{uploadedFile ? Math.round(uploadedFile.size / 1024) : '52'} KB</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Domain</span>
+                            <span className="text-gray-600 text-right text-sm">{(semanticData as any).document_metadata?.domain?.split(', ')[0] || 'Fiction'}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Episodes</span>
+                            <span className="text-gray-600 text-right">10</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Narrative Style</span>
+                            <span className="text-gray-600 text-right text-sm">dual-POV romance drama</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Format</span>
+                            <span className="text-gray-600 text-right">{(semanticData as any).document_fingerprint?.target_txt?.format || 'linear_prose'}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Size</span>
+                            <span className="text-gray-600 text-right">{Math.round(((semanticData as any).document_fingerprint?.target_txt?.total_size_bytes || 46893) / 1024)} KB</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Chapters</span>
+                            <span className="text-gray-600 text-right">{(semanticData as any).document_fingerprint?.target_txt?.chapters || 7}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Subsections</span>
+                            <span className="text-gray-600 text-right">{(semanticData as any).document_fingerprint?.target_txt?.subsections || 89}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Narrative Style</span>
+                            <span className="text-gray-600 text-right text-sm">{(semanticData as any).document_fingerprint?.target_txt?.narrative_style || 'technical_directive'}</span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -503,26 +576,53 @@ export default function QuickScanPage() {
                     </div>
 
                     <div className="space-y-3 relative z-10">
-                      <div>
-                        <div className="text-gray-700 font-medium mb-2">Core Concepts</div>
-                        <div className="flex flex-wrap gap-2">
-                          {comparisonData.content_coverage.preserved_elements.core_concepts.examples.slice(0, 4).map((concept: string, idx: number) => (
-                            <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">{concept}</span>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Total Concepts</span>
-                        <span className="text-gray-600 text-right">{comparisonData.content_coverage.preserved_elements.core_concepts.count}</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Key Arguments</span>
-                        <span className="text-gray-600 text-right">{comparisonData.content_coverage.preserved_elements.key_arguments.count}</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-gray-700 font-medium">Quantitative Data</span>
-                        <span className="text-gray-600 text-right">{comparisonData.content_coverage.preserved_elements.quantitative_data.numbers_preserved} numbers</span>
-                      </div>
+                      {detectedFileType === 'mykpopsecret' ? (
+                        <>
+                          <div>
+                            <div className="text-gray-700 font-medium mb-2">Key Themes</div>
+                            <div className="flex flex-wrap gap-2">
+                              {((semanticData as any).global_context?.key_themes || []).slice(0, 4).map((theme: string, idx: number) => (
+                                <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">{theme}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Total Themes</span>
+                            <span className="text-gray-600 text-right">{((semanticData as any).global_context?.key_themes || []).length}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Primary Objectives</span>
+                            <span className="text-gray-600 text-right">{((semanticData as any).global_context?.primary_objectives || []).length}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Narrative Arc</span>
+                            <span className="text-gray-600 text-right text-sm">{(semanticData as any).global_context?.narrative_arc?.structure || 'complex'}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div>
+                            <div className="text-gray-700 font-medium mb-2">Core Concepts</div>
+                            <div className="flex flex-wrap gap-2">
+                              {((semanticData as any).content_coverage?.preserved_elements?.core_concepts?.examples || []).slice(0, 4).map((concept: string, idx: number) => (
+                                <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">{concept}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Total Concepts</span>
+                            <span className="text-gray-600 text-right">{(semanticData as any).content_coverage?.preserved_elements?.core_concepts?.count || 0}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Key Arguments</span>
+                            <span className="text-gray-600 text-right">{(semanticData as any).content_coverage?.preserved_elements?.key_arguments?.count || 0}</span>
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-700 font-medium">Quantitative Data</span>
+                            <span className="text-gray-600 text-right">{(semanticData as any).content_coverage?.preserved_elements?.quantitative_data?.numbers_preserved || 0} numbers</span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -540,25 +640,39 @@ export default function QuickScanPage() {
                       <div>
                         <div className="text-gray-700 font-medium mb-2">Semantic Hash</div>
                         <div className="bg-gray-50 rounded p-3 font-mono text-xs break-all text-gray-700">
-                          0x24dd57dca315180000000000000000000000000000000000
+                          {detectedFileType === 'mykpopsecret' 
+                            ? '0x7f3c9a8e2b1d5647fa9c0e8b3d7a2c5f9e1b4d7a3c6f8e1b'
+                            : '0x24dd57dca315180000000000000000000000000000000000'
+                          }
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-blue-50 rounded-lg p-4 text-center">
-                          <div className="text-3xl font-bold text-blue-600 mb-1">96%</div>
+                          <div className="text-3xl font-bold text-blue-600 mb-1">
+                            {detectedFileType === 'mykpopsecret' ? '94%' : '96%'}
+                          </div>
                           <div className="text-sm text-gray-600">Uniqueness Score</div>
                         </div>
                         <div className="bg-green-50 rounded-lg p-4 text-center">
-                          <div className="text-xl font-bold text-green-600 mb-1">Very High</div>
+                          <div className="text-xl font-bold text-green-600 mb-1">
+                            {detectedFileType === 'mykpopsecret' ? 'Very High' : 'Very High'}
+                          </div>
                           <div className="text-sm text-gray-600">Protection Level</div>
                         </div>
                       </div>
 
                       <div className="bg-purple-50 rounded-lg p-4 text-center">
-                        <div className="text-xl font-bold text-purple-600 mb-1">High</div>
+                        <div className="text-xl font-bold text-purple-600 mb-1">
+                          {detectedFileType === 'mykpopsecret' ? 'Very High' : 'High'}
+                        </div>
                         <div className="text-sm text-gray-600">Complexity Score</div>
-                        <div className="text-xs text-gray-500 mt-1">(strategic policy document)</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {detectedFileType === 'mykpopsecret' 
+                            ? '(dual-POV narrative fiction)'
+                            : '(strategic policy document)'
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -574,62 +688,125 @@ export default function QuickScanPage() {
                     </div>
 
                     <div className="space-y-3 relative z-10">
-                      {/* Match 1: Situational Awareness */}
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900 text-sm">Situational Awareness</span>
-                          <span className="text-lg font-bold text-red-600">{Math.round(comparisonData.semantic_similarity_metrics.overall_similarity * 100)}%</span>
-                        </div>
-                        <div className="text-xs text-gray-600 mb-2">Strategic Policy Document</div>
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
-                              HIGH MATCH
-                            </span>
-                            <span className="text-xs text-red-700">Potential IP Violation</span>
+                      {detectedFileType === 'mykpopsecret' ? (
+                        <>
+                          {/* Match 1: My K-pop Secret (HIGH MATCH) */}
+                          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-gray-900 text-sm">My K-pop Secret</span>
+                              <span className="text-lg font-bold text-red-600">98%</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">K-pop Romance Drama Fiction</div>
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
+                                  HIGH MATCH
+                                </span>
+                                <span className="text-xs text-red-700">Potential IP Violation</span>
+                              </div>
+                              <Link href="/dispute" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2">
+                                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                  </svg>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-semibold text-gray-900 text-xs whitespace-nowrap">File Dispute</div>
+                                </div>
+                              </Link>
+                            </div>
                           </div>
-                          <Link href="/dispute" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2">
-                            <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                              </svg>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-gray-900 text-xs whitespace-nowrap">File Dispute</div>
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
 
-                      {/* Match 2: My K-pop Secret */}
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900 text-sm">My K-pop Secret</span>
-                          <span className="text-lg font-bold text-blue-600">12%</span>
-                        </div>
-                        <div className="text-xs text-gray-600 mb-2">Mini-Novel Fiction</div>
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                            NO MATCH
-                          </span>
-                          <span className="text-xs text-blue-700">Safe</span>
-                        </div>
-                      </div>
+                          {/* Match 2: Situational Awareness */}
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-gray-900 text-sm">Situational Awareness</span>
+                              <span className="text-lg font-bold text-blue-600">8%</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">Strategic Policy Document</div>
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                NO MATCH
+                              </span>
+                              <span className="text-xs text-blue-700">Safe</span>
+                            </div>
+                          </div>
 
-                      {/* Match 3: Entrepreneurship Guide */}
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900 text-sm">Creative Entrepreneurship</span>
-                          <span className="text-lg font-bold text-blue-600">18%</span>
-                        </div>
-                        <div className="text-xs text-gray-600 mb-2">Business Course</div>
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                            NO MATCH
-                          </span>
-                          <span className="text-xs text-blue-700">Safe</span>
-                        </div>
-                      </div>
+                          {/* Match 3: Entrepreneurship Guide */}
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-gray-900 text-sm">Creative Entrepreneurship</span>
+                              <span className="text-lg font-bold text-blue-600">15%</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">Business Course</div>
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                NO MATCH
+                              </span>
+                              <span className="text-xs text-blue-700">Safe</span>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {/* Match 1: Situational Awareness (HIGH MATCH) */}
+                          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-gray-900 text-sm">Situational Awareness</span>
+                              <span className="text-lg font-bold text-red-600">{Math.round(((semanticData as any).semantic_similarity_metrics?.overall_similarity || 0.87) * 100)}%</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">Strategic Policy Document</div>
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
+                                  HIGH MATCH
+                                </span>
+                                <span className="text-xs text-red-700">Potential IP Violation</span>
+                              </div>
+                              <Link href="/dispute" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2">
+                                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                  </svg>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-semibold text-gray-900 text-xs whitespace-nowrap">File Dispute</div>
+                                </div>
+                              </Link>
+                            </div>
+                          </div>
+
+                          {/* Match 2: My K-pop Secret */}
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-gray-900 text-sm">My K-pop Secret</span>
+                              <span className="text-lg font-bold text-blue-600">12%</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">K-pop Romance Drama Fiction</div>
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                NO MATCH
+                              </span>
+                              <span className="text-xs text-blue-700">Safe</span>
+                            </div>
+                          </div>
+
+                          {/* Match 3: Entrepreneurship Guide */}
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-gray-900 text-sm">Creative Entrepreneurship</span>
+                              <span className="text-lg font-bold text-blue-600">18%</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">Business Course</div>
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                NO MATCH
+                              </span>
+                              <span className="text-xs text-blue-700">Safe</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

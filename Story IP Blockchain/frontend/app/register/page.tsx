@@ -1,3 +1,22 @@
+/**
+ * Copyright 2024-2025 Stephen Henry JackInSightsV2
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author Stephen Henry JackInSightsV2
+ * @fingerprint SH:JI2:f2b8e5a3c9d6f1e4a7c0d3e6b9f2a5c8
+ */
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -9,6 +28,7 @@ import { useRegisteredContent } from '@/context/RegisteredContentContext';
 
 // Import demo data
 import situationalAwareness from '@/demo-data/situational_awareness.json';
+import mykpopsecret from '@/demo-data/mykpopsecret.json';
 
 type RegistrationStep = 'upload' | 'analyze' | 'build' | 'preview' | 'approved' | 'registered';
 
@@ -23,21 +43,41 @@ export default function RegisterPage() {
   const [buildingFingerprint, setBuildingFingerprint] = useState(false);
   const [registering, setRegistering] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [selectedMockData, setSelectedMockData] = useState<'situational_awareness' | 'mykpopsecret'>('situational_awareness');
   
   const { registerContent } = useRegisteredContent();
   
-  const currentData = situationalAwareness;
+  // Get the appropriate mock data based on selected file
+  const getFullMockData = () => {
+    return selectedMockData === 'mykpopsecret' ? mykpopsecret : situationalAwareness;
+  };
+  
+  const getMockDataForDisplay = () => {
+    if (selectedMockData === 'mykpopsecret') {
+      return Array.isArray(mykpopsecret) ? mykpopsecret[0] : mykpopsecret;
+    }
+    return Array.isArray(situationalAwareness) ? situationalAwareness[0] : situationalAwareness;
+  };
+  
+  const fullData = getFullMockData(); // For uploading to IPFS
+  const currentData = getMockDataForDisplay(); // For display in UI
 
   // Restore state from sessionStorage on mount (only if coming from view-json)
   useEffect(() => {
     const savedStep = sessionStorage.getItem('registerStep');
+    const savedMockData = sessionStorage.getItem('selectedMockData') as 'situational_awareness' | 'mykpopsecret' | null;
     const fromViewJson = sessionStorage.getItem('fromViewJson');
     
     if (savedStep && fromViewJson === 'true') {
       setCurrentStep(savedStep as RegistrationStep);
+      // Restore the selected mock data if available
+      if (savedMockData) {
+        setSelectedMockData(savedMockData);
+      }
       // If we're returning to a step after upload, create a mock file
       if (savedStep !== 'upload') {
-        const mockFile = new File([''], 'situational_awareness.pdf', { type: 'application/pdf' });
+        const filename = savedMockData === 'mykpopsecret' ? 'mykpopsecret.pdf' : 'situational_awareness.pdf';
+        const mockFile = new File([''], filename, { type: 'application/pdf' });
         setUploadedFile(mockFile);
       }
       // Clear the flag after restoring
@@ -45,12 +85,13 @@ export default function RegisterPage() {
     }
   }, []);
 
-  // Save state to sessionStorage whenever currentStep changes
+  // Save state to sessionStorage whenever currentStep or selectedMockData changes
   useEffect(() => {
     if (currentStep !== 'upload') {
       sessionStorage.setItem('registerStep', currentStep);
+      sessionStorage.setItem('selectedMockData', selectedMockData);
     }
-  }, [currentStep]);
+  }, [currentStep, selectedMockData]);
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -77,6 +118,19 @@ export default function RegisterPage() {
     if (file) {
       // Clear any saved state when starting new upload
       sessionStorage.removeItem('registerStep');
+      sessionStorage.removeItem('selectedMockData');
+      
+      // Detect which mock data to use based on filename
+      const filename = file.name.toLowerCase();
+      if (filename.includes('mykpopsecret')) {
+        setSelectedMockData('mykpopsecret');
+      } else if (filename.includes('situational') || filename.includes('awareness')) {
+        setSelectedMockData('situational_awareness');
+      } else {
+        // Default to situational_awareness for unknown files
+        setSelectedMockData('situational_awareness');
+      }
+      
       setUploadedFile(file);
       setCurrentStep('analyze');
       
@@ -112,8 +166,8 @@ export default function RegisterPage() {
       try {
         console.log('📤 Uploading semantic JSON to IPFS...');
         
-        // 1. Upload semantic JSON to IPFS
-        const ipfsHash = await uploadToIPFS(currentData);
+        // 1. Upload semantic JSON to IPFS (upload full dataset, not just first element)
+        const ipfsHash = await uploadToIPFS(fullData);
         console.log('✅ Uploaded to IPFS:', ipfsHash);
         
         console.log('⛓️  Registering on Story Protocol...');
@@ -152,10 +206,12 @@ export default function RegisterPage() {
       }
       
       // Register in context so it appears on dashboard
-      registerContent('situational-awareness');
+      const contentId = selectedMockData === 'mykpopsecret' ? 'mykpopsecret' : 'situational-awareness';
+      registerContent(contentId);
       setCurrentStep('registered');
       // Clear saved state when registration is complete
       sessionStorage.removeItem('registerStep');
+      sessionStorage.removeItem('selectedMockData');
     } finally {
       setRegistering(false);
     }
@@ -901,12 +957,12 @@ export default function RegisterPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-sm font-semibold text-gray-700 mb-2">IP Asset ID</div>
                   <div className="font-mono text-xs text-gray-900 break-all mb-2">{result.ipAssetId}</div>
-                  {result.source === 'blockchain' && (
+                  {result.source === 'blockchain' && result.tokenId && (
                     <a
-                      href={getIPAssetUrl(result.ipAssetId)}
+                      href={getIPAssetUrl(result.tokenId)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center text-blue-600 hover:text-blue-700 text-xs font-medium"

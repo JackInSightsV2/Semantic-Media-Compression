@@ -1,3 +1,22 @@
+/**
+ * Copyright 2024-2025 Stephen Henry JackInSightsV2
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author Stephen Henry JackInSightsV2
+ * @fingerprint SH:JI2:d4a8f9c2b6e3d7f1a5c8e2b9d6f3a7c4
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,6 +28,8 @@ export default function Dashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [timeRange, setTimeRange] = useState('7');
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
+  const [selectedDispute, setSelectedDispute] = useState<any>(null);
   const { isContentRegistered } = useRegisteredContent();
   
   // Calculate total registered content count
@@ -31,6 +52,59 @@ export default function Dashboard() {
     { name: 'Medium Match (50-85%)', value: 5, color: '#F59E0B' },
     { name: 'Low Match (<50%)', value: 2, color: '#3B82F6' },
   ];
+
+  // Dispute data
+  const disputes = {
+    'DR-2025-0158': {
+      caseId: 'DR-2025-0158',
+      title: 'My K-pop Secret',
+      similarity: '98%',
+      priority: 'High',
+      disputeId: '0xdisp7f3c9a8e2b1d5647fa9c0e8b3d7a2c5f',
+      tokenId: '847291',
+      evidenceIPFS: 'Qmevidence8k9p0p1d2r3m4s5e6c7r8e9t0a1b2c3d4e5',
+      txHash: '0x9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0',
+      contractInfo: {
+        licenseType: 'All Rights Reserved',
+        commercialUse: false,
+        derivativeWorks: false,
+        attributionRequired: true,
+        blockchainRegistry: 'Story Protocol',
+        compressionMethod: 'semantic_extraction_v1',
+        ipType: 'semantic_fingerprint',
+        registrationTimestamp: '2025-10-25T00:00:00Z',
+        rightsHolder: 'Original Author',
+        customTerms: 'Semantic compression using AI-extracted narrative structures and thematic analysis. Original creative work. Compressed format preserves semantic fidelity while enabling efficient storage and regeneration.'
+      }
+    },
+    'DR-2025-0155': {
+      caseId: 'DR-2025-0155',
+      title: 'Creative Entrepreneurship Guide',
+      similarity: '85%',
+      priority: 'Medium',
+      disputeId: '0xdisp4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d',
+      tokenId: '723456',
+      evidenceIPFS: 'Qmevidencee1n2t3r4e5p6r7e8n9e0u1r2s3h4i5p6g7u8i9',
+      txHash: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f',
+      contractInfo: {
+        licenseType: 'All Rights Reserved',
+        commercialUse: false,
+        derivativeWorks: false,
+        attributionRequired: true,
+        blockchainRegistry: 'Story Protocol',
+        compressionMethod: 'semantic_extraction_v1',
+        ipType: 'semantic_fingerprint',
+        registrationTimestamp: '2025-10-25T00:00:00Z',
+        rightsHolder: 'Original Author',
+        customTerms: 'Semantic compression using AI-extracted narrative structures and thematic analysis. Original creative work. Compressed format preserves semantic fidelity while enabling efficient storage and regeneration.'
+      }
+    }
+  };
+
+  const handleViewEvidence = (caseId: string) => {
+    setSelectedDispute(disputes[caseId as keyof typeof disputes]);
+    setShowDisputeModal(true);
+  };
   
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -409,7 +483,7 @@ export default function Dashboard() {
               <div className="text-sm text-gray-600 mb-3 relative z-10">Active Disputes</div>
               
               {/* File Dispute Card */}
-              <button className="relative 2xl:absolute bottom-0 2xl:bottom-3 right-0 2xl:right-3 bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2 z-10 w-full 2xl:w-auto">
+              <Link href="/dispute" className="relative 2xl:absolute bottom-0 2xl:bottom-3 right-0 2xl:right-3 bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2 z-10 w-full 2xl:w-auto">
                 <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
@@ -418,7 +492,7 @@ export default function Dashboard() {
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-gray-900 text-xs">File Dispute</div>
                 </div>
-              </button>
+              </Link>
             </div>
             
             {/* Total Recovered */}
@@ -788,10 +862,10 @@ export default function Dashboard() {
             <div className="bg-white rounded-lg border border-gray-200 p-6 2xl:col-span-2">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold text-gray-900">Active Disputes</h2>
-                <button className="bg-blue-600 text-white px-2 py-1 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1 text-xs">
+                <Link href="/dispute" className="bg-blue-600 text-white px-2 py-1 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1 text-xs">
                   <span className="text-sm font-light">+</span>
                   <span className="font-medium">New</span>
-                </button>
+                </Link>
               </div>
               
               <div className="space-y-3">
@@ -810,9 +884,12 @@ export default function Dashboard() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-gray-900 text-sm mb-1">Case #DR-2025-0158</h3>
                       <p className="text-xs text-gray-700 mb-2">My K-pop Secret</p>
-                      <div className="text-xl font-bold text-red-600 mb-3">92%</div>
+                      <div className="text-xl font-bold text-red-600 mb-3">98%</div>
                       <div className="flex flex-wrap gap-2">
-                        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium">
+                        <button 
+                          onClick={() => handleViewEvidence('DR-2025-0158')}
+                          className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
+                        >
                           View Evidence
                         </button>
                         <button className="bg-white text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors border border-gray-300 text-xs font-medium">
@@ -840,10 +917,13 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-gray-900 text-sm mb-1">Case #DR-2025-0155</h3>
-                      <p className="text-xs text-gray-700 mb-2">Entrepreneurship Guide</p>
-                      <div className="text-xl font-bold text-yellow-600 mb-3">81%</div>
+                      <p className="text-xs text-gray-700 mb-2">Creative Entrepreneurship Guide</p>
+                      <div className="text-xl font-bold text-yellow-600 mb-3">85%</div>
                       <div className="flex flex-wrap gap-2">
-                        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium">
+                        <button 
+                          onClick={() => handleViewEvidence('DR-2025-0155')}
+                          className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
+                        >
                           View Evidence
                         </button>
                         <button className="bg-white text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors border border-gray-300 text-xs font-medium">
@@ -1056,6 +1136,116 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
+
+      {/* Dispute Evidence Modal */}
+      {showDisputeModal && selectedDispute && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/20 backdrop-blur-md" onClick={() => setShowDisputeModal(false)}>
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h2 className="text-2xl font-bold text-gray-900">Dispute Evidence</h2>
+                  </div>
+                  <p className="text-gray-700">On-chain dispute information for {selectedDispute.title}</p>
+                </div>
+                <button 
+                  onClick={() => setShowDisputeModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Dispute Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Dispute ID</div>
+                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.disputeId}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Token ID</div>
+                  <div className="text-sm font-mono text-gray-900">#{selectedDispute.tokenId}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Evidence IPFS Hash</div>
+                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.evidenceIPFS}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Transaction Hash</div>
+                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.txHash}</div>
+                </div>
+              </div>
+
+              {/* Contract Information */}
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Contract Information</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">License Type</span>
+                    <span className="text-sm font-semibold text-gray-900">{selectedDispute.contractInfo.licenseType}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Blockchain Registry</span>
+                    <span className="text-sm font-semibold text-gray-900">{selectedDispute.contractInfo.blockchainRegistry}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">IP Type</span>
+                    <span className="text-sm font-mono text-gray-900">{selectedDispute.contractInfo.ipType}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Compression Method</span>
+                    <span className="text-sm font-mono text-gray-900">{selectedDispute.contractInfo.compressionMethod}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Rights Holder</span>
+                    <span className="text-sm font-semibold text-gray-900">{selectedDispute.contractInfo.rightsHolder}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Registration Timestamp</span>
+                    <span className="text-sm font-mono text-gray-900">{selectedDispute.contractInfo.registrationTimestamp}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Attribution Required</span>
+                    <span className="text-lg">{selectedDispute.contractInfo.attributionRequired ? '✓' : '✗'}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Commercial Use</span>
+                    <span className="text-lg">{selectedDispute.contractInfo.commercialUse ? '✓' : '✗'}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
+                    <span className="text-sm font-medium text-gray-700">Derivative Works</span>
+                    <span className="text-lg">{selectedDispute.contractInfo.derivativeWorks ? '✓' : '✗'}</span>
+                  </div>
+                  <div className="pt-2">
+                    <div className="text-sm font-medium text-gray-700 mb-2">Custom Terms</div>
+                    <p className="text-sm text-gray-900 leading-relaxed">{selectedDispute.contractInfo.customTerms}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status Badge */}
+              <div className="mt-6 flex items-center justify-between">
+                <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg font-medium text-sm border border-yellow-300">
+                  ⏳ Pending Review
+                </div>
+                <button 
+                  onClick={() => setShowDisputeModal(false)}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

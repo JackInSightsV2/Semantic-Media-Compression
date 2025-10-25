@@ -1,12 +1,27 @@
 import { StoryClient, StoryConfig } from '@story-protocol/core-sdk';
-import { http, keccak256, toHex } from 'viem';
+import { http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
 let storyClient: StoryClient | null = null;
 
 export function getStoryClient() {
  if (!storyClient) {
-   const privateKey = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY as `0x${string}`;
+  const rawPk = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY as string;
+  if (!rawPk) {
+    throw new Error('Wallet private key env is not set');
+  }
+
+  // Normalize common formats (with/without 0x, accidental quotes/whitespace)
+  const normalizePrivateKey = (pk: string): `0x${string}` => {
+    const trimmed = pk.trim().replace(/^['"]|['"]$/g, '');
+    const prefixed = trimmed.startsWith('0x') ? trimmed : `0x${trimmed}`;
+    if (!/^0x[0-9a-fA-F]{64}$/.test(prefixed)) {
+      throw new Error('Wallet private key appears malformed (expected 64 hex chars)');
+    }
+    return prefixed as `0x${string}`;
+  };
+
+  const privateKey = normalizePrivateKey(rawPk);
   
    if (!privateKey) {
      throw new Error('NEXT_PUBLIC_WALLET_PRIVATE_KEY is not set');
@@ -23,10 +38,11 @@ export function getStoryClient() {
   return storyClient;
 }
 
-export async function registerIPAsset(metadata: {
- name: string;
- description: string;
- ipfsHash: string;
+export async function registerIPAsset(params: {
+  ipMetadataURI: string; // ipfs://<cid>
+  ipMetadataHash: `0x${string}`; // sha256 0x-prefixed
+  nftMetadataURI: string; // ipfs://<cid>
+  nftMetadataHash: `0x${string}`; // sha256 0x-prefixed
 }) {
  try {
    const client = getStoryClient();
@@ -59,10 +75,10 @@ export async function registerIPAsset(metadata: {
        },
      ],
     ipMetadata: {
-      ipMetadataURI: `ipfs://${metadata.ipfsHash}`,
-      ipMetadataHash: keccak256(toHex(metadata.ipfsHash)),
-      nftMetadataURI: `ipfs://${metadata.ipfsHash}`,
-      nftMetadataHash: keccak256(toHex(metadata.ipfsHash)),
+      ipMetadataURI: params.ipMetadataURI,
+      ipMetadataHash: params.ipMetadataHash,
+      nftMetadataURI: params.nftMetadataURI,
+      nftMetadataHash: params.nftMetadataHash,
     },
    });
   

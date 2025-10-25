@@ -21,8 +21,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { uploadToIPFS } from '@/blocklibs/ipfs';
+import { uploadToIPFS, uploadJSONToIPFS, uploadImageBufferToIPFS } from '@/blocklibs/ipfs';
 import { registerIPAsset } from '@/blocklibs/StoryProtocol';
+import { generateQrPng } from '@/blocklibs/qr';
 import { getExplorerUrl, getIPFSUrl, getIPAssetUrl } from '@/blocklibs/utils';
 import { useRegisteredContent } from '@/context/RegisteredContentContext';
 
@@ -165,18 +166,59 @@ export default function RegisterPage() {
       // TRY REAL BLOCKCHAIN FIRST
       try {
         console.log('📤 Uploading semantic JSON to IPFS...');
-        
-        // 1. Upload semantic JSON to IPFS (upload full dataset, not just first element)
-        const ipfsHash = await uploadToIPFS(fullData);
-        console.log('✅ Uploaded to IPFS:', ipfsHash);
-        
+
+        // 1) Upload semantic JSON (full dataset) to IPFS
+        const semanticCid = await uploadToIPFS(fullData);
+        console.log('✅ Uploaded semantic JSON:', semanticCid);
+
+        // 2) Generate QR PNG that encodes ipfs://<semanticCid>
+        console.log('🧩 Generating QR code...');
+        const qrBytes = await generateQrPng(`ipfs://${semanticCid}`);
+        const qrCid = await uploadImageBufferToIPFS(qrBytes, 'semantic-qr.png');
+        console.log('✅ Uploaded QR PNG:', qrCid);
+
+        // 3) Build IP Metadata (Story IP metadata standard)
+        const title = currentData.document_metadata.title;
+        const description = currentData.document_metadata.purpose;
+        const ipMetadata = {
+          title,
+          description,
+          mediaUrl: `ipfs://${semanticCid}`,
+          mediaType: 'application/json',
+          creators: [],
+        } as any;
+        const ipMetadataCid = await uploadJSONToIPFS(ipMetadata, 'ip-metadata.json');
+
+        // 4) Build NFT Metadata (ERC-721) with QR as primary image
+        const nftMetadata = {
+          name: title,
+          description,
+          image: `https://ipfs.io/ipfs/${qrCid}`,
+          external_url: `https://ipfs.io/ipfs/${semanticCid}`,
+          attributes: [
+            { trait_type: 'semantic_cid', value: semanticCid },
+            { trait_type: 'semantic_uri', value: `ipfs://${semanticCid}` },
+          ],
+        } as any;
+        const nftMetadataCid = await uploadJSONToIPFS(nftMetadata, 'nft-metadata.json');
+
+        // 5) Compute SHA-256 hashes of both metadata JSONs (0x-prefixed) using Web Crypto
+        const encoder = new TextEncoder();
+        const ipBuffer = encoder.encode(JSON.stringify(ipMetadata));
+        const nftBuffer = encoder.encode(JSON.stringify(nftMetadata));
+        const ipDigest = await crypto.subtle.digest('SHA-256', ipBuffer);
+        const nftDigest = await crypto.subtle.digest('SHA-256', nftBuffer);
+        const toHex = (buf: ArrayBuffer) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        const ipHash = ('0x' + toHex(ipDigest)) as `0x${string}`;
+        const nftHash = ('0x' + toHex(nftDigest)) as `0x${string}`;
+
+        // 6) Register on Story Protocol using separate metadata
         console.log('⛓️  Registering on Story Protocol...');
-        
-        // 2. Register on Story Protocol
         const { ipAssetId, txHash, tokenId } = await registerIPAsset({
-          name: currentData.document_metadata.title,
-          description: currentData.document_metadata.purpose,
-          ipfsHash: ipfsHash,
+          ipMetadataURI: `ipfs://${ipMetadataCid}`,
+          ipMetadataHash: ipHash,
+          nftMetadataURI: `ipfs://${nftMetadataCid}`,
+          nftMetadataHash: nftHash,
         });
         
         console.log('✅ Registered on Story Protocol!');
@@ -186,10 +228,13 @@ export default function RegisterPage() {
         
         setResult({
           ipAssetId: ipAssetId,
-          ipfsHash: ipfsHash,
+          ipfsHash: semanticCid,
+          ipfsQrCid: qrCid,
+          ipMetadataCid,
+          nftMetadataCid,
           txHash: txHash,
           tokenId: tokenId,
-          source: 'blockchain', // Mark as real
+          source: 'blockchain',
         });
       } catch (blockchainError) {
         // FALLBACK TO MOCK for demo safety
@@ -983,6 +1028,63 @@ export default function RegisterPage() {
                       className="inline-flex items-center text-blue-600 hover:text-blue-700 text-xs font-medium"
                     >
                       View on IPFS →
+                    </a>
+                  )}
+                </div>
+
+                {/* QR Preview and Metadata Links */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">QR Image (NFT Primary Image)</div>
+                  {result.ipfsQrCid ? (
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={`https://ipfs.io/ipfs/${result.ipfsQrCid}`}
+                        alt="Semantic QR"
+                        className="w-24 h-24 object-contain border rounded"
+                      />
+                      <div className="text-xs text-gray-700">
+                        <div className="font-mono break-all">{result.ipfsQrCid}</div>
+                        <a
+                          href={`https://ipfs.io/ipfs/${result.ipfsQrCid}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium mt-1"
+                        >
+                          View QR →
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500">No QR available</div>
+                  )}
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">IP Metadata CID</div>
+                  <div className="font-mono text-xs text-gray-900 break-all mb-2">{result.ipMetadataCid || '—'}</div>
+                  {result.ipMetadataCid && (
+                    <a
+                      href={`https://ipfs.io/ipfs/${result.ipMetadataCid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-blue-600 hover:text-blue-700 text-xs font-medium"
+                    >
+                      View IP Metadata →
+                    </a>
+                  )}
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">NFT Metadata CID</div>
+                  <div className="font-mono text-xs text-gray-900 break-all mb-2">{result.nftMetadataCid || '—'}</div>
+                  {result.nftMetadataCid && (
+                    <a
+                      href={`https://ipfs.io/ipfs/${result.nftMetadataCid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-blue-600 hover:text-blue-700 text-xs font-medium"
+                    >
+                      View NFT Metadata →
                     </a>
                   )}
                 </div>

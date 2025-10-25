@@ -76,3 +76,58 @@ export async function fetchFromIPFS(ipfsHash: string) {
 }
 
 
+// Upload a JSON object to IPFS via Pinata's pinJSONToIPFS
+export async function uploadJSONToIPFS(json: any, name: string = 'metadata.json') {
+ try {
+ 	const body = {
+ 		pinataContent: json,
+ 		pinataMetadata: {
+ 			name,
+ 		},
+ 	};
+
+ 	const response = await axios.post(
+ 		`${PINATA_API_URL}/pinning/pinJSONToIPFS`,
+ 		body,
+ 		{
+ 			headers: {
+ 				'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+ 				'Content-Type': 'application/json',
+ 			},
+ 		}
+ 	);
+
+ 	return response.data.IpfsHash as string;
+ } catch (error) {
+ 	console.error('IPFS JSON upload failed:', error);
+ 	throw error;
+ }
+}
+
+// Upload a PNG image buffer (e.g., generated QR) to IPFS via Pinata
+export async function uploadImageBufferToIPFS(buffer: Uint8Array | ArrayBuffer, name: string = 'image.png') {
+ try {
+ 	const blob = new Blob([buffer as ArrayBuffer], { type: 'image/png' });
+
+ 	const formData = new FormData();
+ 	formData.append('file', blob, name);
+
+ 	const response = await axios.post(
+ 		`${PINATA_API_URL}/pinning/pinFileToIPFS`,
+ 		formData,
+ 		{
+ 			headers: {
+ 				'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+ 				'Content-Type': 'multipart/form-data',
+ 			},
+ 		}
+ 	);
+
+ 	return response.data.IpfsHash as string;
+ } catch (error) {
+ 	console.error('IPFS image upload failed:', error);
+ 	throw error;
+ }
+}
+
+

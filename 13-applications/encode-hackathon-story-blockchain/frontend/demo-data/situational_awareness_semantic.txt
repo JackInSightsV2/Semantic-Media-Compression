@@ -41,7 +41,7 @@ The thesis is not that everything is inevitable. It is that the combination of s
 
 # I. From GPT‑4 to AGI: Counting the Orders of Magnitude
 
-### Purpose
+### Purpose -
 
 Define a disciplined method to forecast AGI by tracking the orders of magnitude (OOMs) still required and the levers that close them: training compute, algorithmic efficiency, and "unhobbling" at inference.
 

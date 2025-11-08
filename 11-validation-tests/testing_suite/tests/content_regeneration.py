@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Dict, List
 
 from ..context import TestContext
-from ..models import MockModelProvider
 from ..types import StepDetail, TestResult, TestStatus
 from .base import BaseTest
 
@@ -15,8 +14,9 @@ class ContentRegenerationTest(BaseTest):
     name = "Content Regeneration"
 
     def execute(self, context: TestContext, steps: List[StepDetail]) -> TestResult:
-        provider = MockModelProvider()
+        provider = context.provider
         blueprints: Dict[str, Dict] = context.get_shared("json_blueprints", {})
+        prompt = context.prompts.get("content_regeneration")
 
         if not blueprints:
             steps.append(StepDetail("JSON blueprints missing, skipping regeneration test."))
@@ -29,12 +29,18 @@ class ContentRegenerationTest(BaseTest):
 
         generated_assets = {}
         for blueprint_id, blueprint in blueprints.items():
-            assets = provider.generation.generate_assets(blueprint)
+            assets = provider.generation.generate_assets(
+                blueprint,
+                prompt=prompt,
+            )
             generated_assets[blueprint_id] = assets
             steps.append(
                 StepDetail(
                     message=f"Generated mock assets for {blueprint_id}",
-                    data=assets.get("quality_scores", {}),
+                    data={
+                        **assets.get("quality_scores", {}),
+                        "prompt": prompt,
+                    },
                 )
             )
 

@@ -29,6 +29,14 @@ python run_tests.py --list
 python run_tests.py --json
 ```
 
+### Switching providers or prompt sets
+
+```bash
+python run_tests.py --provider mock --prompt-set detailed
+```
+
+Anything not supplied falls back to environment variables (`TEST_SUITE_PROVIDER`, `TEST_SUITE_PROMPT_SET`) or the default `mock`/`default`.
+
 ## Test Modules
 
 | ID | Script | Description | Mock Inputs |
@@ -47,6 +55,7 @@ testing_suite/
   config.py             # environment-aware configuration
   runner.py             # orchestrates test execution
   models/               # mock providers (swap here for real APIs)
+  prompts.py            # named prompt sets selectable via CLI or env
   tests/                # individual modular test cases
   repositories.py       # deterministic fixtures
 ```

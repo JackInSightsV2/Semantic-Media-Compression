@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Dict, List
 
 from ..context import TestContext
-from ..models import MockModelProvider
 from ..repositories import CodeRepository
 from ..types import StepDetail, TestResult, TestStatus
 from .base import BaseTest
@@ -17,30 +16,46 @@ class CodeSemanticsTest(BaseTest):
     target_languages = ["python", "javascript"]
 
     def execute(self, context: TestContext, steps: List[StepDetail]) -> TestResult:
-        provider = MockModelProvider()
+        provider = context.provider
         repo = CodeRepository()
+        extract_prompt = context.prompts.get("code_extraction")
+        regenerate_prompt = context.prompts.get("code_regeneration")
 
         blueprints = {}
         regenerations: Dict[str, Dict[str, str]] = {}
 
         for record in repo.list():
-            blueprint = provider.code.extract_semantics(record.code_id, record.source)
+            blueprint = provider.code.extract_semantics(
+                record.code_id,
+                record.source,
+                prompt=extract_prompt,
+            )
             blueprints[record.code_id] = blueprint
             steps.append(
                 StepDetail(
                     message=f"Extracted semantic blueprint for {record.code_id}",
-                    data={"key_functions": blueprint.get("key_functions", [])},
+                    data={
+                        "key_functions": blueprint.get("key_functions", []),
+                        "prompt": extract_prompt,
+                    },
                 )
             )
 
             regenerations[record.code_id] = {}
             for language in self.target_languages:
-                regenerated = provider.code.regenerate(blueprint, language=language)
+                regenerated = provider.code.regenerate(
+                    blueprint,
+                    language=language,
+                    prompt=regenerate_prompt,
+                )
                 regenerations[record.code_id][language] = regenerated
                 steps.append(
                     StepDetail(
                         message=f"Regenerated {record.code_id} in {language}",
-                        data={"preview": regenerated.splitlines()[0]},
+                        data={
+                            "preview": regenerated.splitlines()[0],
+                            "prompt": regenerate_prompt,
+                        },
                     )
                 )
 

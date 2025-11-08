@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict
 
 from .config import TestConfig
+from .models.base import ModelProvider
 
 
 @dataclass(slots=True)
@@ -14,6 +15,8 @@ class TestContext:
 
     config: TestConfig
     logger: Any
+    provider: ModelProvider
+    prompts: Dict[str, str]
     shared_data: Dict[str, Any] = field(default_factory=dict)
 
     def add_shared(self, key: str, value: Any) -> None:

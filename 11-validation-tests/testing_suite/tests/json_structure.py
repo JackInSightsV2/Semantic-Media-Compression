@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Dict, List
 
 from ..context import TestContext
-from ..models import MockModelProvider
 from ..types import StepDetail, TestResult, TestStatus
 from .base import BaseTest
 
@@ -16,8 +15,9 @@ class JsonStructureTest(BaseTest):
     schema_name = "hierarchical_scene_schema"
 
     def execute(self, context: TestContext, steps: List[StepDetail]) -> TestResult:
-        provider = MockModelProvider()
+        provider = context.provider
         semantics: Dict[str, Dict] = context.get_shared("semantic_payloads", {})
+        prompt = context.prompts.get("json_generation")
 
         if not semantics:
             steps.append(StepDetail("Semantic payloads missing, skipping test."))
@@ -30,7 +30,11 @@ class JsonStructureTest(BaseTest):
 
         json_outputs = {}
         for video_id, payload in semantics.items():
-            blueprint = provider.language.generate_json(payload, schema=self.schema_name)
+            blueprint = provider.language.generate_json(
+                payload,
+                schema=self.schema_name,
+                prompt=prompt,
+            )
             json_outputs[video_id] = blueprint
             steps.append(
                 StepDetail(
@@ -38,6 +42,7 @@ class JsonStructureTest(BaseTest):
                     data={
                         "schema": blueprint["metadata"]["schema"],
                         "scene_count": len(blueprint["content"]["scenes"]),
+                        "prompt": prompt,
                     },
                 )
             )

@@ -33,6 +33,17 @@ python run_tests.py --json
 
 Useful when piping results into other tooling.
 
+### Try different models or prompt sets
+
+```bash
+python run_tests.py --provider mock --prompt-set detailed
+```
+
+- `--provider` mirrors `TEST_SUITE_PROVIDER`.
+- `--prompt-set` mirrors `TEST_SUITE_PROMPT_SET`.
+
+Both defaults remain `mock`/`default`, so you can swap strategies without editing code.
+
 ---
 
 ## 2. Inspect Artefacts

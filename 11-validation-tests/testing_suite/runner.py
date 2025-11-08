@@ -8,6 +8,8 @@ from typing import Iterable, List, Sequence, Type
 from .config import TestConfig, load_config
 from .context import TestContext
 from .logging_utils import configure_logging
+from .models import get_provider
+from .prompts import load_prompt_set
 from .tests import (
     CodeSemanticsTest,
     ContentRegenerationTest,
@@ -32,10 +34,22 @@ class TestRunner:
 
     def __post_init__(self) -> None:
         self.logger = configure_logging(self.config, run_name="suite")
-        self.logger.info("Testing suite initialised in %s mode", self.config.mode)
+        self.provider = get_provider(self.config.provider, self.config)
+        self.prompts_template = load_prompt_set(self.config.prompt_set)
+        self.logger.info(
+            "Testing suite initialised in %s mode (provider=%s, prompt_set=%s)",
+            self.config.mode,
+            self.config.provider,
+            self.config.prompt_set,
+        )
 
     def _create_context(self) -> TestContext:
-        return TestContext(config=self.config, logger=self.logger)
+        return TestContext(
+            config=self.config,
+            logger=self.logger,
+            provider=self.provider,
+            prompts=dict(self.prompts_template),
+        )
 
     def available_tests(self) -> List[str]:
         return [test_cls.test_id for test_cls in DEFAULT_TEST_ORDER]

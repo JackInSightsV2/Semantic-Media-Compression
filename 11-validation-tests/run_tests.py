@@ -32,6 +32,15 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Emit machine-readable JSON summary.",
     )
+    parser.add_argument(
+        "--provider",
+        help="Model provider to use (overrides TEST_SUITE_PROVIDER).",
+    )
+    parser.add_argument(
+        "--prompt-set",
+        dest="prompt_set",
+        help="Prompt set to load (overrides TEST_SUITE_PROMPT_SET).",
+    )
     return parser
 
 
@@ -39,7 +48,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    runner = TestRunner(config=load_config())
+    config = load_config(
+        provider_override=args.provider,
+        prompt_set_override=args.prompt_set,
+    )
+    runner = TestRunner(config=config)
 
     if args.list:
         print("Available tests:", ", ".join(runner.available_tests()))

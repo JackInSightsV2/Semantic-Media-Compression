@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import List
 
 from ..context import TestContext
-from ..models import MockModelProvider
 from ..repositories import VideoRepository
 from ..types import StepDetail, TestResult, TestStatus
 from .base import BaseTest
@@ -16,8 +15,9 @@ class SemanticExtractionTest(BaseTest):
     name = "Semantic Extraction"
 
     def execute(self, context: TestContext, steps: List[StepDetail]) -> TestResult:
-        provider = MockModelProvider()
+        provider = context.provider
         repo = VideoRepository()
+        prompt = context.prompts.get("semantic_extraction")
 
         semantics = {}
         for record in repo.list():
@@ -25,11 +25,16 @@ class SemanticExtractionTest(BaseTest):
             payload = provider.vision.extract_semantics(
                 video_id=record.video_id,
                 metadata={"characters": record.characters, "duration": record.duration_seconds},
+                prompt=prompt,
             )
             steps.append(
                 StepDetail(
                     message=f"Extracted semantics for {record.video_id}",
-                    data={"confidence": payload.get("confidence"), "character_count": len(payload.get("characters", []))},
+                    data={
+                        "confidence": payload.get("confidence"),
+                        "character_count": len(payload.get("characters", [])),
+                        "prompt": prompt,
+                    },
                 )
             )
             semantics[record.video_id] = payload

@@ -1,43 +1,75 @@
-# Semantic Media Compression Testing Framework
+# Semantic Media Compression – Testing Suite
 
 ## Overview
-This directory contains comprehensive tests to validate the theoretical frameworks developed in the semantic media compression white paper. These tests provide empirical data to support theoretical claims and identify practical limitations of current AI capabilities.
 
-## Test Categories
+`11-validation-tests` now ships with a lightweight, modular testing harness that runs entirely with deterministic mock providers. The goal is to make the test flows easy to understand, easy to extend, and ready for a future swap to real API integrations when credentials and media assets are available.
 
-### Core Technical Tests
-- [01-semantic-extraction-accuracy](./01-core-technical/01-semantic-extraction-accuracy.md)
-- [02-json-structure-generation](./01-core-technical/02-json-structure-generation.md)
-- [03-content-regeneration](./01-core-technical/03-content-regeneration.md)
+The accompanying research specifications (eg. `01-core-technical/*.md`) are still available for deeper context, but day‑to‑day execution is handled by the Python package under `testing_suite/`.
 
-### Advanced Technical Validation
-- [04-compression-ratio-analysis](./02-advanced-validation/04-compression-ratio-analysis.md)
-- [05-multi-cycle-compression](./02-advanced-validation/05-multi-cycle-compression.md)
-- [06-cultural-adaptation-accuracy](./02-advanced-validation/06-cultural-adaptation-accuracy.md)
+## Quick Start (Mock Mode)
 
-### Model Architecture Tests
-- [07-semantic-compression-architecture](./03-model-architecture/07-semantic-compression-architecture.md)
-- [08-poc-training-approaches](./03-model-architecture/08-poc-training-approaches.md)
+```bash
+cd 11-validation-tests
+python run_tests.py
+```
 
-### Quality and Validation
-- [09-human-evaluation-framework](./04-quality-validation/09-human-evaluation-framework.md)
-- [10-benchmark-comparison](./04-quality-validation/10-benchmark-comparison.md)
+All tests run in mock mode by default. Results are printed to the console and logs are written to `11-validation-tests/testing_outputs/`.
 
-### Legal and Ethical Validation
-- [11-copyright-fair-use-analysis](./05-legal-ethical/11-copyright-fair-use-analysis.md)
-- [12-platform-deployment](./05-legal-ethical/12-platform-deployment.md)
+### Running a subset
 
-### Special Research
-- [13-gaussian-splatting-investigation](./06-special-research/13-gaussian-splatting-investigation.md)
+```bash
+python run_tests.py --test 01 04
+python 01-core-technical/scripts/run_test_03.py  # single-test wrapper
+```
 
-## Execution Timeline
-- **Phase 1**: Minimal POC Setup (Weeks 1-2)
-- **Phase 2**: POC Model Training (Weeks 3-4)
-- **Phase 3**: Regeneration Quality Assessment (Weeks 9-12)
-- **Phase 4**: Advanced Testing and Validation (Weeks 13-16)
+### Listing tests or producing JSON
 
-## Success Criteria
-- Semantic extraction accuracy >80% across all categories
-- Compression ratios >200:1 with acceptable quality
-- Character consistency >75% across regenerations
-- Cultural adaptation approval >70% from community validators
+```bash
+python run_tests.py --list
+python run_tests.py --json
+```
+
+## Test Modules
+
+| ID | Script | Description | Mock Inputs |
+|----|--------|-------------|-------------|
+| 01 | `SemanticExtractionTest` | Generates semantic payloads for sample videos. | `testing_suite.repositories.VideoRepository` |
+| 02 | `JsonStructureTest` | Converts semantic payloads into structured blueprints. | Output from Test 01 |
+| 03 | `ContentRegenerationTest` | Produces mock regeneration artefacts and quality scores. | Output from Test 02 |
+| 04 | `CodeSemanticsTest` | Extracts and regenerates code semantics in multiple languages. | `testing_suite.repositories.CodeRepository` |
+
+Each test shares state through `testing_suite/context.py`, so executing them in order yields a full pipeline. The per-test wrappers in `01-core-technical/scripts` simply delegate to the modular runner while preserving the historical numbering.
+
+## Repository Layout
+
+```
+testing_suite/
+  config.py             # environment-aware configuration
+  runner.py             # orchestrates test execution
+  models/               # mock providers (swap here for real APIs)
+  tests/                # individual modular test cases
+  repositories.py       # deterministic fixtures
+```
+
+Logs and machine-readable artifacts are written to `testing_outputs/` to keep the workspace tidy.
+
+## Moving from Mocks to Real Providers
+
+1. **Switch modes** – set `TEST_SUITE_MODE=real` in your environment (the loader defaults to `mock`).
+2. **Implement providers** – create a module such as `testing_suite/models/real.py` that satisfies the interfaces in `testing_suite/models/base.py`. Typical responsibilities:
+   - Authenticate with OpenAI, Anthropic, ElevenLabs, etc.
+   - Respect rate limits and budgets.
+   - Persist assets (e.g. save frames, JSON blueprints, generated media).
+3. **Wire into the runner** – update `testing_suite/models/__init__.py` or the tests themselves to instantiate your real provider when `config.use_real_providers` is `True`.
+4. **Provide data sources** – replace the built-in repositories with video manifests, ground-truth JSON, and code samples that reflect your production targets.
+5. **Capture outputs** – extend `TestResult.artifacts` so that downstream analysis (dashboards, notebooks) can consume real metrics.
+
+The mock implementations demonstrate the required surface area and the data structures that downstream tests expect.
+
+## Documentation Map
+
+- Execution how-to: `QUICK-START-GUIDE.md`
+- Detailed manual process & success metrics: `MASTER-CHECKLIST.md`
+- Alignment with whitepaper sections: see the individual markdown files under `01-core-technical/`, `02-advanced-validation/`, etc.
+
+Use this README for automation basics, then dive into the specification documents when designing new test scenarios or extending the mock harness with production-grade providers.

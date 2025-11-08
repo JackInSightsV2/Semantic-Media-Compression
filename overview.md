@@ -55,6 +55,7 @@
 ## 7. Future Directions (Exploratory)
 - **Research Pathways**
   - Investigate integration with emerging AI interpretation models and knowledge graphs.
+  - Review [Semantic JSON Evolution](./08-future-implications/semantic-json-evolution.md) for how next-generation architectures cut semantic loss and boost compression fidelity.
   - Explore potential for cross-domain creativity (e.g., remixing narratives semantically).
 - **Potential Applications (Non-binding)**
   - Education: adaptive curricula organized by conceptual similarity.

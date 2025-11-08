@@ -33,9 +33,19 @@ python run_tests.py --json
 
 ```bash
 python run_tests.py --provider mock --prompt-set detailed
+# Requires OPENAI_API_KEY
+python run_tests.py --provider openai --prompt-set evaluation
 ```
 
 Anything not supplied falls back to environment variables (`TEST_SUITE_PROVIDER`, `TEST_SUITE_PROMPT_SET`) or the default `mock`/`default`.
+
+### Interactive mode
+
+```bash
+python run_tests.py --interactive
+```
+
+You will be prompted to select the provider, prompt set, and tests at runtime.
 
 ## Test Modules
 
@@ -54,7 +64,7 @@ Each test shares state through `testing_suite/context.py`, so executing them in 
 testing_suite/
   config.py             # environment-aware configuration
   runner.py             # orchestrates test execution
-  models/               # mock providers (swap here for real APIs)
+  models/               # provider bundles (`mock`, `openai`, extendable)
   prompts.py            # named prompt sets selectable via CLI or env
   tests/                # individual modular test cases
   repositories.py       # deterministic fixtures
@@ -62,11 +72,15 @@ testing_suite/
 
 Logs and machine-readable artifacts are written to `testing_outputs/` to keep the workspace tidy.
 
+### Data feeds
+
+Set `TEST_SUITE_VIDEO_FEED=/path/to/videos.json` or `TEST_SUITE_CODE_FEED=/path/to/code.json` to point the suite at your own fixtures. Both files accept arrays of objects matching the default repository schema (`video_id`, `characters`, etc.).
+
 ## Moving from Mocks to Real Providers
 
 1. **Switch modes** – set `TEST_SUITE_MODE=real` in your environment (the loader defaults to `mock`).
 2. **Implement providers** – create a module such as `testing_suite/models/real.py` that satisfies the interfaces in `testing_suite/models/base.py`. Typical responsibilities:
-   - Authenticate with OpenAI, Anthropic, ElevenLabs, etc.
+   - Authenticate with OpenAI, Anthropic, ElevenLabs, etc. (`OpenAIModelProvider` already ships as an example).
    - Respect rate limits and budgets.
    - Persist assets (e.g. save frames, JSON blueprints, generated media).
 3. **Wire into the runner** – update `testing_suite/models/__init__.py` or the tests themselves to instantiate your real provider when `config.use_real_providers` is `True`.

@@ -37,12 +37,22 @@ Useful when piping results into other tooling.
 
 ```bash
 python run_tests.py --provider mock --prompt-set detailed
+# Requires OPENAI_API_KEY
+python run_tests.py --provider openai --prompt-set evaluation
 ```
 
 - `--provider` mirrors `TEST_SUITE_PROVIDER`.
 - `--prompt-set` mirrors `TEST_SUITE_PROMPT_SET`.
 
 Both defaults remain `mock`/`default`, so you can swap strategies without editing code.
+
+### Interactive mode
+
+```bash
+python run_tests.py --interactive
+```
+
+The CLI will guide you through provider, prompt set, and test selection.
 
 ---
 
@@ -109,5 +119,7 @@ Mocks verify the plumbing; real providers should chase the targets outlined in t
 - Add regression assertions (e.g. fail the build if metrics drop).
 - Expand repositories with domain-specific fixtures (finance, media, cultural archives).
 - Integrate the suite with CI/CD or nightly jobs for continuous monitoring.
+
+To point at your own data, export `TEST_SUITE_VIDEO_FEED=/path/to/videos.json` and/or `TEST_SUITE_CODE_FEED=/path/to/code.json`.
 
 Need the broader operational view? Start with `README.md`, then follow the detailed steps in `MASTER-CHECKLIST.md`.

@@ -1,5 +1,7 @@
 # Solo Developer Testing Checklist
 
+> **Tip:** Before walking through the manual steps below, run the automated mock harness (`python run_tests.py`) to confirm the pipeline wiring and to familiarise yourself with the expected artefacts. Once you swap in real providers, use this checklist to track the extended, human-in-the-loop validation programme.
+
 ## Day 1: Semantic Extraction (Budget: £30)
 
 ### Morning: Content Collection (2 hours)

@@ -60,13 +60,26 @@ async def build_fingerprint(
 
 @router.post("/register-story", response_model=StoryRegistrationResponse)
 async def register_story(
-    request: StoryRegistrationRequest,
+    asset_id: Annotated[UUID, Form(...)],
+    metadata: Annotated[str, Form()] = "{}",  # JSON string
+    use_qr_code: Annotated[bool, Form()] = True,
+    cover_image: Annotated[UploadFile | None, File()] = None,
     service: RegistrationService = Depends(get_registration_service),
 ) -> StoryRegistrationResponse:
     try:
-        return await service.register_story(request)
+        import json
+        metadata_dict = json.loads(metadata) if metadata else {}
+        
+        request = StoryRegistrationRequest(
+            asset_id=asset_id,
+            metadata=metadata_dict,
+            use_qr_code=use_qr_code,
+        )
+        return await service.register_story(request, cover_image=cover_image)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid metadata JSON: {exc}") from exc
 
 
 @router.get("/{asset_id}", response_model=RegistrationDetailResponse)

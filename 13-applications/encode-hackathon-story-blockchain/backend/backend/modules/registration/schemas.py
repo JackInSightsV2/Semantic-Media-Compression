@@ -48,6 +48,10 @@ class BuildFingerprintResponse(BaseModel):
 class StoryRegistrationRequest(BaseModel):
     asset_id: UUID
     metadata: dict[str, Any] = Field(default_factory=dict)
+    use_qr_code: bool = Field(
+        default=True,
+        description="If True, generate QR code. If False and cover_image provided, use cover image instead."
+    )
 
 
 class StoryRegistrationResponse(BaseModel):
@@ -58,6 +62,8 @@ class StoryRegistrationResponse(BaseModel):
     ipfs_cid: str
     zk_proof: str
     status: ContentStatus
+    ipfs_qr_cid: str | None = Field(default=None, description="IPFS CID of QR code image (if generated)")
+    ipfs_cover_image_cid: str | None = Field(default=None, description="IPFS CID of cover image (if uploaded)")
 
 
 class ContentAssetSchema(BaseModel):

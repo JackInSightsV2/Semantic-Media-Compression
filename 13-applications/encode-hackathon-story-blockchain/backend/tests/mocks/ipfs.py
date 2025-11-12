@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from backend.adapters.ipfs.base import IPFSClient, IPFSUploadResult
 from backend.services.crypto import EncryptedPayload
@@ -48,6 +49,11 @@ class MockIPFSClient(IPFSClient):
         self._storage[cid] = data
         self._metadata[cid] = metadata
         return IPFSUploadResult(cid=cid, proof=proof, metadata=metadata)
+
+    async def upload_json(self, data: dict[str, Any]) -> IPFSUploadResult:
+        """Upload a JSON dictionary as plaintext to IPFS."""
+        json_bytes = json.dumps(data, separators=(",", ":"), sort_keys=True).encode("utf-8")
+        return await self.upload_plaintext(json_bytes)
 
     def get_blob(self, cid: str) -> bytes:
         return self._storage[cid]

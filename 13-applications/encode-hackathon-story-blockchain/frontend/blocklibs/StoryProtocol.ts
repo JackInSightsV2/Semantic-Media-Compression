@@ -1,9 +1,20 @@
+/**
+ * NOTE: Story Protocol registration is now handled by the backend via Python SDK.
+ * This file is kept for utility functions that may still be needed (like NFT collection creation scripts).
+ * 
+ * All IP Asset registration should go through the backend API: /api/registration/register-story
+ */
+
 import { StoryClient, StoryConfig } from '@story-protocol/core-sdk';
 import { http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
 let storyClient: StoryClient | null = null;
 
+/**
+ * Get Story Protocol client (for utility scripts only, not for registration)
+ * @deprecated Registration should use backend API instead
+ */
 export function getStoryClient() {
  if (!storyClient) {
   const rawPk = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY as string;
@@ -38,83 +49,34 @@ export function getStoryClient() {
   return storyClient;
 }
 
+/**
+ * @deprecated Use backend API /api/registration/register-story instead
+ * Story Protocol registration is now handled by the backend Python SDK
+ */
 export async function registerIPAsset(params: {
-  ipMetadataURI: string; // ipfs://<cid>
-  ipMetadataHash: `0x${string}`; // sha256 0x-prefixed
-  nftMetadataURI: string; // ipfs://<cid>
-  nftMetadataHash: `0x${string}`; // sha256 0x-prefixed
+  ipMetadataURI: string;
+  ipMetadataHash: `0x${string}`;
+  nftMetadataURI: string;
+  nftMetadataHash: `0x${string}`;
 }) {
- try {
-   const client = getStoryClient();
-  
-   // Register IP Asset using the Story Protocol SDK
-   // Using mintAndRegisterIpAssetWithPilTerms with non-commercial-social-remixing license
-   const response = await client.ipAsset.mintAndRegisterIpAssetWithPilTerms({
-     spgNftContract: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS as `0x${string}`,
-     licenseTermsData: [
-       {
-         terms: {
-          transferable: true,
-          royaltyPolicy: '0x0000000000000000000000000000000000000000', // No royalty for POC
-          defaultMintingFee: BigInt(0),
-          expiration: BigInt(0),
-          commercialUse: false,
-          commercialAttribution: false,
-          commercializerChecker: '0x0000000000000000000000000000000000000000',
-          commercializerCheckerData: '0x' as `0x${string}`,
-          commercialRevShare: 0,
-          commercialRevCeiling: BigInt(0),
-         derivativesAllowed: true,
-         derivativesAttribution: true,
-         derivativesApproval: false,
-         derivativesReciprocal: true,
-         derivativeRevCeiling: BigInt(0),
-          currency: '0x0000000000000000000000000000000000000000',
-           uri: '',
-         },
-       },
-     ],
-    ipMetadata: {
-      ipMetadataURI: params.ipMetadataURI,
-      ipMetadataHash: params.ipMetadataHash,
-      nftMetadataURI: params.nftMetadataURI,
-      nftMetadataHash: params.nftMetadataHash,
-    },
-   });
-  
-   return {
-     ipAssetId: response.ipId as string,
-     txHash: response.txHash as string,
-     tokenId: response.tokenId?.toString() || 'N/A',
-   };
- } catch (error) {
-   console.error('Story Protocol registration failed:', error);
-   throw error;
- }
+  throw new Error(
+    'registerIPAsset is deprecated. Use backend API: POST /api/registration/register-story ' +
+    'The backend now handles all Story Protocol registration via Python SDK.'
+  );
 }
 
+/**
+ * @deprecated Dispute filing should be handled by backend API
+ * This is kept as a placeholder but should be moved to backend
+ */
 export async function fileDispute(
  originalIpId: string,
  suspectedIpId: string,
  evidenceIpfsHash: string
 ) {
- try {
-   const client = getStoryClient();
-  
-   // Note: Dispute functionality may vary based on Story Protocol SDK version
-   // This is a placeholder - check SDK docs for current dispute methods
-   console.log('Filing dispute with evidence:', evidenceIpfsHash);
-  
-   // Placeholder return for POC
-   return {
-     disputeId: '0xdispute' + Math.random().toString(16).substr(2, 36),
-     txHash: '0x' + Math.random().toString(16).substr(2, 64),
-     evidenceIPFS: evidenceIpfsHash,
-   };
- } catch (error) {
-   console.error('Story Protocol dispute filing failed:', error);
-   throw error;
- }
+  throw new Error(
+    'fileDispute is deprecated. Dispute filing should be handled by the backend API.'
+  );
 }
 
 

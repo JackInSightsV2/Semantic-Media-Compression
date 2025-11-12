@@ -1,0 +1,221 @@
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from typing import Any, Iterable
+from uuid import UUID
+
+from fastapi import UploadFile
+
+from ...adapters.tasks.base import TaskDispatcher
+from ...modules.shared.models import (
+    AlertRecord,
+    JobRecord,
+    RiskLevel,
+    ScanFingerprint,
+    ScanMatchRecord,
+    ScanRecord,
+    ScanStatus,
+)
+from ...modules.shared.repositories import RepositoryBundle
+from ...services.embeddings import EmbeddingProvider
+from ..shared.pipeline import Pipeline
+from ..registration.pipeline import build_semantic_fingerprint_pipeline
+from .schemas import RecentScanSummary, ScanCreateResponse, ScanDetailResponse, ScanDetailSchema, ScanMatchSchema
+
+
+@dataclass
+class ScanService:
+    repositories: RepositoryBundle
+    task_dispatcher: TaskDispatcher
+    embedding_provider: EmbeddingProvider
+    pipeline: Pipeline | None = None
+
+    def __post_init__(self) -> None:
+        self.pipeline = build_semantic_fingerprint_pipeline(self.embedding_provider)
+
+    async def register_tasks(self) -> None:
+        await self.task_dispatcher.register("scans.process_scan", self._run_scan_task)
+
+    async def create_scan(
+        self,
+        *,
+        source_type: str,
+        source_reference: str,
+        text_payload: str | None,
+        file: UploadFile | None,
+    ) -> ScanCreateResponse:
+        raw_text = text_payload
+        if file is not None:
+            file_bytes = await file.read()
+            raw_text = file_bytes.decode("utf-8", errors="ignore")
+
+        scan = ScanRecord(
+            source_type=source_type,
+            source_reference=source_reference,
+            status=ScanStatus.PENDING,
+        )
+        await self.repositories.scans.create_scan(scan)
+
+        job = JobRecord(job_type="scans.process", reference_id=scan.id, status="queued")
+        await self.repositories.jobs.create_job(job)
+
+        payload = {"scan_id": str(scan.id)}
+        if raw_text:
+            payload["text"] = raw_text
+
+        await self.task_dispatcher.dispatch("scans.process_scan", payload)
+        return ScanCreateResponse(scan_id=scan.id, status=scan.status)
+
+    async def get_scan(self, scan_id: UUID) -> ScanDetailResponse:
+        scan = await self.repositories.scans.get_scan(scan_id)
+        if not scan:
+            raise ValueError(f"Scan {scan_id} not found")
+
+        matches = await self.repositories.scans.list_matches_for_scan(scan_id)
+
+        return ScanDetailResponse(
+            scan=ScanDetailSchema(
+                id=scan.id,
+                source_type=scan.source_type,
+                source_reference=scan.source_reference,
+                status=scan.status,
+                similarity_overall=scan.similarity_overall,
+                similarity_breakdown=scan.similarity_breakdown,
+                fingerprint=scan.fingerprint.model_dump() if scan.fingerprint else {},
+                created_at=scan.created_at,
+                updated_at=scan.updated_at,
+            ),
+            matches=[
+                ScanMatchSchema(
+                    asset_id=m.asset_id,
+                    similarity_overall=m.similarity_overall,
+                    similarity_breakdown=m.similarity_breakdown,
+                    risk_level=m.risk_level,
+                )
+                for m in matches
+            ],
+        )
+
+    async def list_recent_scans(self, limit: int = 10) -> list[RecentScanSummary]:
+        scans = await self.repositories.scans.list_recent_scans(limit=limit)
+        return [
+            RecentScanSummary(
+                id=scan.id,
+                status=scan.status,
+                source_type=scan.source_type,
+                source_reference=scan.source_reference,
+                similarity_overall=scan.similarity_overall,
+                created_at=scan.created_at,
+            )
+            for scan in scans
+        ]
+
+    async def _run_scan_task(self, payload: dict[str, Any]) -> None:
+        scan_id = UUID(payload["scan_id"])
+        text = payload.get("text")
+
+        scan = await self.repositories.scans.get_scan(scan_id)
+        if not scan:
+            raise ValueError(f"Scan {scan_id} not found")
+
+        scan.status = ScanStatus.RUNNING
+        await self.repositories.scans.update_scan(scan)
+
+        try:
+            if text is None:
+                raise ValueError("Scan text payload is required in current profile")
+
+            pipeline_result = await self.pipeline.execute({"text": text, "metadata": {}})
+            fingerprint_data = pipeline_result["fingerprint"]
+            embedding = pipeline_result.get("embedding", [])
+
+            scan.fingerprint = ScanFingerprint(
+                summary=fingerprint_data.get("narrative"),
+                embeddings=embedding,
+                metadata=fingerprint_data,
+            )
+
+            matches = await self._compute_matches(scan.id, embedding)
+
+            scan.similarity_overall = matches[0].similarity_overall if matches else None
+            scan.similarity_breakdown = matches[0].similarity_breakdown if matches else {}
+            scan.status = ScanStatus.COMPLETED
+            await self.repositories.scans.update_scan(scan)
+
+            for match in matches:
+                await self.repositories.scans.add_match(match)
+
+                if match.risk_level == RiskLevel.HIGH:
+                    await self.repositories.alerts.create_alert(
+                        AlertRecord(
+                            alert_type="match",
+                            payload={
+                                "scan_id": str(scan.id),
+                                "asset_id": str(match.asset_id),
+                                "similarity_overall": match.similarity_overall,
+                            },
+                        )
+                    )
+
+            await self._mark_job(scan.id, "completed")
+        except Exception as exc:
+            scan.status = ScanStatus.FAILED
+            await self.repositories.scans.update_scan(scan)
+            await self._mark_job(scan.id, "failed", str(exc))
+            raise
+
+    async def _compute_matches(self, scan_id: UUID, scan_embedding: list[float]) -> list[ScanMatchRecord]:
+        assets = await self.repositories.content.list_assets()
+        matches: list[ScanMatchRecord] = []
+        for asset in assets:
+            if not asset.embeddings:
+                continue
+            similarity = self._cosine_similarity(scan_embedding, asset.embeddings)
+            breakdown = {
+                "narrative": similarity,
+                "character": max(similarity - 0.05, 0),
+                "theme": max(similarity - 0.1, 0),
+            }
+            risk_level = self._classify_risk(similarity)
+            match = ScanMatchRecord(
+                scan_id=scan_id,
+                asset_id=asset.id,
+                similarity_overall=similarity,
+                similarity_breakdown=breakdown,
+                risk_level=risk_level,
+            )
+            matches.append(match)
+
+        matches.sort(key=lambda m: m.similarity_overall, reverse=True)
+        return matches[:5]
+
+    @staticmethod
+    def _cosine_similarity(a: Iterable[float], b: Iterable[float]) -> float:
+        vec_a = list(a)
+        vec_b = list(b)
+        if not vec_a or not vec_b or len(vec_a) != len(vec_b):
+            return 0.0
+        dot = sum(x * y for x, y in zip(vec_a, vec_b))
+        mag_a = math.sqrt(sum(x**2 for x in vec_a))
+        mag_b = math.sqrt(sum(y**2 for y in vec_b))
+        if mag_a == 0 or mag_b == 0:
+            return 0.0
+        return dot / (mag_a * mag_b)
+
+    @staticmethod
+    def _classify_risk(similarity: float) -> RiskLevel:
+        if similarity >= 0.7:
+            return RiskLevel.HIGH
+        if similarity >= 0.6:
+            return RiskLevel.MODERATE
+        return RiskLevel.LOW
+
+    async def _mark_job(self, scan_id: UUID, status: str, error: str | None = None) -> None:
+        jobs = await self.repositories.jobs.list_jobs(job_type="scans.process")
+        for job in jobs:
+            if job.reference_id == scan_id:
+                job.status = status
+                job.error = error
+                await self.repositories.jobs.update_job(job)
+                break

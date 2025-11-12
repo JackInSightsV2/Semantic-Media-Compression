@@ -33,6 +33,18 @@ class RiskLevel(str, Enum):
     HIGH = "high"
 
 
+class ViolationConfidence(str, Enum):
+    REVIEW = "review"
+    LIKELY = "likely"
+    CRITICAL = "critical"
+
+
+class NotificationChannel(str, Enum):
+    EMAIL = "email"
+    DASHBOARD = "dashboard"
+    WEBHOOK = "webhook"
+
+
 class DisputeStatus(str, Enum):
     OPEN = "open"
     ESCALATED = "escalated"
@@ -80,6 +92,34 @@ class ContentAsset(BaseEntity):
     story_ip_asset_id: str | None = None
     story_token_id: str | None = None
     description: str | None = None
+
+
+class EvidenceBundleRecord(BaseEntity):
+    asset_id: UUID
+    scan_id: UUID | None = None
+    match_id: UUID | None = None
+    original_hash: str
+    infringing_url: str | None = None
+    semantic_diff: dict[str, Any] = Field(default_factory=dict)
+    confidence_score: float = 0.0
+    evidence_hash: str = Field(default="")
+
+
+class ViolationRecord(BaseEntity):
+    asset_id: UUID
+    scan_id: UUID | None = None
+    match_id: UUID | None = None
+    confidence: ViolationConfidence = Field(default=ViolationConfidence.REVIEW)
+    evidence_id: UUID
+    infringing_url: str | None = None
+    status: str = Field(default="pending")
+
+
+class NotificationRecord(BaseEntity):
+    recipient: str
+    channels: list[NotificationChannel] = Field(default_factory=list)
+    payload: dict[str, Any] = Field(default_factory=dict)
+    status: str = Field(default="queued")
 
 
 class ScanFingerprint(BaseModel):

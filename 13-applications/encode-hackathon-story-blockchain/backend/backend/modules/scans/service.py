@@ -22,6 +22,7 @@ from ...modules.shared.models import (
 from ...modules.shared.repositories import RepositoryBundle
 from ...services.embeddings import EmbeddingProvider
 from ...services.vector_index import VectorIndex
+from ..violations import ViolationDetectionService
 from .schemas import RecentScanSummary, ScanCreateResponse, ScanDetailResponse, ScanDetailSchema, ScanMatchSchema
 
 
@@ -32,6 +33,7 @@ class ScanService:
     embedding_provider: EmbeddingProvider
     vector_index: VectorIndex
     semantic_pipeline: SemanticPipeline | None = None
+    violation_service: ViolationDetectionService | None = None
 
     def __post_init__(self) -> None:
         if self.semantic_pipeline is None:
@@ -169,6 +171,8 @@ class ScanService:
                     )
 
             await self._mark_job(scan.id, "completed")
+            if self.violation_service:
+                await self.violation_service.evaluate_scan(scan, matches)
         except Exception as exc:
             scan.status = ScanStatus.FAILED
             await self.repositories.scans.update_scan(scan)

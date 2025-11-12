@@ -9,9 +9,12 @@ from ..adapters.repositories.in_memory import (
     InMemoryAlertRepository,
     InMemoryContentRepository,
     InMemoryDisputeRepository,
+    InMemoryEvidenceRepository,
     InMemoryIntegrationRepository,
     InMemoryJobRepository,
+    InMemoryNotificationRepository,
     InMemoryScanRepository,
+    InMemoryViolationRepository,
 )
 from ..adapters.storage.base import AssetStore
 from ..adapters.storage.in_memory import InMemoryAssetStore
@@ -22,6 +25,7 @@ from ..modules.monitoring import MonitoringSettings
 from ..services.crypto import EncryptionService
 from ..services.embeddings import EmbeddingProvider, MockEmbeddingProvider
 from ..services.external import InstagramClient, MockPlatformClient, PlatformClient, TikTokClient, YouTubeClient
+from ..services.notifications import InMemoryNotificationDispatcher, NotificationDispatcher
 from ..services.story.protocol import MockStoryProtocolClient, StoryProtocolClient
 from ..services.vector_index import InMemoryVectorIndex, VectorIndex
 from .logging import configure_logging
@@ -43,6 +47,9 @@ class RepositoryContainer(RepositoryBundle):
     alerts: InMemoryAlertRepository
     jobs: InMemoryJobRepository
     integrations: InMemoryIntegrationRepository
+    evidence: InMemoryEvidenceRepository
+    violations: InMemoryViolationRepository
+    notifications: InMemoryNotificationRepository
 
 
 @dataclass
@@ -58,6 +65,7 @@ class AppContainer:
     vector_index: VectorIndex
     platform_clients: dict[str, PlatformClient]
     monitoring_settings: MonitoringSettings
+    notification_dispatcher: NotificationDispatcher
 
 
 def _build_repositories(settings: AppSettings) -> RepositoryContainer:
@@ -69,6 +77,9 @@ def _build_repositories(settings: AppSettings) -> RepositoryContainer:
             alerts=InMemoryAlertRepository(),
             jobs=InMemoryJobRepository(),
             integrations=InMemoryIntegrationRepository(),
+            evidence=InMemoryEvidenceRepository(),
+            violations=InMemoryViolationRepository(),
+            notifications=InMemoryNotificationRepository(),
         )
 
     # TODO: Replace with SQL-backed repositories for production profiles.
@@ -154,6 +165,7 @@ def get_container() -> AppContainer:
     vector_index: VectorIndex = InMemoryVectorIndex()
     platform_clients = _build_platform_clients(settings)
     monitoring_settings = MonitoringSettings()
+    notification_dispatcher: NotificationDispatcher = InMemoryNotificationDispatcher()
 
     return AppContainer(
         settings=settings,
@@ -167,4 +179,5 @@ def get_container() -> AppContainer:
         vector_index=vector_index,
         platform_clients=platform_clients,
         monitoring_settings=monitoring_settings,
+        notification_dispatcher=notification_dispatcher,
     )

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Iterable
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from ..semantic import SemanticContentPayload, SemanticPipeline
 from ..semantic.models import ContentType
@@ -10,6 +10,7 @@ from ..shared.models import AlertRecord
 from ..shared.repositories import RepositoryBundle
 from ...services.external import PlatformClient
 from ...services.vector_index import VectorIndex
+from ..violations import ViolationDetectionService
 
 
 def _tokenize(text: str) -> set[str]:
@@ -47,6 +48,7 @@ class MonitoringService:
     pipeline: SemanticPipeline
     platform_clients: Iterable[PlatformClient] = field(default_factory=list)
     settings: MonitoringSettings = field(default_factory=MonitoringSettings)
+    violation_service: ViolationDetectionService | None = None
 
     async def run_monitoring(self) -> list[dict[str, Any]]:
         assets = await self.repositories.content.list_assets()
@@ -81,6 +83,16 @@ class MonitoringService:
                         min_score=self.settings.semantic_threshold,
                     )
                     for key, score, metadata in matches:
+                        asset_id_str = metadata.get("asset_id")
+                        asset = None
+                        if asset_id_str:
+                            try:
+                                asset_uuid = UUID(asset_id_str)
+                                asset = await self.repositories.content.get_asset(asset_uuid)
+                            except (ValueError, TypeError):
+                                asset = None
+                        if not asset:
+                            continue
                         event_payload = {
                             "platform": client.name,
                             "url": item.url,
@@ -92,6 +104,14 @@ class MonitoringService:
                         alert = AlertRecord(alert_type="semantic_match", payload=event_payload)
                         await self.repositories.alerts.create_alert(alert)
                         events.append(event_payload)
+                        if self.violation_service:
+                            await self.violation_service.evaluate_external_match(
+                                asset=asset,
+                                score=score,
+                                platform=client.name,
+                                infringing_url=item.url,
+                                semantic_snapshot=result.signature.model_dump(mode="json"),
+                            )
         return events
 
     def _derive_keywords(self, canonical: dict[str, Any]) -> list[str]:

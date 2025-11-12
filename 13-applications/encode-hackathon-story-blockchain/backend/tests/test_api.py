@@ -4,8 +4,6 @@ import asyncio
 from uuid import UUID
 
 from backend.core.container import get_container
-from backend.modules.monitoring import MonitoringService
-from backend.modules.semantic import SemanticPipeline
 
 
 def test_registration_scan_dispute_dashboard_flow(client) -> None:
@@ -132,12 +130,13 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert b"Visible excerpt" in plain_content
     assert "canonical_hash" in plain_semantic
 
-    monitoring_service = MonitoringService(
-        repositories=container.repositories,
-        vector_index=container.vector_index,
-        pipeline=SemanticPipeline(container.embedding_provider),
-        platform_clients=container.platform_clients.values(),
-        settings=container.monitoring_settings,
-    )
+    monitoring_service = client.app.state.monitoring_service
     events = asyncio.run(monitoring_service.run_monitoring())
     assert events, "Monitoring service should surface at least one potential match"
+
+    violations = asyncio.run(container.repositories.violations.list_violations())
+    assert violations, "Violation detection should log infringement events"
+    evidence_records = asyncio.run(container.repositories.evidence.list_evidence())
+    assert evidence_records and evidence_records[0].infringing_url
+    assert container.notification_dispatcher.messages, "Notifications should be dispatched to creator"
+    assert container.story_client.reports, "Story protocol should receive violation reports"

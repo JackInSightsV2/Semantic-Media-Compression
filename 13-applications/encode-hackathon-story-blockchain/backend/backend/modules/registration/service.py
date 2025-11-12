@@ -196,7 +196,7 @@ class RegistrationService:
 
         asset.semantic_fingerprint = semantic_payload
         asset.embeddings = embedding
-        asset.status = ContentStatus.PROCESSING
+        asset.status = ContentStatus.COMPLETED
         await self.repositories.content.update_asset(asset)
 
         await self.vector_index.add(

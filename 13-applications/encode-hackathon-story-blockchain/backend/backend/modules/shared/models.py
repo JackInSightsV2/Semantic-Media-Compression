@@ -17,6 +17,7 @@ class FingerprintDimension(str, Enum):
 class ContentStatus(str, Enum):
     DRAFT = "draft"
     PROCESSING = "processing"
+    COMPLETED = "completed"
     REGISTERED = "registered"
 
 

@@ -80,8 +80,8 @@ export default function DisputePage() {
     ? disputeOptions.matches
         .filter((match) => match.asset_id === originalIP || !originalIP)
         .map((match) => ({
-          value: match.asset_id,
-          label: `Asset ${match.asset_id.substring(0, 8)}... (${Math.round(match.similarity_overall * 100)}% similar)`,
+          value: match.source_reference,
+          label: `${match.source_reference} (${Math.round(match.similarity_overall * 100)}% similar)`,
           similarity: `${Math.round(match.similarity_overall * 100)}%`,
           isHigh: match.risk_level === 'high',
         }))

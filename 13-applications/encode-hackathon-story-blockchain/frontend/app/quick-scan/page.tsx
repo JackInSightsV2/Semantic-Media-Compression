@@ -86,11 +86,15 @@ export default function QuickScanPage() {
 
           if (details.scan.status === 'completed') {
             setCurrentStep('scanned');
-          } else if (details.scan.status === 'processing' || details.scan.status === 'running') {
+          } else if (details.scan.status === 'pending' || details.scan.status === 'running') {
             // Continue polling
             setTimeout(pollScan, 2000);
           } else if (details.scan.status === 'failed') {
             setError('Scan failed');
+            setCurrentStep('upload');
+          } else {
+            // Unknown status, stop polling and show error
+            setError(`Unexpected scan status: ${details.scan.status}`);
             setCurrentStep('upload');
           }
         } catch (err: any) {
@@ -143,11 +147,15 @@ export default function QuickScanPage() {
 
           if (details.scan.status === 'completed') {
             setCurrentStep('scanned');
-          } else if (details.scan.status === 'processing' || details.scan.status === 'running') {
+          } else if (details.scan.status === 'pending' || details.scan.status === 'running') {
             // Continue polling
             setTimeout(pollScan, 2000);
           } else if (details.scan.status === 'failed') {
             setError('Scan failed');
+            setCurrentStep('upload');
+          } else {
+            // Unknown status, stop polling and show error
+            setError(`Unexpected scan status: ${details.scan.status}`);
             setCurrentStep('upload');
           }
         } catch (err: any) {
@@ -864,7 +872,7 @@ export default function QuickScanPage() {
                         scanDetails.matches.map((match, idx) => {
                           const similarityPercent = Math.round(match.similarity_overall * 100);
                           const isHighMatch = match.risk_level === 'high' || similarityPercent >= 85;
-                          const isMediumMatch = match.risk_level === 'medium' || (similarityPercent >= 50 && similarityPercent < 85);
+                          const isMediumMatch = match.risk_level === 'moderate' || (similarityPercent >= 50 && similarityPercent < 85);
                           
                           return (
                             <div

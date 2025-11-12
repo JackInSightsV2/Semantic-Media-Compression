@@ -18,6 +18,7 @@ class DisputeOptionAsset(BaseModel):
 class DisputeOptionMatch(BaseModel):
     scan_id: UUID
     asset_id: UUID
+    source_reference: str
     similarity_overall: float
     risk_level: RiskLevel
 

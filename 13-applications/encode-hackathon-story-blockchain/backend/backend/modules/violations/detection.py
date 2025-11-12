@@ -75,7 +75,7 @@ class ViolationDetectionService:
             asset_id=asset.id,
             similarity_overall=score,
             similarity_breakdown={"fusion": score},
-            risk_level=RiskLevel.MODERATE,
+            risk_level=self._classify_risk(score),
         )
         return await self._process_violation(
             asset=asset,
@@ -151,6 +151,15 @@ class ViolationDetectionService:
         if score >= self.settings.review_threshold:
             return ViolationConfidence.REVIEW
         return None
+
+    @staticmethod
+    def _classify_risk(similarity: float) -> RiskLevel:
+        """Classify risk level based on similarity score."""
+        if similarity >= 0.7:
+            return RiskLevel.HIGH
+        if similarity >= 0.6:
+            return RiskLevel.MODERATE
+        return RiskLevel.LOW
 
     @staticmethod
     def _build_semantic_diff(

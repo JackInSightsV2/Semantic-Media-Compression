@@ -21,10 +21,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-
-// Import comparison data and semantic data
-import comparisonData from '@/demo-data/semantic_comparison_report.json';
-import mykpopsecret from '@/demo-data/mykpopsecret.json';
+import { createScan, getScanDetails, type ScanDetails } from '@/lib/api';
 
 type ScanStep = 'upload' | 'scanning' | 'scanned';
 type UploadedFileType = 'situational_awareness' | 'mykpopsecret' | 'unknown';
@@ -37,9 +34,11 @@ export default function QuickScanPage() {
   // Scanning flow state
   const [currentStep, setCurrentStep] = useState<ScanStep>('upload');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [detectedFileType, setDetectedFileType] = useState<UploadedFileType>('unknown');
   const [urlToScan, setUrlToScan] = useState('');
   const [scanSourceLabel, setScanSourceLabel] = useState<string>('');
+  const [scanId, setScanId] = useState<string | null>(null);
+  const [scanDetails, setScanDetails] = useState<ScanDetails | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -61,81 +60,124 @@ export default function QuickScanPage() {
   }, [isSidebarOpen]);
 
   // Handle file upload
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setUploadedFile(file);
-      setScanSourceLabel(file.name);
-      
-      // Detect file type based on filename
-      const filename = file.name.toLowerCase();
-      if (filename.includes('mykpopsecret')) {
-        setDetectedFileType('mykpopsecret');
-      } else if (filename.includes('situational') || filename.includes('awareness')) {
-        setDetectedFileType('situational_awareness');
-      } else {
-        // Default to situational_awareness for unknown files
-        setDetectedFileType('situational_awareness');
-      }
-      
-      setCurrentStep('scanning');
-      
-      // Mock scanning text file (10 seconds)
-      setTimeout(() => {
-        setCurrentStep('scanned');
-      }, 10000);
+    if (!file) return;
+
+    setError(null);
+    setUploadedFile(file);
+    setScanSourceLabel(file.name);
+    setCurrentStep('scanning');
+
+    try {
+      const response = await createScan({
+        source_type: 'upload',
+        source_reference: file.name,
+        file: file,
+      });
+
+      setScanId(response.scan_id);
+
+      // Poll for scan completion
+      const pollScan = async () => {
+        try {
+          const details = await getScanDetails(response.scan_id);
+          setScanDetails(details);
+
+          if (details.scan.status === 'completed') {
+            setCurrentStep('scanned');
+          } else if (details.scan.status === 'processing' || details.scan.status === 'running') {
+            // Continue polling
+            setTimeout(pollScan, 2000);
+          } else if (details.scan.status === 'failed') {
+            setError('Scan failed');
+            setCurrentStep('upload');
+          }
+        } catch (err: any) {
+          console.error('Error polling scan:', err);
+          setError(err.message || 'Failed to get scan results');
+          setCurrentStep('upload');
+        }
+      };
+
+      // Start polling after a short delay
+      setTimeout(pollScan, 2000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create scan');
+      setCurrentStep('upload');
     }
   };
 
-  // Handle URL scan (mock)
-  const handleUrlScan = () => {
+  // Handle URL scan
+  const handleUrlScan = async () => {
     const trimmed = urlToScan.trim().replace(/^@+/, '');
     if (!trimmed) return;
+    
     try {
       // Basic validation
       // eslint-disable-next-line no-new
       new URL(trimmed);
     } catch {
+      setError('Invalid URL format');
       return;
     }
+
+    setError(null);
     setUploadedFile(null);
     setScanSourceLabel(trimmed);
-    // Simple platform-based mock detection
-    const lower = trimmed.toLowerCase();
-    if (lower === 'https://www.youtube.com/watch?v=gzjzvosvdjm') {
-      // Hard-map this specific URL to situational awareness mock
-      setDetectedFileType('situational_awareness');
-    } else if (lower.includes('kpop')) {
-      setDetectedFileType('mykpopsecret');
-    } else {
-      setDetectedFileType('situational_awareness');
-    }
     setCurrentStep('scanning');
-    setTimeout(() => setCurrentStep('scanned'), 10000);
+
+    try {
+      const response = await createScan({
+        source_type: 'url',
+        source_reference: trimmed,
+      });
+
+      setScanId(response.scan_id);
+
+      // Poll for scan completion
+      const pollScan = async () => {
+        try {
+          const details = await getScanDetails(response.scan_id);
+          setScanDetails(details);
+
+          if (details.scan.status === 'completed') {
+            setCurrentStep('scanned');
+          } else if (details.scan.status === 'processing' || details.scan.status === 'running') {
+            // Continue polling
+            setTimeout(pollScan, 2000);
+          } else if (details.scan.status === 'failed') {
+            setError('Scan failed');
+            setCurrentStep('upload');
+          }
+        } catch (err: any) {
+          console.error('Error polling scan:', err);
+          setError(err.message || 'Failed to get scan results');
+          setCurrentStep('upload');
+        }
+      };
+
+      // Start polling after a short delay
+      setTimeout(pollScan, 2000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create scan');
+      setCurrentStep('upload');
+    }
   };
 
   // Handle reset for another scan
   const handleReset = () => {
     setCurrentStep('upload');
     setUploadedFile(null);
-    setDetectedFileType('unknown');
     setUrlToScan('');
     setScanSourceLabel('');
+    setScanId(null);
+    setScanDetails(null);
+    setError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
-  
-  // Get appropriate semantic data based on detected file type
-  const getSemanticData = () => {
-    if (detectedFileType === 'mykpopsecret') {
-      return Array.isArray(mykpopsecret) ? mykpopsecret[0] : mykpopsecret;
-    }
-    // Default to situational_awareness comparison data
-    return comparisonData;
-  };
-  
-  const semanticData = getSemanticData();
   const isUrlSource = !uploadedFile && !!scanSourceLabel && scanSourceLabel.startsWith('http');
   const normalizedUrl = (scanSourceLabel || '').replace(/^@+/, '');
   const isNotebookLMYouTube = isUrlSource && normalizedUrl.toLowerCase() === 'https://www.youtube.com/watch?v=gzjzvosvdjm';
@@ -433,6 +475,11 @@ export default function QuickScanPage() {
               <p className="text-gray-600 text-sm">
                 Scan for protected IP that has been registered on the Story Blockchain
               </p>
+              {error && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-800 text-sm">{error}</p>
+                </div>
+              )}
             </div>
 
             {/* Upload Content Card */}
@@ -561,12 +608,24 @@ export default function QuickScanPage() {
                         </div>
                         <div>
                           <span className="text-gray-700 font-medium text-sm">Scan Date:</span>
-                          <p className="text-gray-900">{new Date().toLocaleDateString()}</p>
+                          <p className="text-gray-900">
+                            {scanDetails?.scan.created_at
+                              ? new Date(scanDetails.scan.created_at).toLocaleDateString()
+                              : new Date().toLocaleDateString()}
+                          </p>
                         </div>
                         <div>
                           <span className="text-gray-700 font-medium text-sm">Status:</span>
-                          <p className="text-gray-900">Complete</p>
+                          <p className="text-gray-900">{scanDetails?.scan.status || 'Complete'}</p>
                         </div>
+                        {scanDetails?.scan.similarity_overall !== null && (
+                          <div className="col-span-2">
+                            <span className="text-gray-700 font-medium text-sm">Overall Similarity:</span>
+                            <p className="text-gray-900">
+                              {Math.round(scanDetails.scan.similarity_overall * 100)}%
+                            </p>
+                          </div>
+                        )}
                         {isUrlSource && (
                           <div className="col-span-2">
                             <span className="text-gray-700 font-medium text-sm">Source URL:</span>
@@ -801,124 +860,80 @@ export default function QuickScanPage() {
                     </div>
 
                     <div className="space-y-3 relative z-10">
-                      {detectedFileType === 'mykpopsecret' ? (
-                        <>
-                          {/* Match 1: My K-pop Secret (HIGH MATCH) */}
-                          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 text-sm">My K-pop Secret</span>
-                              <span className="text-lg font-bold text-red-600">98%</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mb-2">K-pop Romance Drama Fiction</div>
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
-                                  HIGH MATCH
+                      {scanDetails?.matches && scanDetails.matches.length > 0 ? (
+                        scanDetails.matches.map((match, idx) => {
+                          const similarityPercent = Math.round(match.similarity_overall * 100);
+                          const isHighMatch = match.risk_level === 'high' || similarityPercent >= 85;
+                          const isMediumMatch = match.risk_level === 'medium' || (similarityPercent >= 50 && similarityPercent < 85);
+                          
+                          return (
+                            <div
+                              key={idx}
+                              className={`${
+                                isHighMatch
+                                  ? 'bg-red-50 border border-red-200'
+                                  : isMediumMatch
+                                  ? 'bg-yellow-50 border border-yellow-200'
+                                  : 'bg-blue-50 border border-blue-200'
+                              } rounded-lg p-3`}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="font-semibold text-gray-900 text-sm">Asset {match.asset_id.substring(0, 8)}...</span>
+                                <span
+                                  className={`text-lg font-bold ${
+                                    isHighMatch ? 'text-red-600' : isMediumMatch ? 'text-yellow-600' : 'text-blue-600'
+                                  }`}
+                                >
+                                  {similarityPercent}%
                                 </span>
-                                <span className="text-xs text-red-700">Potential IP Violation</span>
                               </div>
-                              <Link href="/dispute" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2">
-                                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                                  </svg>
+                              <div className="text-xs text-gray-600 mb-2">Similarity Match</div>
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                                      isHighMatch
+                                        ? 'bg-red-600 text-white'
+                                        : isMediumMatch
+                                        ? 'bg-yellow-500 text-white'
+                                        : 'bg-blue-100 text-blue-700'
+                                    }`}
+                                  >
+                                    {isHighMatch ? 'HIGH MATCH' : isMediumMatch ? 'MEDIUM MATCH' : 'LOW MATCH'}
+                                  </span>
+                                  <span
+                                    className={`text-xs ${
+                                      isHighMatch ? 'text-red-700' : isMediumMatch ? 'text-yellow-700' : 'text-blue-700'
+                                    }`}
+                                  >
+                                    {isHighMatch ? 'Potential IP Violation' : 'Safe'}
+                                  </span>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-semibold text-gray-900 text-xs whitespace-nowrap">File Dispute</div>
-                                </div>
-                              </Link>
+                                {isHighMatch && (
+                                  <Link
+                                    href={`/dispute?asset_id=${match.asset_id}&scan_id=${scanId}`}
+                                    className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2"
+                                  >
+                                    <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                      <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                      </svg>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-semibold text-gray-900 text-xs whitespace-nowrap">File Dispute</div>
+                                    </div>
+                                  </Link>
+                                )}
+                              </div>
                             </div>
-                          </div>
-
-                          {/* Match 2: Situational Awareness */}
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 text-sm">Situational Awareness</span>
-                              <span className="text-lg font-bold text-blue-600">8%</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mb-2">Strategic Policy Document</div>
-                            <div className="flex items-center gap-2">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                                NO MATCH
-                              </span>
-                              <span className="text-xs text-blue-700">Safe</span>
-                            </div>
-                          </div>
-
-                          {/* Match 3: Entrepreneurship Guide */}
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 text-sm">Creative Entrepreneurship</span>
-                              <span className="text-lg font-bold text-blue-600">15%</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mb-2">Business Course</div>
-                            <div className="flex items-center gap-2">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                                NO MATCH
-                              </span>
-                              <span className="text-xs text-blue-700">Safe</span>
-                            </div>
-                          </div>
-                        </>
+                          );
+                        })
                       ) : (
-                        <>
-                          {/* Match 1: Situational Awareness (HIGH MATCH) */}
-                          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 text-sm">Situational Awareness</span>
-                              <span className="text-lg font-bold text-red-600">{Math.round(((semanticData as any).semantic_similarity_metrics?.overall_similarity || 0.87) * 100)}%</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mb-2">Strategic Policy Document</div>
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
-                                  HIGH MATCH
-                                </span>
-                                <span className="text-xs text-red-700">Potential IP Violation</span>
-                              </div>
-                              <Link href="/dispute" className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-red-400 hover:bg-red-50 transition-all flex items-center gap-2">
-                                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                                  </svg>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-semibold text-gray-900 text-xs whitespace-nowrap">File Dispute</div>
-                                </div>
-                              </Link>
-                            </div>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <div className="text-center text-gray-600 text-sm">
+                            No matches found. Your content appears to be original.
                           </div>
-
-                          {/* Match 2: My K-pop Secret */}
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 text-sm">My K-pop Secret</span>
-                              <span className="text-lg font-bold text-blue-600">12%</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mb-2">K-pop Romance Drama Fiction</div>
-                            <div className="flex items-center gap-2">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                                NO MATCH
-                              </span>
-                              <span className="text-xs text-blue-700">Safe</span>
-                            </div>
-                          </div>
-
-                          {/* Match 3: Entrepreneurship Guide */}
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 text-sm">Creative Entrepreneurship</span>
-                              <span className="text-lg font-bold text-blue-600">18%</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mb-2">Business Course</div>
-                            <div className="flex items-center gap-2">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                                NO MATCH
-                              </span>
-                              <span className="text-xs text-blue-700">Safe</span>
-                            </div>
-                          </div>
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>

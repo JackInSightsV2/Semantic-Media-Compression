@@ -23,6 +23,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { useRegisteredContent } from '@/context/RegisteredContentContext';
+import {
+  getDashboardSummary,
+  getDashboardActivity,
+  getDashboardNotifications,
+  getDashboardInsights,
+  getActiveDisputes,
+  type DashboardSummary,
+  type ActivityBucket,
+  type Notification,
+  type Insight,
+} from '@/lib/api';
 
 export default function Dashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,19 +43,55 @@ export default function Dashboard() {
   const [selectedDispute, setSelectedDispute] = useState<any>(null);
   const { isContentRegistered } = useRegisteredContent();
   
-  // Calculate total registered content count
-  const registeredContentCount = 2 + (isContentRegistered('situational-awareness') ? 1 : 0);
+  // Backend data state
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [activity, setActivity] = useState<ActivityBucket[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [activeDisputes, setActiveDisputes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load dashboard data
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [summaryData, activityData, notificationsData, insightsData, disputesData] = await Promise.all([
+          getDashboardSummary(),
+          getDashboardActivity(timeRange === '7' ? '7d' : timeRange === '30' ? '30d' : '90d'),
+          getDashboardNotifications(),
+          getDashboardInsights(),
+          getActiveDisputes(),
+        ]);
+
+        setSummary(summaryData);
+        setActivity(activityData);
+        setNotifications(notificationsData);
+        setInsights(insightsData);
+        setActiveDisputes(disputesData);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load dashboard data');
+        console.error('Dashboard load error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [timeRange]);
   
-  // Protection Activity Chart Data
-  const activityData = [
-    { date: 'Oct 20', contentRegistered: 2, matchesFound: 0, disputesFiled: 0 },
-    { date: 'Oct 21', contentRegistered: 2, matchesFound: 4, disputesFiled: 0 },
-    { date: 'Oct 22', contentRegistered: 2, matchesFound: 3, disputesFiled: 0 },
-    { date: 'Oct 23', contentRegistered: 2, matchesFound: 2, disputesFiled: 0 },
-    { date: 'Oct 24', contentRegistered: 2, matchesFound: 7, disputesFiled: 0 },
-    { date: 'Oct 25', contentRegistered: 2, matchesFound: 6, disputesFiled: 2 },
-    { date: 'Oct 26', contentRegistered: isContentRegistered('situational-awareness') ? 3 : 2, matchesFound: 8, disputesFiled: 2 },
-  ];
+  // Calculate total registered content count
+  const registeredContentCount = summary?.registered_assets || 0;
+  
+  // Protection Activity Chart Data - transform backend data
+  const activityData = activity.map((bucket) => ({
+    date: new Date(bucket.bucket).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    contentRegistered: bucket.registered_assets,
+    matchesFound: bucket.scans_completed,
+    disputesFiled: bucket.disputes_opened,
+  }));
   
   // Semantic Match Distribution Data
   const matchDistributionData = [
@@ -53,56 +100,8 @@ export default function Dashboard() {
     { name: 'Low Match (<50%)', value: 2, color: '#3B82F6' },
   ];
 
-  // Dispute data
-  const disputes = {
-    'DR-2025-0158': {
-      caseId: 'DR-2025-0158',
-      title: 'My K-pop Secret',
-      similarity: '98%',
-      priority: 'High',
-      disputeId: '0xdisp7f3c9a8e2b1d5647fa9c0e8b3d7a2c5f',
-      tokenId: '847291',
-      evidenceIPFS: 'Qmevidence8k9p0p1d2r3m4s5e6c7r8e9t0a1b2c3d4e5',
-      txHash: '0x9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0',
-      contractInfo: {
-        licenseType: 'All Rights Reserved',
-        commercialUse: false,
-        derivativeWorks: false,
-        attributionRequired: true,
-        blockchainRegistry: 'Story Protocol',
-        compressionMethod: 'semantic_extraction_v1',
-        ipType: 'semantic_fingerprint',
-        registrationTimestamp: '2025-10-25T00:00:00Z',
-        rightsHolder: 'Original Author',
-        customTerms: 'Semantic compression using AI-extracted narrative structures and thematic analysis. Original creative work. Compressed format preserves semantic fidelity while enabling efficient storage and regeneration.'
-      }
-    },
-    'DR-2025-0155': {
-      caseId: 'DR-2025-0155',
-      title: 'Creative Entrepreneurship Guide',
-      similarity: '85%',
-      priority: 'Medium',
-      disputeId: '0xdisp4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d',
-      tokenId: '723456',
-      evidenceIPFS: 'Qmevidencee1n2t3r4e5p6r7e8n9e0u1r2s3h4i5p6g7u8i9',
-      txHash: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f',
-      contractInfo: {
-        licenseType: 'All Rights Reserved',
-        commercialUse: false,
-        derivativeWorks: false,
-        attributionRequired: true,
-        blockchainRegistry: 'Story Protocol',
-        compressionMethod: 'semantic_extraction_v1',
-        ipType: 'semantic_fingerprint',
-        registrationTimestamp: '2025-10-25T00:00:00Z',
-        rightsHolder: 'Original Author',
-        customTerms: 'Semantic compression using AI-extracted narrative structures and thematic analysis. Original creative work. Compressed format preserves semantic fidelity while enabling efficient storage and regeneration.'
-      }
-    }
-  };
-
-  const handleViewEvidence = (caseId: string) => {
-    setSelectedDispute(disputes[caseId as keyof typeof disputes]);
+  const handleViewEvidence = (dispute: any) => {
+    setSelectedDispute(dispute);
     setShowDisputeModal(true);
   };
   
@@ -452,8 +451,10 @@ export default function Dashboard() {
                 </div>
                 <span className="text-sm font-medium text-red-600">+3 new</span>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1 relative z-10">4</div>
-              <div className="text-sm text-gray-600 mb-3 relative z-10">Potential Matches</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1 relative z-10">
+                {summary?.pending_scans || 0}
+              </div>
+              <div className="text-sm text-gray-600 mb-3 relative z-10">Pending Scans</div>
               
               {/* Quick Scan Card */}
               <Link href="/quick-scan" className="relative 2xl:absolute bottom-0 2xl:bottom-3 right-0 2xl:right-3 bg-white border-2 border-dashed border-gray-300 rounded-lg p-2 hover:border-yellow-400 hover:bg-yellow-50 transition-all flex items-center gap-2 z-10 w-full 2xl:w-auto">
@@ -479,7 +480,9 @@ export default function Dashboard() {
                 </div>
                 <span className="text-sm font-medium text-gray-600">0 resolved, 2 active</span>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1 relative z-10">2</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1 relative z-10">
+                {summary?.active_disputes || 0}
+              </div>
               <div className="text-sm text-gray-600 mb-3 relative z-10">Active Disputes</div>
               
               {/* File Dispute Card */}
@@ -670,7 +673,7 @@ export default function Dashboard() {
               </div>
               
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={activityData}>
+                <LineChart data={activityData.length > 0 ? activityData : [{ date: 'No data', contentRegistered: 0, matchesFound: 0, disputesFiled: 0 }]}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis 
                     dataKey="date" 
@@ -733,47 +736,40 @@ export default function Dashboard() {
               </div>
               
               <div className="space-y-4">
-                {/* High Priority Match Alert */}
-                <div className="flex gap-3 pb-4 border-b border-gray-100">
-                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 mb-1">High Similarity Detected</h3>
-                    <p className="text-sm text-gray-600 mb-2">"My K-pop Secret" - 92% match found on Radish Fiction</p>
-                    <span className="text-xs text-gray-500">2 hours ago</span>
-                  </div>
-                </div>
-                
-                {/* Scan Limit Warning */}
-                <div className="flex gap-3 pb-4 border-b border-gray-100">
-                  <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 mb-1">Scan Limit Warning</h3>
-                    <p className="text-sm text-gray-600 mb-2">You've used 2,847 of 5,000 monthly scans</p>
-                    <span className="text-xs text-gray-500">4 hours ago</span>
-                  </div>
-                </div>
-                
-                {/* Semantic Fingerprint Generated */}
-                <div className="flex gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 mb-1">Semantic Fingerprint Generated</h3>
-                    <p className="text-sm text-gray-600 mb-2">"Creative Entrepreneurship Guide" successfully registered</p>
-                    <span className="text-xs text-gray-500">3 days ago</span>
-                  </div>
-                </div>
+                {loading ? (
+                  <div className="text-center text-gray-500 text-sm">Loading notifications...</div>
+                ) : notifications.length > 0 ? (
+                  notifications.map((notification) => (
+                    <div key={notification.id} className="flex gap-3 pb-4 border-b border-gray-100 last:border-0">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        notification.alert_type === 'violation' ? 'bg-red-100' :
+                        notification.alert_type === 'dispute' ? 'bg-yellow-100' :
+                        'bg-blue-100'
+                      }`}>
+                        <svg className={`w-5 h-5 ${
+                          notification.alert_type === 'violation' ? 'text-red-600' :
+                          notification.alert_type === 'dispute' ? 'text-yellow-600' :
+                          'text-blue-600'
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 mb-1 capitalize">
+                          {notification.alert_type.replace('_', ' ')}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {JSON.stringify(notification.payload)}
+                        </p>
+                        <span className="text-xs text-gray-500">
+                          {new Date(notification.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-500 text-sm">No notifications</div>
+                )}
               </div>
             </div>
             
@@ -869,73 +865,62 @@ export default function Dashboard() {
               </div>
               
               <div className="space-y-3">
-                {/* Dispute 1 - High Priority */}
-                <div className="bg-red-50 border border-red-100 rounded-lg p-4 relative">
-                  <span className="absolute top-3 right-3 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
-                    High Priority
-                  </span>
-                  
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-gray-900 text-sm mb-1">Case #DR-2025-0158</h3>
-                      <p className="text-xs text-gray-700 mb-2">My K-pop Secret</p>
-                      <div className="text-xl font-bold text-red-600 mb-3">98%</div>
-                      <div className="flex flex-wrap gap-2">
-                        <button 
-                          onClick={() => handleViewEvidence('DR-2025-0158')}
-                          className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
-                        >
-                          View Evidence
-                        </button>
-                        <button className="bg-white text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors border border-gray-300 text-xs font-medium">
-                          Update
-                        </button>
-                        <button className="text-blue-600 hover:text-blue-700 px-3 py-1.5 text-xs font-medium">
-                          Blockchain
-                        </button>
+                {loading ? (
+                  <div className="text-center text-gray-500 text-sm">Loading disputes...</div>
+                ) : activeDisputes.length > 0 ? (
+                  activeDisputes.map((dispute) => (
+                    <div
+                      key={dispute.id}
+                      className={`${
+                        dispute.status === 'open' ? 'bg-red-50 border border-red-100' :
+                        dispute.status === 'escalated' ? 'bg-yellow-50 border border-yellow-100' :
+                        'bg-blue-50 border border-blue-100'
+                      } rounded-lg p-4 relative`}
+                    >
+                      <span className="absolute top-3 right-3 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-gray-600 text-white capitalize">
+                        {dispute.status}
+                      </span>
+                      
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                          dispute.status === 'open' ? 'bg-red-100' :
+                          dispute.status === 'escalated' ? 'bg-yellow-100' :
+                          'bg-blue-100'
+                        }`}>
+                          <svg className={`w-5 h-5 ${
+                            dispute.status === 'open' ? 'text-red-600' :
+                            dispute.status === 'escalated' ? 'text-yellow-600' :
+                            'text-blue-600'
+                          }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-gray-900 text-sm mb-1">Dispute #{dispute.id.substring(0, 8)}</h3>
+                          <p className="text-xs text-gray-700 mb-2">Asset: {dispute.asset_id.substring(0, 8)}...</p>
+                          <div className="text-xs text-gray-500 mb-3">
+                            {new Date(dispute.created_at).toLocaleDateString()}
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <button 
+                              onClick={() => handleViewEvidence(dispute)}
+                              className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
+                            >
+                              View Details
+                            </button>
+                            {dispute.tx_hash && (
+                              <button className="text-blue-600 hover:text-blue-700 px-3 py-1.5 text-xs font-medium">
+                                Blockchain
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                
-                {/* Dispute 2 - Medium Priority */}
-                <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4 relative">
-                  <span className="absolute top-3 right-3 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-500 text-white">
-                    Medium Priority
-                  </span>
-                  
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-gray-900 text-sm mb-1">Case #DR-2025-0155</h3>
-                      <p className="text-xs text-gray-700 mb-2">Creative Entrepreneurship Guide</p>
-                      <div className="text-xl font-bold text-yellow-600 mb-3">85%</div>
-                      <div className="flex flex-wrap gap-2">
-                        <button 
-                          onClick={() => handleViewEvidence('DR-2025-0155')}
-                          className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
-                        >
-                          View Evidence
-                        </button>
-                        <button className="bg-white text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors border border-gray-300 text-xs font-medium">
-                          Update
-                        </button>
-                        <button className="text-blue-600 hover:text-blue-700 px-3 py-1.5 text-xs font-medium">
-                          Blockchain
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-500 text-sm">No active disputes</div>
+                )}
               </div>
             </div>
           </div>
@@ -962,59 +947,25 @@ export default function Dashboard() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Trend Alert */}
-              <div className="bg-white rounded-lg p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+              {loading ? (
+                <div className="col-span-3 text-center text-gray-500 text-sm">Loading insights...</div>
+              ) : insights.length > 0 ? (
+                insights.map((insight, idx) => (
+                  <div key={idx} className="bg-white rounded-lg p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h3 className="font-bold text-gray-900">{insight.title}</h3>
+                    </div>
+                    <p className="text-sm text-gray-700 mb-4">{insight.description}</p>
                   </div>
-                  <h3 className="font-bold text-gray-900">Trend Alert</h3>
-                </div>
-                <p className="text-sm text-gray-700 mb-4">
-                  Your "Life Paths" concept is trending. Consider registering similar variations to maximize protection.
-                </p>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                  Explore Variations →
-                </a>
-              </div>
-              
-              {/* Protection Gap */}
-              <div className="bg-white rounded-lg p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900">Protection Gap</h3>
-                </div>
-                <p className="text-sm text-gray-700 mb-4">
-                  You have 15 unprotected pieces of content that share similar themes with your registered works.
-                </p>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                  Review Content →
-                </a>
-              </div>
-              
-              {/* Optimization Tip */}
-              <div className="bg-white rounded-lg p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900">Optimization Tip</h3>
-                </div>
-                <p className="text-sm text-gray-700 mb-4">
-                  Your semantic fingerprints could be strengthened by adding more character depth analysis.
-                </p>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                  Learn More →
-                </a>
-              </div>
+                ))
+              ) : (
+                <div className="col-span-3 text-center text-gray-500 text-sm">No insights available</div>
+              )}
             </div>
           </div>
           
@@ -1151,7 +1102,7 @@ export default function Dashboard() {
                     </svg>
                     <h2 className="text-2xl font-bold text-gray-900">Dispute Evidence</h2>
                   </div>
-                  <p className="text-gray-700">On-chain dispute information for {selectedDispute.title}</p>
+                  <p className="text-gray-700">On-chain dispute information for Asset {selectedDispute.asset_id?.substring(0, 8) || 'N/A'}</p>
                 </div>
                 <button 
                   onClick={() => setShowDisputeModal(false)}
@@ -1167,73 +1118,67 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="text-xs font-medium text-gray-500 mb-1">Dispute ID</div>
-                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.disputeId}</div>
+                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.id || 'N/A'}</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-xs font-medium text-gray-500 mb-1">Token ID</div>
-                  <div className="text-sm font-mono text-gray-900">#{selectedDispute.tokenId}</div>
+                  <div className="text-xs font-medium text-gray-500 mb-1">Asset ID</div>
+                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.asset_id || 'N/A'}</div>
                 </div>
+                {selectedDispute.evidence_cid && (
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="text-xs font-medium text-gray-500 mb-1">Evidence IPFS Hash</div>
+                    <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.evidence_cid}</div>
+                  </div>
+                )}
+                {selectedDispute.tx_hash && (
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="text-xs font-medium text-gray-500 mb-1">Transaction Hash</div>
+                    <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.tx_hash}</div>
+                  </div>
+                )}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-xs font-medium text-gray-500 mb-1">Evidence IPFS Hash</div>
-                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.evidenceIPFS}</div>
+                  <div className="text-xs font-medium text-gray-500 mb-1">Status</div>
+                  <div className="text-sm font-mono text-gray-900 capitalize">{selectedDispute.status || 'N/A'}</div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-xs font-medium text-gray-500 mb-1">Transaction Hash</div>
-                  <div className="text-sm font-mono text-gray-900 break-all">{selectedDispute.txHash}</div>
-                </div>
+                {selectedDispute.created_at && (
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="text-xs font-medium text-gray-500 mb-1">Created</div>
+                    <div className="text-sm font-mono text-gray-900">
+                      {new Date(selectedDispute.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Contract Information */}
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Contract Information</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">License Type</span>
-                    <span className="text-sm font-semibold text-gray-900">{selectedDispute.contractInfo.licenseType}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Blockchain Registry</span>
-                    <span className="text-sm font-semibold text-gray-900">{selectedDispute.contractInfo.blockchainRegistry}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">IP Type</span>
-                    <span className="text-sm font-mono text-gray-900">{selectedDispute.contractInfo.ipType}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Compression Method</span>
-                    <span className="text-sm font-mono text-gray-900">{selectedDispute.contractInfo.compressionMethod}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Rights Holder</span>
-                    <span className="text-sm font-semibold text-gray-900">{selectedDispute.contractInfo.rightsHolder}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Registration Timestamp</span>
-                    <span className="text-sm font-mono text-gray-900">{selectedDispute.contractInfo.registrationTimestamp}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Attribution Required</span>
-                    <span className="text-lg">{selectedDispute.contractInfo.attributionRequired ? '✓' : '✗'}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Commercial Use</span>
-                    <span className="text-lg">{selectedDispute.contractInfo.commercialUse ? '✓' : '✗'}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-blue-200">
-                    <span className="text-sm font-medium text-gray-700">Derivative Works</span>
-                    <span className="text-lg">{selectedDispute.contractInfo.derivativeWorks ? '✓' : '✗'}</span>
-                  </div>
-                  <div className="pt-2">
-                    <div className="text-sm font-medium text-gray-700 mb-2">Custom Terms</div>
-                    <p className="text-sm text-gray-900 leading-relaxed">{selectedDispute.contractInfo.customTerms}</p>
+              {/* Dispute Metadata */}
+              {selectedDispute.metadata && Object.keys(selectedDispute.metadata).length > 0 && (
+                <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Dispute Metadata</h3>
+                  <div className="space-y-3">
+                    {Object.entries(selectedDispute.metadata).map(([key, value]) => (
+                      <div key={key} className="flex justify-between items-center pb-3 border-b border-blue-200">
+                        <span className="text-sm font-medium text-gray-700 capitalize">{key.replace(/_/g, ' ')}</span>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Status Badge */}
               <div className="mt-6 flex items-center justify-between">
-                <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg font-medium text-sm border border-yellow-300">
-                  ⏳ Pending Review
+                <div className={`px-4 py-2 rounded-lg font-medium text-sm border ${
+                  selectedDispute.status === 'open' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
+                  selectedDispute.status === 'resolved' ? 'bg-green-100 text-green-800 border-green-300' :
+                  selectedDispute.status === 'closed' ? 'bg-gray-100 text-gray-800 border-gray-300' :
+                  'bg-yellow-100 text-yellow-800 border-yellow-300'
+                }`}>
+                  {selectedDispute.status === 'open' ? '⏳ Open' :
+                   selectedDispute.status === 'resolved' ? '✓ Resolved' :
+                   selectedDispute.status === 'closed' ? '✓ Closed' :
+                   '⏳ Pending Review'}
                 </div>
                 <button 
                   onClick={() => setShowDisputeModal(false)}

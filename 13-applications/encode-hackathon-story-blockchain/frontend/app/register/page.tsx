@@ -21,15 +21,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { uploadToIPFS, uploadJSONToIPFS, uploadImageBufferToIPFS } from '@/blocklibs/ipfs';
-import { registerIPAsset } from '@/blocklibs/StoryProtocol';
-import { generateQrPng } from '@/blocklibs/qr';
 import { getExplorerUrl, getIPFSUrl, getIPAssetUrl } from '@/blocklibs/utils';
 import { useRegisteredContent } from '@/context/RegisteredContentContext';
+import {
+  uploadAsset,
+  getAssetDetails,
+  buildFingerprint,
+  registerStory,
+  type AssetDetails,
+} from '@/lib/api';
 
-// Import demo data
-import situationalAwareness from '@/demo-data/situational_awareness.json';
-import mykpopsecret from '@/demo-data/mykpopsecret.json';
+// Removed mock data imports - now using backend API
 
 type RegistrationStep = 'upload' | 'analyze' | 'build' | 'preview' | 'approved' | 'registered';
 
@@ -44,55 +46,35 @@ export default function RegisterPage() {
   const [buildingFingerprint, setBuildingFingerprint] = useState(false);
   const [registering, setRegistering] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [selectedMockData, setSelectedMockData] = useState<'situational_awareness' | 'mykpopsecret'>('situational_awareness');
+  const [assetId, setAssetId] = useState<string | null>(null);
+  const [assetDetails, setAssetDetails] = useState<AssetDetails | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   const { registerContent } = useRegisteredContent();
-  
-  // Get the appropriate mock data based on selected file
-  const getFullMockData = () => {
-    return selectedMockData === 'mykpopsecret' ? mykpopsecret : situationalAwareness;
-  };
-  
-  const getMockDataForDisplay = () => {
-    if (selectedMockData === 'mykpopsecret') {
-      return Array.isArray(mykpopsecret) ? mykpopsecret[0] : mykpopsecret;
-    }
-    return Array.isArray(situationalAwareness) ? situationalAwareness[0] : situationalAwareness;
-  };
-  
-  const fullData = getFullMockData(); // For uploading to IPFS
-  const currentData = getMockDataForDisplay(); // For display in UI
 
   // Restore state from sessionStorage on mount (only if coming from view-json)
   useEffect(() => {
     const savedStep = sessionStorage.getItem('registerStep');
-    const savedMockData = sessionStorage.getItem('selectedMockData') as 'situational_awareness' | 'mykpopsecret' | null;
+    const savedAssetId = sessionStorage.getItem('assetId');
     const fromViewJson = sessionStorage.getItem('fromViewJson');
     
-    if (savedStep && fromViewJson === 'true') {
+    if (savedStep && fromViewJson === 'true' && savedAssetId) {
       setCurrentStep(savedStep as RegistrationStep);
-      // Restore the selected mock data if available
-      if (savedMockData) {
-        setSelectedMockData(savedMockData);
-      }
-      // If we're returning to a step after upload, create a mock file
-      if (savedStep !== 'upload') {
-        const filename = savedMockData === 'mykpopsecret' ? 'mykpopsecret.pdf' : 'situational_awareness.pdf';
-        const mockFile = new File([''], filename, { type: 'application/pdf' });
-        setUploadedFile(mockFile);
-      }
-      // Clear the flag after restoring
-      sessionStorage.removeItem('fromViewJson');
+      setAssetId(savedAssetId);
+      // Fetch asset details
+      getAssetDetails(savedAssetId).then(setAssetDetails).catch(console.error);
     }
+    // Clear the flag after restoring
+    sessionStorage.removeItem('fromViewJson');
   }, []);
 
-  // Save state to sessionStorage whenever currentStep or selectedMockData changes
+  // Save state to sessionStorage whenever currentStep or assetId changes
   useEffect(() => {
-    if (currentStep !== 'upload') {
+    if (currentStep !== 'upload' && assetId) {
       sessionStorage.setItem('registerStep', currentStep);
-      sessionStorage.setItem('selectedMockData', selectedMockData);
+      sessionStorage.setItem('assetId', assetId);
     }
-  }, [currentStep, selectedMockData]);
+  }, [currentStep, assetId]);
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -114,43 +96,85 @@ export default function RegisterPage() {
   }, [isSidebarOpen]);
 
   // Handle file upload
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // Clear any saved state when starting new upload
-      sessionStorage.removeItem('registerStep');
-      sessionStorage.removeItem('selectedMockData');
-      
-      // Detect which mock data to use based on filename
-      const filename = file.name.toLowerCase();
-      if (filename.includes('mykpopsecret')) {
-        setSelectedMockData('mykpopsecret');
-      } else if (filename.includes('situational') || filename.includes('awareness')) {
-        setSelectedMockData('situational_awareness');
-      } else {
-        // Default to situational_awareness for unknown files
-        setSelectedMockData('situational_awareness');
+    if (!file) return;
+
+    setError(null);
+    setUploadedFile(file);
+    setCurrentStep('analyze');
+
+    try {
+      // Determine asset type from file extension
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      let assetType: 'text' | 'image' | 'audio' | 'video' = 'text';
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension || '')) {
+        assetType = 'image';
+      } else if (['mp3', 'wav', 'ogg', 'm4a'].includes(extension || '')) {
+        assetType = 'audio';
+      } else if (['mp4', 'avi', 'mov', 'webm'].includes(extension || '')) {
+        assetType = 'video';
       }
+
+      // Upload to backend
+      const uploadResponse = await uploadAsset({
+        title: file.name,
+        asset_type: assetType,
+        file: file,
+        encrypt: true,
+      });
+
+      setAssetId(uploadResponse.asset_id);
       
-      setUploadedFile(file);
-      setCurrentStep('analyze');
-      
-      // Mock analyzing PDF (2 seconds)
-      setTimeout(() => {
-        setCurrentStep('build');
-      }, 2000);
+      // Poll for asset completion
+      const pollAsset = async () => {
+        try {
+          const details = await getAssetDetails(uploadResponse.asset_id);
+          setAssetDetails(details);
+          
+          if (details.asset.status === 'completed' || details.asset.status === 'registered') {
+            setCurrentStep('build');
+          } else if (details.asset.status === 'processing') {
+            // Continue polling
+            setTimeout(pollAsset, 2000);
+          } else {
+            setError(`Asset processing failed: ${details.asset.status}`);
+          }
+        } catch (err: any) {
+          console.error('Error polling asset:', err);
+          // Still move to build step if we have an asset_id
+          setCurrentStep('build');
+        }
+      };
+
+      // Start polling after a short delay
+      setTimeout(pollAsset, 2000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload asset');
+      setCurrentStep('upload');
     }
   };
 
   // Handle building semantic fingerprint
-  const handleBuildFingerprint = () => {
+  const handleBuildFingerprint = async () => {
+    if (!assetId) return;
+
     setBuildingFingerprint(true);
-    
-    // Mock building fingerprint (10 seconds)
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      const response = await buildFingerprint(assetId);
+      
+      // Fetch updated asset details
+      const details = await getAssetDetails(assetId);
+      setAssetDetails(details);
+      
       setBuildingFingerprint(false);
       setCurrentStep('preview');
-    }, 10000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to build fingerprint');
+      setBuildingFingerprint(false);
+    }
   };
 
   // Handle approving fingerprint
@@ -160,103 +184,44 @@ export default function RegisterPage() {
 
   // Handle blockchain registration
   async function handleRegister() {
+    if (!assetId) return;
+
     setRegistering(true);
-    
+    setError(null);
+
     try {
-      // TRY REAL BLOCKCHAIN FIRST
-      try {
-        console.log('📤 Uploading semantic JSON to IPFS...');
+      const response = await registerStory({
+        asset_id: assetId,
+        metadata: {
+          chain: 'testnet',
+          custom_fields: {},
+        },
+      });
 
-        // 1) Upload semantic JSON (full dataset) to IPFS
-        const semanticCid = await uploadToIPFS(fullData);
-        console.log('✅ Uploaded semantic JSON:', semanticCid);
+      // Fetch updated asset details
+      const details = await getAssetDetails(assetId);
+      setAssetDetails(details);
 
-        // 2) Generate QR PNG that encodes ipfs://<semanticCid>
-        console.log('🧩 Generating QR code...');
-        const qrBytes = await generateQrPng(`ipfs://${semanticCid}`);
-        const qrCid = await uploadImageBufferToIPFS(qrBytes, 'semantic-qr.png');
-        console.log('✅ Uploaded QR PNG:', qrCid);
+      setResult({
+        ipAssetId: response.story_ip_asset_id,
+        ipfsHash: response.ipfs_cid,
+        txHash: response.tx_hash,
+        tokenId: response.story_token_id,
+        zkProof: response.zk_proof,
+        source: 'blockchain',
+      });
 
-        // 3) Build IP Metadata (Story IP metadata standard)
-        const title = currentData.document_metadata?.title || 'Untitled';
-        const description = currentData.document_metadata?.purpose || 'No description';
-        const ipMetadata = {
-          title,
-          description,
-          mediaUrl: `ipfs://${semanticCid}`,
-          mediaType: 'application/json',
-          creators: [],
-        } as any;
-        const ipMetadataCid = await uploadJSONToIPFS(ipMetadata, 'ip-metadata.json');
-
-        // 4) Build NFT Metadata (ERC-721) with QR as primary image
-        const nftMetadata = {
-          name: title,
-          description,
-          image: `https://ipfs.io/ipfs/${qrCid}`,
-          external_url: `https://ipfs.io/ipfs/${semanticCid}`,
-          attributes: [
-            { trait_type: 'semantic_cid', value: semanticCid },
-            { trait_type: 'semantic_uri', value: `ipfs://${semanticCid}` },
-          ],
-        } as any;
-        const nftMetadataCid = await uploadJSONToIPFS(nftMetadata, 'nft-metadata.json');
-
-        // 5) Compute SHA-256 hashes of both metadata JSONs (0x-prefixed) using Web Crypto
-        const encoder = new TextEncoder();
-        const ipBuffer = encoder.encode(JSON.stringify(ipMetadata));
-        const nftBuffer = encoder.encode(JSON.stringify(nftMetadata));
-        const ipDigest = await crypto.subtle.digest('SHA-256', ipBuffer);
-        const nftDigest = await crypto.subtle.digest('SHA-256', nftBuffer);
-        const toHex = (buf: ArrayBuffer) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        const ipHash = ('0x' + toHex(ipDigest)) as `0x${string}`;
-        const nftHash = ('0x' + toHex(nftDigest)) as `0x${string}`;
-
-        // 6) Register on Story Protocol using separate metadata
-        console.log('⛓️  Registering on Story Protocol...');
-        const { ipAssetId, txHash, tokenId } = await registerIPAsset({
-          ipMetadataURI: `ipfs://${ipMetadataCid}`,
-          ipMetadataHash: ipHash,
-          nftMetadataURI: `ipfs://${nftMetadataCid}`,
-          nftMetadataHash: nftHash,
-        });
-        
-        console.log('✅ Registered on Story Protocol!');
-        console.log('   IP Asset ID:', ipAssetId);
-        console.log('   Token ID:', tokenId);
-        console.log('   Transaction Hash:', txHash);
-        
-        setResult({
-          ipAssetId: ipAssetId,
-          ipfsHash: semanticCid,
-          ipfsQrCid: qrCid,
-          ipMetadataCid,
-          nftMetadataCid,
-          txHash: txHash,
-          tokenId: tokenId,
-          source: 'blockchain',
-        });
-      } catch (blockchainError) {
-        // FALLBACK TO MOCK for demo safety
-        console.warn('⚠️ Blockchain failed, using mock data for demo:', blockchainError);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        setResult({
-          ipAssetId: '0x' + Math.random().toString(16).substr(2, 40),
-          ipfsHash: 'Qm' + Math.random().toString(36).substr(2, 44),
-          txHash: '0x' + Math.random().toString(16).substr(2, 64),
-          tokenId: 'N/A',
-          source: 'mock', // Mark as fallback
-        });
-      }
-      
       // Register in context so it appears on dashboard
-      const contentId = selectedMockData === 'mykpopsecret' ? 'mykpopsecret' : 'situational-awareness';
-      registerContent(contentId);
+      if (assetDetails?.asset.title) {
+        const contentId = assetDetails.asset.title.toLowerCase().replace(/\s+/g, '-');
+        registerContent(contentId);
+      }
+
       setCurrentStep('registered');
-      // Clear saved state when registration is complete
       sessionStorage.removeItem('registerStep');
-      sessionStorage.removeItem('selectedMockData');
+    } catch (err: any) {
+      setError(err.message || 'Failed to register on blockchain');
+      console.error('Registration error:', err);
     } finally {
       setRegistering(false);
     }
@@ -498,6 +463,11 @@ export default function RegisterPage() {
             <p className="text-gray-600 text-sm">
               Protect your creative content with blockchain-based intellectual property registration
             </p>
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800 text-sm">{error}</p>
+              </div>
+            )}
           </div>
 
           {/* Download Test PDF Card */}
@@ -619,25 +589,33 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{currentData.document_metadata?.title || 'Untitled'}</h3>
-                    <p className="text-gray-600 mb-4">{currentData.document_metadata?.purpose || 'No description'}</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      {assetDetails?.asset.title || uploadedFile?.name || 'Untitled'}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {assetDetails?.asset.semantic_fingerprint?.canonical?.text_semantics?.summary || 'No description'}
+                    </p>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-gray-700 font-medium text-sm">Document Type:</span>
-                        <p className="text-gray-900">{currentData.document_metadata?.document_type || 'Unknown'}</p>
+                        <span className="text-gray-700 font-medium text-sm">Asset Type:</span>
+                        <p className="text-gray-900">{assetDetails?.asset.asset_type || 'Unknown'}</p>
                       </div>
                       <div>
-                        <span className="text-gray-700 font-medium text-sm">Domain:</span>
-                        <p className="text-gray-900">{currentData.document_metadata?.domain?.split(', ')[0] || 'General'}</p>
+                        <span className="text-gray-700 font-medium text-sm">Status:</span>
+                        <p className="text-gray-900">{assetDetails?.asset.status || 'Processing'}</p>
                       </div>
                       <div>
-                        <span className="text-gray-700 font-medium text-sm">Publication Date:</span>
-                        <p className="text-gray-900">{currentData.document_metadata?.publication_context?.date || 'N/A'}</p>
+                        <span className="text-gray-700 font-medium text-sm">Created:</span>
+                        <p className="text-gray-900">
+                          {assetDetails?.asset.created_at 
+                            ? new Date(assetDetails.asset.created_at).toLocaleDateString()
+                            : 'N/A'}
+                        </p>
                       </div>
                       <div>
                         <span className="text-gray-700 font-medium text-sm">File Name:</span>
-                        <p className="text-gray-900">{uploadedFile?.name || 'situational_awareness.pdf'}</p>
+                        <p className="text-gray-900">{uploadedFile?.name || 'N/A'}</p>
                       </div>
                     </div>
                   </div>
@@ -723,24 +701,28 @@ export default function RegisterPage() {
 
                       <div className="space-y-3 relative z-10">
                         <div className="flex justify-between items-start">
-                          <span className="text-gray-700 font-medium">Document Type</span>
-                          <span className="text-gray-600 text-right">{currentData.document_metadata?.document_type || 'Unknown'}</span>
+                          <span className="text-gray-700 font-medium">Asset Type</span>
+                          <span className="text-gray-600 text-right">{assetDetails?.asset.asset_type || 'Unknown'}</span>
                         </div>
                         <div className="flex justify-between items-start">
-                          <span className="text-gray-700 font-medium">Domain</span>
-                          <span className="text-gray-600 text-right text-sm">{currentData.document_metadata?.domain || 'General'}</span>
+                          <span className="text-gray-700 font-medium">Status</span>
+                          <span className="text-gray-600 text-right text-sm">{assetDetails?.asset.status || 'Processing'}</span>
                         </div>
                         <div>
-                          <div className="text-gray-700 font-medium mb-2">Intended Audience</div>
+                          <div className="text-gray-700 font-medium mb-2">Keywords</div>
                           <div className="flex flex-wrap gap-2">
-                            {(currentData.document_metadata?.intended_audience || []).slice(0, 3).map((audience: string, idx: number) => (
-                              <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">{audience}</span>
+                            {(assetDetails?.asset.semantic_fingerprint?.canonical?.text_semantics?.keywords || []).slice(0, 3).map((keyword: string, idx: number) => (
+                              <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">{keyword}</span>
                             ))}
                           </div>
                         </div>
                         <div className="flex justify-between items-start">
-                          <span className="text-gray-700 font-medium">Publication Date</span>
-                          <span className="text-gray-600 text-right">{currentData.document_metadata?.publication_context?.date || 'N/A'}</span>
+                          <span className="text-gray-700 font-medium">Created</span>
+                          <span className="text-gray-600 text-right">
+                            {assetDetails?.asset.created_at 
+                              ? new Date(assetDetails.asset.created_at).toLocaleDateString()
+                              : 'N/A'}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -757,20 +739,24 @@ export default function RegisterPage() {
 
                       <div className="space-y-3 relative z-10">
                         <div>
-                          <div className="text-gray-700 font-medium mb-1">Core Thesis</div>
-                          <p className="text-gray-600 text-sm">{(currentData.global_context?.core_thesis || 'No thesis available').substring(0, 150)}...</p>
+                          <div className="text-gray-700 font-medium mb-1">Summary</div>
+                          <p className="text-gray-600 text-sm">
+                            {(assetDetails?.asset.semantic_fingerprint?.canonical?.text_semantics?.summary || 'No summary available').substring(0, 150)}...
+                          </p>
                         </div>
                         <div>
-                          <div className="text-gray-700 font-medium mb-2">Key Themes</div>
+                          <div className="text-gray-700 font-medium mb-2">Themes</div>
                           <div className="flex flex-wrap gap-2">
-                            {(currentData.global_context?.key_themes || []).slice(0, 4).map((theme: string, idx: number) => (
+                            {(assetDetails?.asset.semantic_fingerprint?.canonical?.text_semantics?.themes || []).slice(0, 4).map((theme: string, idx: number) => (
                               <span key={idx} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">{theme}</span>
                             ))}
                           </div>
                         </div>
                         <div className="flex justify-between items-start">
-                          <span className="text-gray-700 font-medium">Narrative Arc</span>
-                          <span className="text-gray-600 text-right text-sm">{currentData.global_context?.narrative_arc?.structure || 'N/A'}</span>
+                          <span className="text-gray-700 font-medium">Tone</span>
+                          <span className="text-gray-600 text-right text-sm">
+                            {assetDetails?.asset.semantic_fingerprint?.canonical?.text_semantics?.tone || 'N/A'}
+                          </span>
                         </div>
                       </div>
                     </div>

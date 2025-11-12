@@ -21,6 +21,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import {
+  getDisputeOptions,
+  createDispute,
+  getDisputeDetails,
+  getActiveDisputes,
+  type DisputeOptions,
+} from '@/lib/api';
 
 export default function DisputePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,6 +37,9 @@ export default function DisputePage() {
   const [filing, setFiling] = useState(false);
   const [filed, setFiled] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [disputeOptions, setDisputeOptions] = useState<DisputeOptions | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [notes, setNotes] = useState('');
 
   useEffect(() => {
     const handleClickOutside = () => setIsMenuOpen(false);
@@ -50,72 +60,61 @@ export default function DisputePage() {
     };
   }, [isSidebarOpen]);
 
+  // Load dispute options on mount
+  useEffect(() => {
+    getDisputeOptions()
+      .then(setDisputeOptions)
+      .catch((err) => {
+        console.error('Failed to load dispute options:', err);
+        setError('Failed to load dispute options');
+      });
+  }, []);
+
   // Reset suspected IP when original IP changes
   useEffect(() => {
     setSuspectedIP('');
   }, [originalIP]);
 
-  // Get suspected options based on selected original IP
-  const getSuspectedOptions = () => {
-    switch (originalIP) {
-      case 'situational-awareness':
-        return [
-          { value: 'copycat-situational', label: 'AI Race Analysis - Strategic Policy', similarity: '87%', isHigh: true },
-          { value: 'copycat-notebooklm-youtube', label: 'NotebookLM Podcast - Situational Awareness (YouTube)', similarity: '86%', isHigh: true },
-          { value: 'copycat-kpop', label: 'Idol Dreams - K-pop Romance', similarity: '12%', isHigh: false },
-          { value: 'copycat-entrepreneurship', label: 'Startup Success Guide - Business Course', similarity: '18%', isHigh: false },
-        ];
-      case 'mykpopsecret':
-        return [
-          { value: 'copycat-kpop', label: 'Idol Dreams - K-pop Romance', similarity: '98%', isHigh: true },
-          { value: 'copycat-situational', label: 'AI Race Analysis - Strategic Policy', similarity: '8%', isHigh: false },
-          { value: 'copycat-entrepreneurship', label: 'Startup Success Guide - Business Course', similarity: '15%', isHigh: false },
-        ];
-      case 'entrepreneurship':
-        return [
-          { value: 'copycat-entrepreneurship', label: 'Startup Success Guide - Business Course', similarity: '85%', isHigh: true },
-          { value: 'copycat-situational', label: 'AI Race Analysis - Strategic Policy', similarity: '18%', isHigh: false },
-          { value: 'copycat-kpop', label: 'Idol Dreams - K-pop Romance', similarity: '15%', isHigh: false },
-        ];
-      default:
-        return [];
-    }
-  };
-
-  const suspectedOptions = getSuspectedOptions();
+  // Get suspected options from backend
+  const suspectedOptions = disputeOptions
+    ? disputeOptions.matches
+        .filter((match) => match.asset_id === originalIP || !originalIP)
+        .map((match) => ({
+          value: match.asset_id,
+          label: `Asset ${match.asset_id.substring(0, 8)}... (${Math.round(match.similarity_overall * 100)}% similar)`,
+          similarity: `${Math.round(match.similarity_overall * 100)}%`,
+          isHigh: match.risk_level === 'high',
+        }))
+    : [];
   
   async function handleFileDispute() {
     if (!originalIP || !suspectedIP) return;
-    
+
     setFiling(true);
-    
-    // Simulate blockchain transaction
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // Mock result with contract information
-    const timestamp = new Date().toISOString();
-    setResult({
-      disputeId: '0xdisp' + Math.random().toString(16).substr(2, 36),
-      evidenceIPFS: 'Qmevidence' + Math.random().toString(36).substr(2, 38),
-      txHash: '0x' + Math.random().toString(16).substr(2, 64),
-      tokenId: Math.floor(Math.random() * 1000000),
-      timestamp: timestamp,
-      contractInfo: {
-        licenseType: 'All Rights Reserved',
-        commercialUse: false,
-        derivativeWorks: false,
-        attributionRequired: true,
-        blockchainRegistry: 'Story Protocol',
-        compressionMethod: 'semantic_extraction_v1',
-        ipType: 'semantic_fingerprint',
-        registrationTimestamp: '2025-10-25T00:00:00Z',
-        rightsHolder: 'Original Author',
-        customTerms: 'Semantic compression using AI-extracted narrative structures and thematic analysis. Original creative work. Compressed format preserves semantic fidelity while enabling efficient storage and regeneration.'
-      }
-    });
-    
-    setFiled(true);
-    setFiling(false);
+    setError(null);
+
+    try {
+      const response = await createDispute({
+        asset_id: originalIP,
+        suspect_reference: suspectedIP,
+        notes: notes || undefined,
+      });
+
+      setResult({
+        disputeId: response.dispute.id,
+        evidenceIPFS: response.dispute.evidence_cid,
+        txHash: response.dispute.tx_hash,
+        timestamp: response.dispute.created_at,
+        status: response.dispute.status,
+      });
+
+      setFiled(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create dispute');
+      console.error('Dispute creation error:', err);
+    } finally {
+      setFiling(false);
+    }
   }
   
   return (
@@ -403,6 +402,11 @@ export default function DisputePage() {
               <p className="text-gray-600 text-sm">
                 Report potential intellectual property violations to Story Protocol
               </p>
+              {error && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-800 text-sm">{error}</p>
+                </div>
+              )}
             </div>
             {/* Step 1: Select IP Assets */}
             <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 relative overflow-hidden">
@@ -419,16 +423,18 @@ export default function DisputePage() {
                   <label className="block font-semibold text-gray-700 mb-2">
                     Original IP Asset:
                   </label>
-                  <select 
+                  <select
                     value={originalIP}
                     onChange={(e) => setOriginalIP(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white text-gray-900"
-                    disabled={filing || filed}
+                    disabled={filing || filed || !disputeOptions}
                   >
                     <option value="">Select your registered IP...</option>
-                    <option value="situational-awareness">Situational Awareness - Strategic Policy Document</option>
-                    <option value="mykpopsecret">My K-pop Secret - Romance Drama Fiction</option>
-                    <option value="entrepreneurship">Creative Entrepreneurship - Business Course</option>
+                    {disputeOptions?.assets.map((asset) => (
+                      <option key={asset.id} value={asset.id}>
+                        {asset.title} ({asset.status})
+                      </option>
+                    ))}
                   </select>
                   <p className="text-sm text-gray-500 mt-2">Select the IP asset you own that has been plagiarized</p>
                 </div>
@@ -448,15 +454,29 @@ export default function DisputePage() {
                     </option>
                     {suspectedOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label} ({option.similarity} similar)
+                        {option.label}
                       </option>
                     ))}
                   </select>
                   <p className="text-sm text-gray-500 mt-2">
-                    {originalIP 
-                      ? 'Select the IP asset that appears to be plagiarizing your work' 
+                    {originalIP
+                      ? 'Select the IP asset that appears to be plagiarizing your work'
                       : 'Please select your original IP asset first'}
                   </p>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-2">
+                    Notes (Optional):
+                  </label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white text-gray-900"
+                    rows={4}
+                    placeholder="Add any additional notes about this dispute..."
+                    disabled={filing || filed}
+                  />
                 </div>
               </div>
             </div>
@@ -527,10 +547,12 @@ export default function DisputePage() {
                       <div className="font-mono text-xs text-gray-900 break-all">{result.disputeId}</div>
                     </div>
 
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="text-sm font-semibold text-gray-700 mb-2">Token ID</div>
-                      <div className="font-mono text-xs text-gray-900">#{result.tokenId}</div>
-                    </div>
+                    {result.status && (
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="text-sm font-semibold text-gray-700 mb-2">Status</div>
+                        <div className="font-mono text-xs text-gray-900">{result.status}</div>
+                      </div>
+                    )}
 
                     <div className="bg-gray-50 rounded-lg p-4">
                       <div className="text-sm font-semibold text-gray-700 mb-2">Evidence IPFS Hash</div>
@@ -543,80 +565,33 @@ export default function DisputePage() {
                     </div>
                   </div>
 
-                  {/* Contract Information */}
-                  <div className="border-t border-gray-200 pt-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      Contract Information
-                    </h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">License Type</div>
-                        <div className="text-gray-900">{result.contractInfo.licenseType}</div>
-                      </div>
-
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Blockchain Registry</div>
-                        <div className="text-gray-900 flex items-center gap-2">
-                          {result.contractInfo.blockchainRegistry}
-                          <img src="/symbol-dark.png" alt="Story" className="h-4 inline-block" />
+                  {/* Dispute Metadata */}
+                  {result.timestamp && (
+                    <div className="border-t border-gray-200 pt-6">
+                      <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Dispute Information
+                      </h4>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-blue-50 rounded-lg p-4">
+                          <div className="text-sm font-semibold text-gray-700 mb-1">Created</div>
+                          <div className="text-gray-900">
+                            {new Date(result.timestamp).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">IP Type</div>
-                        <div className="text-gray-900">{result.contractInfo.ipType}</div>
-                      </div>
-
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Compression Method</div>
-                        <div className="text-gray-900 font-mono text-xs">{result.contractInfo.compressionMethod}</div>
-                      </div>
-
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Rights Holder</div>
-                        <div className="text-gray-900">{result.contractInfo.rightsHolder}</div>
-                      </div>
-
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Registration Timestamp</div>
-                        <div className="text-gray-900 font-mono text-xs">{result.contractInfo.registrationTimestamp}</div>
+                        {result.evidenceIPFS && (
+                          <div className="bg-blue-50 rounded-lg p-4">
+                            <div className="text-sm font-semibold text-gray-700 mb-1">Evidence IPFS</div>
+                            <div className="text-gray-900 font-mono text-xs break-all">{result.evidenceIPFS}</div>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                      <div className="bg-purple-50 rounded-lg p-4 text-center">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Attribution Required</div>
-                        <div className="text-2xl font-bold text-purple-600">
-                          {result.contractInfo.attributionRequired ? '✓' : '✗'}
-                        </div>
-                      </div>
-
-                      <div className="bg-orange-50 rounded-lg p-4 text-center">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Commercial Use</div>
-                        <div className="text-2xl font-bold text-orange-600">
-                          {result.contractInfo.commercialUse ? '✓' : '✗'}
-                        </div>
-                      </div>
-
-                      <div className="bg-red-50 rounded-lg p-4 text-center">
-                        <div className="text-sm font-semibold text-gray-700 mb-1">Derivative Works</div>
-                        <div className="text-2xl font-bold text-red-600">
-                          {result.contractInfo.derivativeWorks ? '✓' : '✗'}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="text-sm font-semibold text-gray-700 mb-2">Custom Terms</div>
-                      <div className="text-sm text-gray-600 leading-relaxed">
-                        {result.contractInfo.customTerms}
-                      </div>
-                    </div>
-                  </div>
+                  )}
 
                   {/* Status Badge */}
                   <div className="mt-6 flex items-center justify-between">

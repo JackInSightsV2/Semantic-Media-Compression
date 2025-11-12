@@ -33,6 +33,7 @@ class DisputeService:
                     DisputeOptionMatch(
                         scan_id=scan.id,
                         asset_id=match.asset_id,
+                        source_reference=scan.source_reference,
                         similarity_overall=match.similarity_overall,
                         risk_level=match.risk_level,
                     )

@@ -67,6 +67,9 @@ class ExternalIntegrationSettings(BaseSettings):
     pinata_jwt: str | None = None
     story_protocol_api_key: str | None = None
     hf_api_token: str | None = None
+    youtube_api_key: str | None = None
+    instagram_access_token: str | None = None
+    tiktok_api_key: str | None = None
 
 
 class TaskSettings(BaseSettings):

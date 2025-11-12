@@ -69,6 +69,7 @@ class ContentAssetSchema(BaseModel):
     status: ContentStatus
     storage_uri: str | None = None
     semantic_fingerprint: dict[str, Any] = Field(default_factory=dict)
+    manifest: dict[str, Any] = Field(default_factory=dict)
     embeddings: list[float] = Field(default_factory=list)
     story_ip_asset_id: str | None = None
     story_token_id: str | None = None

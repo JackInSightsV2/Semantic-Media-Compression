@@ -9,18 +9,25 @@ from ..adapters.repositories.in_memory import (
     InMemoryAlertRepository,
     InMemoryContentRepository,
     InMemoryDisputeRepository,
+    InMemoryEvidenceRepository,
     InMemoryIntegrationRepository,
     InMemoryJobRepository,
+    InMemoryNotificationRepository,
     InMemoryScanRepository,
+    InMemoryViolationRepository,
 )
 from ..adapters.storage.base import AssetStore
 from ..adapters.storage.in_memory import InMemoryAssetStore
 from ..adapters.tasks.base import TaskDispatcher
 from ..adapters.tasks.synchronous import SynchronousTaskDispatcher
 from ..modules.shared.repositories import RepositoryBundle
+from ..modules.monitoring import MonitoringSettings
 from ..services.crypto import EncryptionService
 from ..services.embeddings import EmbeddingProvider, MockEmbeddingProvider
+from ..services.external import InstagramClient, MockPlatformClient, PlatformClient, TikTokClient, YouTubeClient
+from ..services.notifications import InMemoryNotificationDispatcher, NotificationDispatcher
 from ..services.story.protocol import MockStoryProtocolClient, StoryProtocolClient
+from ..services.vector_index import InMemoryVectorIndex, VectorIndex
 from .logging import configure_logging
 from .settings import (
     AppSettings,
@@ -40,6 +47,9 @@ class RepositoryContainer(RepositoryBundle):
     alerts: InMemoryAlertRepository
     jobs: InMemoryJobRepository
     integrations: InMemoryIntegrationRepository
+    evidence: InMemoryEvidenceRepository
+    violations: InMemoryViolationRepository
+    notifications: InMemoryNotificationRepository
 
 
 @dataclass
@@ -52,6 +62,10 @@ class AppContainer:
     encryption_service: EncryptionService
     ipfs_client: InMemoryIPFSClient
     story_client: StoryProtocolClient
+    vector_index: VectorIndex
+    platform_clients: dict[str, PlatformClient]
+    monitoring_settings: MonitoringSettings
+    notification_dispatcher: NotificationDispatcher
 
 
 def _build_repositories(settings: AppSettings) -> RepositoryContainer:
@@ -63,6 +77,9 @@ def _build_repositories(settings: AppSettings) -> RepositoryContainer:
             alerts=InMemoryAlertRepository(),
             jobs=InMemoryJobRepository(),
             integrations=InMemoryIntegrationRepository(),
+            evidence=InMemoryEvidenceRepository(),
+            violations=InMemoryViolationRepository(),
+            notifications=InMemoryNotificationRepository(),
         )
 
     # TODO: Replace with SQL-backed repositories for production profiles.
@@ -93,6 +110,46 @@ def _build_embedding_provider(settings: AppSettings) -> EmbeddingProvider:
     raise NotImplementedError(f"Embedding provider not implemented for profile {settings.embedding_profile}")
 
 
+def _build_platform_clients(settings: AppSettings) -> dict[str, PlatformClient]:
+    external = settings.external
+    clients: dict[str, PlatformClient] = {}
+
+    if external.youtube_api_key:
+        clients["youtube"] = YouTubeClient(api_key=external.youtube_api_key)
+    else:
+        clients["youtube"] = MockPlatformClient.from_pairs(
+            "youtube",
+            [
+                ("Forest Journey", "A serene walk through the ancient forest with mist and quiet melodies."),
+                ("Dreamscape Themes", "Exploration of dreamscapes and surreal storytelling elements."),
+            ],
+        )
+
+    if external.instagram_access_token:
+        clients["instagram"] = InstagramClient(access_token=external.instagram_access_token)
+    else:
+        clients["instagram"] = MockPlatformClient.from_pairs(
+            "instagram",
+            [
+                ("Mist Morning", "Caption about misty forests and calm tones with dreamlike imagery."),
+                ("Urban Fantasy", "Narrative blending city lights with enchanted woods."),
+            ],
+        )
+
+    if external.tiktok_api_key:
+        clients["tiktok"] = TikTokClient(api_key=external.tiktok_api_key)
+    else:
+        clients["tiktok"] = MockPlatformClient.from_pairs(
+            "tiktok",
+            [
+                ("Storytime", "Narration about growth and transformation in magical forests."),
+                ("Ambient Beats", "Calm tempo audio clip describing serene moods."),
+            ],
+        )
+
+    return clients
+
+
 @lru_cache()
 def get_container() -> AppContainer:
     settings = get_settings()
@@ -105,6 +162,10 @@ def get_container() -> AppContainer:
     encryption_service = EncryptionService()
     ipfs_client = InMemoryIPFSClient()
     story_client = MockStoryProtocolClient(namespace=UUID("8a78d159-4f9d-4ec6-85d9-13d8f8f6c70d"))
+    vector_index: VectorIndex = InMemoryVectorIndex()
+    platform_clients = _build_platform_clients(settings)
+    monitoring_settings = MonitoringSettings()
+    notification_dispatcher: NotificationDispatcher = InMemoryNotificationDispatcher()
 
     return AppContainer(
         settings=settings,
@@ -115,4 +176,8 @@ def get_container() -> AppContainer:
         encryption_service=encryption_service,
         ipfs_client=ipfs_client,
         story_client=story_client,
+        vector_index=vector_index,
+        platform_clients=platform_clients,
+        monitoring_settings=monitoring_settings,
+        notification_dispatcher=notification_dispatcher,
     )

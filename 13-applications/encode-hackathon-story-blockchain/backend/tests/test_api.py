@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import asyncio
 from uuid import UUID
 
 from backend.core.container import get_container
+from backend.modules.monitoring import MonitoringService
+from backend.modules.semantic import SemanticPipeline
 
 
 def test_registration_scan_dispute_dashboard_flow(client) -> None:
@@ -21,10 +24,16 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert detail_data["asset"]["title"] == "Test Story"
     assert detail_data["fingerprints"]
 
+    manifest = detail_data["asset"]["manifest"]
+    assert manifest["derivatives"], "Manifest should contain derivative records"
+
     semantic = detail_data["asset"]["semantic_fingerprint"]
     assert "ipfs_cid" in semantic
     assert "zk_proof" in semantic
     assert "raw_text" not in semantic
+    assert "canonical" in semantic
+    assert semantic["canonical"]["text_semantics"]["tone"] == "neutral"
+    assert semantic["canonical"]["embedding"], "Canonical embedding should be present"
 
     container = get_container()
     ciphertext = container.ipfs_client.fetch_content(semantic["ipfs_cid"])
@@ -121,3 +130,14 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert plain_semantic["encryption_mode"] == "plaintext"
     plain_content = container.ipfs_client.fetch_content(plain_semantic["ipfs_cid"])
     assert b"Visible excerpt" in plain_content
+    assert "canonical_hash" in plain_semantic
+
+    monitoring_service = MonitoringService(
+        repositories=container.repositories,
+        vector_index=container.vector_index,
+        pipeline=SemanticPipeline(container.embedding_provider),
+        platform_clients=container.platform_clients.values(),
+        settings=container.monitoring_settings,
+    )
+    events = asyncio.run(monitoring_service.run_monitoring())
+    assert events, "Monitoring service should surface at least one potential match"

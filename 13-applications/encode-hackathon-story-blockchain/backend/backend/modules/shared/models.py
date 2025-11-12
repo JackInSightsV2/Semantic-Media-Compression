@@ -74,6 +74,7 @@ class ContentAsset(BaseEntity):
     asset_type: str
     storage_uri: str | None = None
     semantic_fingerprint: dict[str, Any] = Field(default_factory=dict)
+    manifest: dict[str, Any] = Field(default_factory=dict)
     embeddings: list[float] = Field(default_factory=list)
     status: ContentStatus = Field(default=ContentStatus.DRAFT)
     story_ip_asset_id: str | None = None

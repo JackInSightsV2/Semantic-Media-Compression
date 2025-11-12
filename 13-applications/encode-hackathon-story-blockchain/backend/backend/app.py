@@ -8,10 +8,12 @@ from .modules.dashboard.api import router as dashboard_router
 from .modules.dashboard.service import DashboardService
 from .modules.disputes.api import router as disputes_router
 from .modules.disputes.service import DisputeService
+from .modules.monitoring import MonitoringService
 from .modules.registration.api import router as registration_router
 from .modules.registration.service import RegistrationService
 from .modules.scans.api import router as scans_router
 from .modules.scans.service import ScanService
+from .modules.semantic import SemanticPipeline
 
 
 def create_app() -> FastAPI:
@@ -52,25 +54,38 @@ def _register_routes(app: FastAPI, container: AppContainer) -> None:
 def _register_events(app: FastAPI, container: AppContainer) -> None:
     @app.on_event("startup")
     async def on_startup() -> None:
+        shared_pipeline = SemanticPipeline(container.embedding_provider)
+
         registration_service = RegistrationService(
             repositories=container.repositories,
             asset_store=container.asset_store,
             task_dispatcher=container.task_dispatcher,
             embedding_provider=container.embedding_provider,
+            vector_index=container.vector_index,
             encryption_service=container.encryption_service,
             ipfs_client=container.ipfs_client,
             story_client=container.story_client,
+            semantic_pipeline=shared_pipeline,
         )
         scan_service = ScanService(
             repositories=container.repositories,
             task_dispatcher=container.task_dispatcher,
             embedding_provider=container.embedding_provider,
+            vector_index=container.vector_index,
+            semantic_pipeline=shared_pipeline,
         )
         dispute_service = DisputeService(
             repositories=container.repositories,
             asset_store=container.asset_store,
         )
         dashboard_service = DashboardService(repositories=container.repositories)
+        monitoring_service = MonitoringService(
+            repositories=container.repositories,
+            vector_index=container.vector_index,
+            pipeline=shared_pipeline,
+            platform_clients=container.platform_clients.values(),
+            settings=container.monitoring_settings,
+        )
 
         await registration_service.register_tasks()
         await scan_service.register_tasks()
@@ -79,3 +94,4 @@ def _register_events(app: FastAPI, container: AppContainer) -> None:
         app.state.scan_service = scan_service
         app.state.dispute_service = dispute_service
         app.state.dashboard_service = dashboard_service
+        app.state.monitoring_service = monitoring_service

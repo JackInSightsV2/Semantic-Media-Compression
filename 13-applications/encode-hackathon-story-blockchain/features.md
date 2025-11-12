@@ -23,6 +23,25 @@
 - **Testing-first**: Every module provides in-memory or stub implementations to enable unit testing without external services.
 - **Scalability**: Containers for API, workers, beat provide horizontal scale; connectors can run in dedicated worker queues when throughput grows.
 
+### Deployment Profiles & Upgrade Path
+To guarantee a smooth path from local hacking to production, each dependency is accessed through an adapter pattern with multiple implementations:
+- **Profiles**
+  - `local-dev`: in-memory repositories + synchronous background executor (no external services required).
+  - `sqlite`: SQLite database via SQLAlchemy, local filesystem storage, `dramatiq` or Celery in eager mode.
+  - `postgres`: Postgres (Docker or cloud) with Redis-backed Celery, object storage adapter (MinIO).
+  - `supabase-prod`: Supabase Postgres + Storage, Redis-as-a-service, Celery workers in containers, Story Protocol + Pinata credentials.
+- **Adapter Registry**
+  - Database: `ContentRepository` with implementations `InMemoryContentRepo`, `SqliteContentRepo`, `PostgresContentRepo`, `SupabaseContentRepo`.
+  - Storage: `AssetStore` with `LocalDiskStore`, `SupabaseStore`, `S3Store`.
+  - Queue/Workers: `TaskDispatcher` with `SynchronousDispatcher` (local), `CeleryDispatcher`, `AsyncIOBackgroundTasks`.
+  - AI Services: `EmbeddingProvider`, `Summarizer`, `Transcriber` each offering mock, local-model, and external-API variants.
+- **Configuration**
+  - Pydantic `Settings` object selects profile; `dependency_overrides` inject correct adapters per request.
+  - ADR documents capture when to flip defaults and required infra changes.
+- **Migration Strategy**
+  - Shared SQLAlchemy models + Alembic migrations run across SQLite/Postgres/Supabase.
+  - Automated smoke tests verify compatibility for each profile in CI matrix (local, sqlite, postgres).
+
 ## Core Backend Features
 
 ### 1. Content Registration API
@@ -116,6 +135,8 @@
   - id, provider (`youtube|tiktok|custom`), credentials metadata, status.
 - `integration_runs`
   - integration_id FK, job_id, status, last_synced_at (tracks connector execution).
+- `system_profiles`
+  - profile name, configuration metadata (optional table for runtime introspection/debugging).
 
 ## External Integrations
 - **Pinata/IPFS**: use existing helper modules; store JWT + keys in `.env.local` / `backend/.env`.
@@ -158,6 +179,7 @@
 ## Testing & Tooling
 - Unit tests with Pytest for pipelines and similarity logic.
 - Integration tests using `httpx` + `pytest-asyncio` hitting Supabase Postgres test schema, plus contract tests for connector adapters with VCR.py.
+- Adapter conformance tests ensure every `ContentRepository` implementation satisfies CRUD + search behaviours (using pytest fixtures parametrised by profile).
 - Seed script (Python CLI) to populate demo content for live demos.
 - GitHub Actions workflow: Ruff lint, mypy type-check, run tests.
 
@@ -167,6 +189,7 @@
 - Expose health endpoint `/healthz` returning dependency status for judges.
 - Capture metrics on job durations to prove efficiency improvements during demo.
 - Maintain architecture decision records (`adr/`) documenting connector contracts and module boundaries.
+- Maintain deployment guides for each profile (local memory, SQLite, Postgres, Supabase) including migration commands and adapter toggles.
 
 ## Stretch Enhancements (Post-Hackathon)
 - Multi-tenant auth (Clerk or Auth0).

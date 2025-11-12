@@ -21,6 +21,7 @@ class InMemoryIPFSClient(IPFSClient):
         metadata = {
             "nonce": base64.b64encode(payload.nonce).decode("utf-8"),
             "key_digest": payload.key_digest,
+            "mode": "encrypted",
         }
 
         return IPFSUploadResult(
@@ -29,5 +30,17 @@ class InMemoryIPFSClient(IPFSClient):
             metadata=metadata,
         )
 
-    def fetch_ciphertext(self, cid: str) -> bytes:
+    async def upload_plaintext(self, data: bytes) -> IPFSUploadResult:
+        cid = hashlib.sha256(data).hexdigest()
+        self._storage[cid] = data
+        metadata = {
+            "mode": "plaintext",
+        }
+        return IPFSUploadResult(
+            cid=cid,
+            proof=hashlib.sha256(data).hexdigest(),
+            metadata=metadata,
+        )
+
+    def fetch_content(self, cid: str) -> bytes:
         return self._storage[cid]

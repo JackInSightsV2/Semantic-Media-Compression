@@ -27,7 +27,7 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert "raw_text" not in semantic
 
     container = get_container()
-    ciphertext = container.ipfs_client.fetch_ciphertext(semantic["ipfs_cid"])
+    ciphertext = container.ipfs_client.fetch_content(semantic["ipfs_cid"])
     assert b"hackathon" not in ciphertext
 
     story_response = client.post(
@@ -102,3 +102,22 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     insights = client.get("/api/dashboard/insights")
     assert insights.status_code == 200
     assert insights.json()
+
+    # Plaintext opt-out path
+    no_encrypt_response = client.post(
+        "/api/registration/uploads",
+        data={
+            "title": "Plain Story",
+            "asset_type": "text",
+            "text": "Visible excerpt for public domain.",
+            "encrypt": "false",
+        },
+    )
+    assert no_encrypt_response.status_code == 202
+    plain_asset_id = UUID(no_encrypt_response.json()["asset_id"])
+    plain_detail = client.get(f"/api/registration/{plain_asset_id}")
+    assert plain_detail.status_code == 200
+    plain_semantic = plain_detail.json()["asset"]["semantic_fingerprint"]
+    assert plain_semantic["encryption_mode"] == "plaintext"
+    plain_content = container.ipfs_client.fetch_content(plain_semantic["ipfs_cid"])
+    assert b"Visible excerpt" in plain_content

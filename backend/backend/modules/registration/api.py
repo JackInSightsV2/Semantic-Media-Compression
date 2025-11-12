@@ -32,6 +32,7 @@ async def create_upload(
     asset_type: Annotated[str, Form(...)],
     text: Annotated[str | None, Form()] = None,
     file: Annotated[UploadFile | None, File()] = None,
+    encrypt: Annotated[bool, Form()] = True,
     service: RegistrationService = Depends(get_registration_service),
 ) -> UploadInitResponse:
     try:
@@ -40,6 +41,7 @@ async def create_upload(
             asset_type=asset_type,
             text_payload=text,
             file=file,
+            encrypt=encrypt,
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc

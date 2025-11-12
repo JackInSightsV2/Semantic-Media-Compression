@@ -64,6 +64,7 @@ class RegistrationService:
         asset_type: str,
         text_payload: str | None,
         file: UploadFile | None,
+        encrypt: bool,
     ) -> UploadInitResponse:
         raw_text = text_payload
         storage_uri: str | None = None
@@ -88,7 +89,7 @@ class RegistrationService:
         job = JobRecord(job_type="registration.upload", reference_id=asset.id, status="queued")
         await self.repositories.jobs.create_job(job)
 
-        payload = {"asset_id": str(asset.id)}
+        payload = {"asset_id": str(asset.id), "encrypt": encrypt}
         if raw_text:
             payload["text"] = raw_text
         await self.task_dispatcher.dispatch("registration.build_fingerprint", payload)
@@ -109,21 +110,51 @@ class RegistrationService:
         embedding = pipeline_result.get("embedding", [])
 
         plaintext_bytes = json.dumps(fingerprint_data, sort_keys=True).encode("utf-8")
-        encrypted_payload = self.encryption_service.encrypt(plaintext_bytes)
-        ipfs_result = await self.ipfs_client.upload_encrypted(encrypted_payload)
+        ipfs_cid: str | None = None
+        zk_proof: str | None = None
+        encryption_material: EncryptionMaterial | None = None
 
-        asset.semantic_fingerprint = {
+        semantic_payload: dict[str, Any] = {
             "narrative": fingerprint_data.get("narrative"),
             "keywords": fingerprint_data.get("keywords", []),
-            "ipfs_cid": ipfs_result.cid,
-            "zk_proof": ipfs_result.proof,
-            "encryption": {
-                "key_digest": encrypted_payload.key_digest,
-                "nonce": ipfs_result.metadata.get("nonce"),
-            },
-            "fingerprint_hash": encrypted_payload.payload_hash,
             "document_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            "encryption_mode": "encrypted" if request.encrypt else "plaintext",
         }
+
+        if request.encrypt:
+            encrypted_payload = self.encryption_service.encrypt(plaintext_bytes)
+            ipfs_result = await self.ipfs_client.upload_encrypted(encrypted_payload)
+            ipfs_cid = ipfs_result.cid
+            zk_proof = ipfs_result.proof
+            semantic_payload.update(
+                {
+                    "ipfs_cid": ipfs_result.cid,
+                    "zk_proof": ipfs_result.proof,
+                    "encryption": {
+                        "key_digest": encrypted_payload.key_digest,
+                        "nonce": ipfs_result.metadata.get("nonce"),
+                    },
+                    "fingerprint_hash": encrypted_payload.payload_hash,
+                }
+            )
+            encryption_material = EncryptionMaterial(
+                key=base64.b64encode(encrypted_payload.key).decode("utf-8"),
+                nonce=base64.b64encode(encrypted_payload.nonce).decode("utf-8"),
+                key_digest=encrypted_payload.key_digest,
+            )
+        else:
+            ipfs_result = await self.ipfs_client.upload_plaintext(plaintext_bytes)
+            ipfs_cid = ipfs_result.cid
+            zk_proof = ipfs_result.proof
+            semantic_payload.update(
+                {
+                    "ipfs_cid": ipfs_result.cid,
+                    "zk_proof": ipfs_result.proof,
+                    "fingerprint": fingerprint_data,
+                }
+            )
+
+        asset.semantic_fingerprint = semantic_payload
         asset.embeddings = embedding
         await self.repositories.content.update_asset(asset)
 
@@ -150,19 +181,13 @@ class RegistrationService:
                 )
             )
 
-        encryption_material = EncryptionMaterial(
-            key=base64.b64encode(encrypted_payload.key).decode("utf-8"),
-            nonce=base64.b64encode(encrypted_payload.nonce).decode("utf-8"),
-            key_digest=encrypted_payload.key_digest,
-        )
-
         return BuildFingerprintResponse(
             asset_id=asset.id,
             fingerprint=fingerprint_data,
             embeddings=embedding,
             fingerprints=fingerprints,
-            ipfs_cid=ipfs_result.cid,
-            zk_proof=ipfs_result.proof,
+            ipfs_cid=ipfs_cid,
+            zk_proof=zk_proof,
             encryption_material=encryption_material,
         )
 
@@ -224,7 +249,11 @@ class RegistrationService:
     async def _run_build_fingerprint_task(self, payload: dict[str, Any]) -> None:
         asset_id = UUID(payload["asset_id"])
         text_override = payload.get("text")
-        request = BuildFingerprintRequest(asset_id=asset_id, text_override=text_override)
+        request = BuildFingerprintRequest(
+            asset_id=asset_id,
+            text_override=text_override,
+            encrypt=payload.get("encrypt", True),
+        )
         try:
             result = await self.build_fingerprint(request)
             await self._mark_job(asset_id, "completed", payload=result.model_dump())

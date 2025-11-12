@@ -21,6 +21,7 @@ class BuildFingerprintRequest(BaseModel):
         default=None,
         description="Optional raw text used to build the fingerprint instead of stored content.",
     )
+    encrypt: bool = Field(default=True, description="Whether to encrypt fingerprint payload before storage.")
 
 
 class FingerprintSchema(BaseModel):
@@ -39,9 +40,9 @@ class BuildFingerprintResponse(BaseModel):
     fingerprint: dict[str, Any]
     embeddings: list[float]
     fingerprints: list[FingerprintSchema]
-    ipfs_cid: str
-    zk_proof: str
-    encryption_material: EncryptionMaterial
+    ipfs_cid: str | None = None
+    zk_proof: str | None = None
+    encryption_material: EncryptionMaterial | None = None
 
 
 class StoryRegistrationRequest(BaseModel):

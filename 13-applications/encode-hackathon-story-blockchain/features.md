@@ -8,12 +8,20 @@
 
 ## Target Architecture Overview
 - **Frontend**: existing Next.js app continues as the primary client.
-- **Backend API**: FastAPI (Python 3.11) service deployed alongside the frontend (live in a new `backend/` directory).
-- **Processing Workers**: Celery + Redis for long-running jobs (semantic extraction, matching, blockchain writes). Celery Beat handles scheduled scans.
+- **Backend API**: FastAPI (Python 3.11) service deployed alongside the frontend (live in a new `backend/` directory). Follows a domain-driven package layout (`modules/registration`, `modules/scans`, `modules/disputes`, etc.).
+- **Processing Workers**: Celery + Redis for long-running jobs (semantic extraction, matching, blockchain writes). Celery Beat handles scheduled scans. Each worker loads modular task packages so new scanners/connectors are just additional Celery tasks.
 - **Data Store**: Supabase Postgres (with pgvector enabled) plus Redis for queues/caching.
 - **Storage**: Supabase Storage buckets for raw uploads & derived artefacts, Pinata/IPFS for fingerprints, Story Protocol for on-chain records.
-- **AI Services**: Open-source first (e.g. `sentence-transformers/multi-qa-mpnet-base-dot-v1` via Hugging Face Inference API or on-device with `sentence-transformers` + `torch`), optional fallback to OpenAI/Anthropic.
+- **AI Services**: Open-source first (e.g. `sentence-transformers/multi-qa-mpnet-base-dot-v1` via Hugging Face Inference API or on-device with `sentence-transformers` + `torch`), optional fallback to OpenAI/Anthropic. Encapsulated behind `services/embeddings` to allow vendor swaps.
 - **Observability**: structlog/Python logging + `/healthz` endpoint, optional PostHog or Supabase Logs for event capture.
+
+### Modularity & Extensibility Principles
+- **Module-per-capability**: Registration, scanning, disputes, alerts live in isolated Python packages with their own routers, service classes, schemas, tests.
+- **Connector Interface Layer**: Define abstract base classes (`ContentConnector`, `SemanticScanner`) so new 3rd-party sources (YouTube, TikTok, AWS S3, custom APIs) or new fingerprint engines can be plugged in without touching core flows.
+- **Event-Driven Contracts**: Use Pydantic models for event payloads (`scan.completed`, `dispute.created`), ensuring Celery tasks communicate via well-defined schemas.
+- **Configuration via Dependency Injection**: Use FastAPI dependency overrides + Pydantic settings to swap concrete implementations (e.g. `YouTubeConnector`, `VimeoConnector`) in different environments.
+- **Testing-first**: Every module provides in-memory or stub implementations to enable unit testing without external services.
+- **Scalability**: Containers for API, workers, beat provide horizontal scale; connectors can run in dedicated worker queues when throughput grows.
 
 ## Core Backend Features
 
@@ -40,6 +48,7 @@
   4. **Fingerprint Assembly**: produce JSON matching mocks, store structured rows in DB.
 - Each step executed inside Celery worker to avoid blocking API thread.
 - Intermediate artefacts stored in Postgres JSONB for auditability.
+- Pipeline implemented as composable stages (`ProcessorStage` interface) so new trait extraction algorithms can be added without rewriting the orchestrator.
 
 ### 3. Quick Scan & Content Monitoring
 - `POST /api/scans`
@@ -62,6 +71,7 @@
   - Risk tier classification (High/Moderate/Low).
 - Inserts match rows with timestamps for dashboard charts.
 - Generates alert events stored in Postgres (`alerts` table) for notifications feed.
+- Supports pluggable post-processing hooks (e.g. send Slack alert, call webhook) via optional task registry.
 
 ### 5. Dispute Management
 - `GET /api/disputes/options`
@@ -102,13 +112,17 @@
   - id, asset_id FK, suspect_reference (scan/dispute), evidence_cid, tx_hash, status, metadata JSONB.
 - `jobs`
   - background job audit trail (optional, stored in Supabase Postgres).
+- `integrations`
+  - id, provider (`youtube|tiktok|custom`), credentials metadata, status.
+- `integration_runs`
+  - integration_id FK, job_id, status, last_synced_at (tracks connector execution).
 
 ## External Integrations
 - **Pinata/IPFS**: use existing helper modules; store JWT + keys in `.env.local` / `backend/.env`.
 - **Story Protocol**: wrap client usage behind backend service (Python wrapper calling Story SDK or REST); frontend only hits backend.
-- **Vector Embeddings**: Host sentence transformer via Hugging Face Inference Endpoint or run locally with `@xenova/transformers` (works in Node without GPU).
+- **Vector Embeddings**: Host sentence transformer via Hugging Face Inference Endpoint or run locally with `sentence-transformers`; module implements `EmbeddingProvider` interface to allow swaps.
 - **Transcription (Stretch)**: Whisper.cpp or AssemblyAI for video/audio quick scans.
-- **PDF/Text Extraction**: `pdfplumber`, `readability-lxml`, `jsdom`, `langchain` document loaders where appropriate.
+- **PDF/Text Extraction**: `pdfplumber`, `readability-lxml`, `langchain` document loaders; each extraction tool wrapped behind `ContentExtractor` interface.
 
 ## Frontend Integration Checklist
 - Replace mock hooks/context with SWR/React Query hitting new endpoints.
@@ -143,7 +157,7 @@
 
 ## Testing & Tooling
 - Unit tests with Pytest for pipelines and similarity logic.
-- Integration tests using `httpx` + `pytest-asyncio` hitting Supabase Postgres test schema.
+- Integration tests using `httpx` + `pytest-asyncio` hitting Supabase Postgres test schema, plus contract tests for connector adapters with VCR.py.
 - Seed script (Python CLI) to populate demo content for live demos.
 - GitHub Actions workflow: Ruff lint, mypy type-check, run tests.
 
@@ -152,6 +166,7 @@
 - Document start commands: `npm run dev` (frontend), `uvicorn backend.main:app --reload` & `celery -A backend.worker worker --beat` (backend) with a Procfile or `just` recipes.
 - Expose health endpoint `/healthz` returning dependency status for judges.
 - Capture metrics on job durations to prove efficiency improvements during demo.
+- Maintain architecture decision records (`adr/`) documenting connector contracts and module boundaries.
 
 ## Stretch Enhancements (Post-Hackathon)
 - Multi-tenant auth (Clerk or Auth0).

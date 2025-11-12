@@ -61,6 +61,25 @@ class StorageSettings(BaseSettings):
     supabase_key: str | None = None
 
 
+class StoryProtocolSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="STORY_", env_file=".env", env_file_encoding="utf-8")
+
+    wallet_private_key: str | None = Field(
+        default=None, description="Private key for Story Protocol wallet (without 0x prefix)"
+    )
+    rpc_provider_url: str = Field(
+        default="https://aeneid.storyrpc.io", description="RPC provider URL for Story Protocol"
+    )
+    chain_id: int = Field(default=1315, description="Chain ID (1315 for Aeneid testnet, 1514 for mainnet)")
+    use_mock: bool = Field(
+        default=True, description="Use mock Story Protocol client instead of real SDK"
+    )
+    spg_nft_contract: str | None = Field(
+        default=None,
+        description="SPG NFT contract address for minting new NFTs (optional, uses default if not set)",
+    )
+
+
 class ExternalIntegrationSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="EXT_", env_file=".env", env_file_encoding="utf-8")
 
@@ -99,6 +118,7 @@ class AppSettings(BaseSettings):
     storage: StorageSettings = Field(default_factory=StorageSettings)
     external: ExternalIntegrationSettings = Field(default_factory=ExternalIntegrationSettings)
     tasks: TaskSettings = Field(default_factory=TaskSettings)
+    story: StoryProtocolSettings = Field(default_factory=StoryProtocolSettings)
 
 
 @lru_cache()

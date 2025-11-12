@@ -26,7 +26,11 @@ from ..services.crypto import EncryptionService
 from ..services.embeddings import EmbeddingProvider, MockEmbeddingProvider
 from ..services.external import InstagramClient, MockPlatformClient, PlatformClient, TikTokClient, YouTubeClient
 from ..services.notifications import InMemoryNotificationDispatcher, NotificationDispatcher
-from ..services.story.protocol import MockStoryProtocolClient, StoryProtocolClient
+from ..services.story.protocol import (
+    MockStoryProtocolClient,
+    RealStoryProtocolClient,
+    StoryProtocolClient,
+)
 from ..services.vector_index import InMemoryVectorIndex, VectorIndex
 from .logging import configure_logging
 from .settings import (
@@ -153,6 +157,38 @@ def _build_platform_clients(settings: AppSettings) -> dict[str, PlatformClient]:
     return clients
 
 
+def _build_story_client(settings: AppSettings) -> StoryProtocolClient:
+    """
+    Build Story Protocol client based on settings.
+    
+    Uses mock client if STORY_USE_MOCK is True or if wallet private key is not provided.
+    Otherwise, uses the real Story Protocol Python SDK.
+    """
+    story_settings = settings.story
+
+    # Use mock if explicitly configured or if private key is missing
+    if story_settings.use_mock or not story_settings.wallet_private_key:
+        return MockStoryProtocolClient(namespace=UUID("8a78d159-4f9d-4ec6-85d9-13d8f8f6c70d"))
+
+    # Use real SDK client
+    try:
+        return RealStoryProtocolClient(
+            wallet_private_key=story_settings.wallet_private_key,
+            rpc_provider_url=story_settings.rpc_provider_url,
+            chain_id=story_settings.chain_id,
+            spg_nft_contract=story_settings.spg_nft_contract,
+        )
+    except ImportError as e:
+        # Fall back to mock if SDK is not installed
+        import warnings
+
+        warnings.warn(
+            f"Story Protocol Python SDK not available, using mock client: {e}",
+            UserWarning,
+        )
+        return MockStoryProtocolClient(namespace=UUID("8a78d159-4f9d-4ec6-85d9-13d8f8f6c70d"))
+
+
 @lru_cache()
 def get_container() -> AppContainer:
     settings = get_settings()
@@ -164,7 +200,7 @@ def get_container() -> AppContainer:
     embedding_provider = _build_embedding_provider(settings)
     encryption_service = EncryptionService()
     ipfs_client = InMemoryIPFSClient()
-    story_client = MockStoryProtocolClient(namespace=UUID("8a78d159-4f9d-4ec6-85d9-13d8f8f6c70d"))
+    story_client = _build_story_client(settings)
     vector_index: VectorIndex = InMemoryVectorIndex()
     platform_clients = _build_platform_clients(settings)
     monitoring_settings = MonitoringSettings()

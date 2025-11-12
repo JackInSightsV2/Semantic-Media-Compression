@@ -4,6 +4,7 @@ import base64
 import hashlib
 import json
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 from uuid import UUID
 
@@ -12,6 +13,8 @@ from fastapi import UploadFile
 from ...adapters.ipfs.base import IPFSClient
 from ...adapters.storage.base import AssetStore
 from ...adapters.tasks.base import TaskDispatcher
+from ...modules.semantic import SemanticContentPayload, SemanticPipeline
+from ...modules.semantic.models import ContentType
 from ...modules.shared.models import (
     ContentAsset,
     ContentStatus,
@@ -24,7 +27,7 @@ from ...modules.shared.repositories import RepositoryBundle
 from ...services.crypto import EncryptionService
 from ...services.embeddings import EmbeddingProvider
 from ...services.story.protocol import StoryProtocolClient
-from .pipeline import build_semantic_fingerprint_pipeline
+from ...services.vector_index import VectorIndex
 from .schemas import (
     BuildFingerprintRequest,
     BuildFingerprintResponse,
@@ -44,12 +47,15 @@ class RegistrationService:
     asset_store: AssetStore
     task_dispatcher: TaskDispatcher
     embedding_provider: EmbeddingProvider
+    vector_index: VectorIndex
     encryption_service: EncryptionService
     ipfs_client: IPFSClient
     story_client: StoryProtocolClient
+    semantic_pipeline: SemanticPipeline | None = None
 
     def __post_init__(self) -> None:
-        self._pipeline = build_semantic_fingerprint_pipeline(self.embedding_provider)
+        if self.semantic_pipeline is None:
+            self.semantic_pipeline = SemanticPipeline(self.embedding_provider)
 
     async def register_tasks(self) -> None:
         await self.task_dispatcher.register(
@@ -67,6 +73,7 @@ class RegistrationService:
         encrypt: bool,
     ) -> UploadInitResponse:
         raw_text = text_payload
+        content_type = self._resolve_content_type(asset_type)
         storage_uri: str | None = None
 
         if file is not None:
@@ -76,7 +83,8 @@ class RegistrationService:
                 data=file_bytes,
                 content_type=file.content_type,
             )
-            raw_text = file_bytes.decode("utf-8", errors="ignore")
+            if content_type == ContentType.TEXT:
+                raw_text = file_bytes.decode("utf-8", errors="ignore")
 
         asset = ContentAsset(
             title=title,
@@ -89,7 +97,12 @@ class RegistrationService:
         job = JobRecord(job_type="registration.upload", reference_id=asset.id, status="queued")
         await self.repositories.jobs.create_job(job)
 
-        payload = {"asset_id": str(asset.id), "encrypt": encrypt}
+        payload = {
+            "asset_id": str(asset.id),
+            "encrypt": encrypt,
+            "asset_type": asset_type,
+            "storage_uri": storage_uri,
+        }
         if raw_text:
             payload["text"] = raw_text
         await self.task_dispatcher.dispatch("registration.build_fingerprint", payload)
@@ -101,25 +114,52 @@ class RegistrationService:
         if not asset:
             raise ValueError(f"Asset {request.asset_id} not found")
 
-        text = request.text_override or asset.semantic_fingerprint.get("raw_text")
-        if text is None:
-            raise ValueError("No text available to build fingerprint")
+        content_type = self._resolve_content_type(asset.asset_type)
+        payload = await self._build_payload(
+            asset=asset,
+            content_type=content_type,
+            text_override=request.text_override,
+        )
+        if payload.text is None and payload.image_bytes is None and payload.audio_bytes is None and payload.video_bytes is None:
+            raise ValueError("No content available to build fingerprint")
 
-        pipeline_result = await self._pipeline.execute({"text": text, "metadata": {}})
-        fingerprint_data = pipeline_result["fingerprint"]
-        embedding = pipeline_result.get("embedding", [])
+        result = await self.semantic_pipeline.process(payload)
+        signature_json = result.signature.model_dump(mode="json")
+        canonical_json = json.dumps(signature_json, separators=(",", ":"), sort_keys=True)
+        canonical_hash = hashlib.sha256(canonical_json.encode("utf-8")).hexdigest()
+        embedding = result.embedding
 
-        plaintext_bytes = json.dumps(fingerprint_data, sort_keys=True).encode("utf-8")
+        plaintext_bytes = canonical_json.encode("utf-8")
         ipfs_cid: str | None = None
         zk_proof: str | None = None
         encryption_material: EncryptionMaterial | None = None
 
-        semantic_payload: dict[str, Any] = {
-            "narrative": fingerprint_data.get("narrative"),
-            "keywords": fingerprint_data.get("keywords", []),
-            "document_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
-            "encryption_mode": "encrypted" if request.encrypt else "plaintext",
-        }
+        semantic_payload: dict[str, Any] = {"canonical": signature_json, "canonical_hash": canonical_hash}
+        semantic_payload["encryption_mode"] = "encrypted" if request.encrypt else "plaintext"
+        if payload.text:
+            semantic_payload["document_hash"] = hashlib.sha256(payload.text.encode("utf-8")).hexdigest()
+
+        manifest_dict = result.manifest.model_dump(mode="json")
+        asset.manifest = manifest_dict
+        semantic_payload["manifest"] = manifest_dict
+
+        if normalized_text := result.derivatives.get("normalized_text"):
+            text_uri = await self.asset_store.persist_text(
+                path=f"normalized/{asset.id}.txt",
+                text=normalized_text,
+                content_type="text/plain",
+            )
+            for derivative in asset.manifest.get("derivatives", []):
+                if derivative.get("id") == "text:normalized":
+                    derivative["uri"] = text_uri
+
+        if result.derivatives.get("audio_waveform"):
+            semantic_payload["audio_waveform_checksum"] = hashlib.sha256(
+                json.dumps(result.derivatives["audio_waveform"]).encode("utf-8")
+            ).hexdigest()
+
+        if result.derivatives.get("audio_transcript"):
+            semantic_payload["audio_transcript_excerpt"] = result.derivatives["audio_transcript"][:140]
 
         if request.encrypt:
             encrypted_payload = self.encryption_service.encrypt(plaintext_bytes)
@@ -150,13 +190,20 @@ class RegistrationService:
                 {
                     "ipfs_cid": ipfs_result.cid,
                     "zk_proof": ipfs_result.proof,
-                    "fingerprint": fingerprint_data,
+                    "fingerprint": signature_json,
                 }
             )
 
         asset.semantic_fingerprint = semantic_payload
         asset.embeddings = embedding
+        asset.status = ContentStatus.PROCESSING
         await self.repositories.content.update_asset(asset)
+
+        await self.vector_index.add(
+            canonical_hash,
+            embedding,
+            metadata={"asset_id": str(asset.id), "title": asset.title},
+        )
 
         fingerprints: list[FingerprintSchema] = []
         for dimension in FingerprintDimension:
@@ -165,9 +212,9 @@ class RegistrationService:
                 dimension=dimension,
                 embedding=embedding,
                 metadata=FingerprintMetadata(
-                    narrative_summary=fingerprint_data.get("narrative"),
-                    keywords=fingerprint_data.get("keywords", []),
-                    extra={"dimension": dimension.value},
+                    narrative_summary=result.signature.text_semantics.summary,
+                    keywords=result.signature.text_semantics.keywords,
+                    extra={"dimension": dimension.value, "tone": result.signature.text_semantics.tone},
                 ),
             )
             await self.repositories.content.add_fingerprint(record)
@@ -183,7 +230,7 @@ class RegistrationService:
 
         return BuildFingerprintResponse(
             asset_id=asset.id,
-            fingerprint=fingerprint_data,
+            fingerprint=signature_json,
             embeddings=embedding,
             fingerprints=fingerprints,
             ipfs_cid=ipfs_cid,
@@ -277,3 +324,51 @@ class RegistrationService:
                     job.payload = payload
                 await self.repositories.jobs.update_job(job)
                 break
+
+    def _resolve_content_type(self, asset_type: str) -> ContentType:
+        normalized = asset_type.lower()
+        if normalized in {"text", "script", "lyrics", "document"}:
+            return ContentType.TEXT
+        if normalized in {"image", "artwork", "frame"}:
+            return ContentType.IMAGE
+        if normalized in {"audio", "music", "narration", "sound"}:
+            return ContentType.AUDIO
+        if normalized in {"video", "film", "animation", "clip"}:
+            return ContentType.VIDEO
+        return ContentType.TEXT
+
+    async def _build_payload(
+        self,
+        *,
+        asset: ContentAsset,
+        content_type: ContentType,
+        text_override: str | None,
+    ) -> SemanticContentPayload:
+        creator = asset.semantic_fingerprint.get("canonical", {}).get("metadata", {}).get("creator", "Unknown")
+        text = text_override.strip() if text_override else None
+        image_bytes: bytes | None = None
+        audio_bytes: bytes | None = None
+        video_bytes: bytes | None = None
+
+        if content_type == ContentType.TEXT and text is None and asset.storage_uri:
+            stored_bytes = await self.asset_store.fetch_bytes(asset.storage_uri)
+            text = stored_bytes.decode("utf-8", errors="ignore")
+        elif content_type == ContentType.IMAGE and asset.storage_uri:
+            image_bytes = await self.asset_store.fetch_bytes(asset.storage_uri)
+        elif content_type == ContentType.AUDIO and asset.storage_uri:
+            audio_bytes = await self.asset_store.fetch_bytes(asset.storage_uri)
+        elif content_type == ContentType.VIDEO and asset.storage_uri:
+            video_bytes = await self.asset_store.fetch_bytes(asset.storage_uri)
+
+        return SemanticContentPayload(
+            asset_id=asset.id,
+            creator=creator or "Unknown",
+            asset_type=content_type,
+            text=text,
+            image_bytes=image_bytes,
+            audio_bytes=audio_bytes,
+            video_bytes=video_bytes,
+            timestamp=datetime.utcnow(),
+            tags=asset.semantic_fingerprint.get("canonical", {}).get("metadata", {}).get("tags", []),
+            extra={"source": "owned"},
+        )

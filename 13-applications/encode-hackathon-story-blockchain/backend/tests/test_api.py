@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from uuid import UUID
 
 from backend.core.container import get_container
@@ -21,10 +22,16 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert detail_data["asset"]["title"] == "Test Story"
     assert detail_data["fingerprints"]
 
+    manifest = detail_data["asset"]["manifest"]
+    assert manifest["derivatives"], "Manifest should contain derivative records"
+
     semantic = detail_data["asset"]["semantic_fingerprint"]
     assert "ipfs_cid" in semantic
     assert "zk_proof" in semantic
     assert "raw_text" not in semantic
+    assert "canonical" in semantic
+    assert semantic["canonical"]["text_semantics"]["tone"] == "neutral"
+    assert semantic["canonical"]["embedding"], "Canonical embedding should be present"
 
     container = get_container()
     ciphertext = container.ipfs_client.fetch_content(semantic["ipfs_cid"])
@@ -121,3 +128,15 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert plain_semantic["encryption_mode"] == "plaintext"
     plain_content = container.ipfs_client.fetch_content(plain_semantic["ipfs_cid"])
     assert b"Visible excerpt" in plain_content
+    assert "canonical_hash" in plain_semantic
+
+    monitoring_service = client.app.state.monitoring_service
+    events = asyncio.run(monitoring_service.run_monitoring())
+    assert events, "Monitoring service should surface at least one potential match"
+
+    violations = asyncio.run(container.repositories.violations.list_violations())
+    assert violations, "Violation detection should log infringement events"
+    evidence_records = asyncio.run(container.repositories.evidence.list_evidence())
+    assert evidence_records and evidence_records[0].infringing_url
+    assert container.notification_dispatcher.messages, "Notifications should be dispatched to creator"
+    assert container.story_client.reports, "Story protocol should receive violation reports"

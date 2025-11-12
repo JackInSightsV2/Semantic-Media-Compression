@@ -9,20 +9,26 @@ from ...modules.shared.models import (
     ContentAsset,
     DisputeRecord,
     DisputeStatus,
+    EvidenceBundleRecord,
     FingerprintRecord,
     IntegrationRecord,
     IntegrationRunRecord,
     JobRecord,
+    NotificationRecord,
     ScanMatchRecord,
     ScanRecord,
+    ViolationRecord,
 )
 from ...modules.shared.repositories import (
     AlertRepository,
     ContentRepository,
     DisputeRepository,
+    EvidenceRepository,
     IntegrationRepository,
     JobRepository,
+    NotificationRepository,
     ScanRepository,
+    ViolationRepository,
 )
 
 
@@ -155,3 +161,48 @@ class InMemoryIntegrationRepository(IntegrationRepository):
     async def list_runs(self, integration_id: UUID, limit: int = 20) -> list[IntegrationRunRecord]:
         runs = sorted(self._runs.get(integration_id, []), key=lambda r: r.created_at, reverse=True)
         return runs[:limit]
+
+
+class InMemoryEvidenceRepository(EvidenceRepository):
+    def __init__(self) -> None:
+        self._evidence: dict[UUID, EvidenceBundleRecord] = {}
+
+    async def create_evidence(self, evidence: EvidenceBundleRecord) -> EvidenceBundleRecord:
+        self._evidence[evidence.id] = evidence
+        return evidence
+
+    async def list_evidence(self, asset_id: UUID | None = None) -> list[EvidenceBundleRecord]:
+        values = list(self._evidence.values())
+        if asset_id:
+            values = [record for record in values if record.asset_id == asset_id]
+        return sorted(values, key=lambda record: record.created_at, reverse=True)
+
+
+class InMemoryViolationRepository(ViolationRepository):
+    def __init__(self) -> None:
+        self._violations: dict[UUID, ViolationRecord] = {}
+
+    async def create_violation(self, violation: ViolationRecord) -> ViolationRecord:
+        self._violations[violation.id] = violation
+        return violation
+
+    async def list_violations(self, asset_id: UUID | None = None) -> list[ViolationRecord]:
+        values = list(self._violations.values())
+        if asset_id:
+            values = [record for record in values if record.asset_id == asset_id]
+        return sorted(values, key=lambda record: record.created_at, reverse=True)
+
+
+class InMemoryNotificationRepository(NotificationRepository):
+    def __init__(self) -> None:
+        self._notifications: dict[UUID, NotificationRecord] = {}
+
+    async def create_notification(self, notification: NotificationRecord) -> NotificationRecord:
+        self._notifications[notification.id] = notification
+        return notification
+
+    async def list_notifications(self, recipient: str | None = None) -> list[NotificationRecord]:
+        values = list(self._notifications.values())
+        if recipient:
+            values = [record for record in values if record.recipient == recipient]
+        return sorted(values, key=lambda record: record.created_at, reverse=True)

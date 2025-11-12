@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any
 from uuid import UUID
 
 from fastapi import UploadFile
 
 from ...adapters.tasks.base import TaskDispatcher
+from ...modules.semantic import SemanticContentPayload, SemanticPipeline
+from ...modules.semantic.models import ContentType
 from ...modules.shared.models import (
     AlertRecord,
     JobRecord,
@@ -19,8 +21,8 @@ from ...modules.shared.models import (
 )
 from ...modules.shared.repositories import RepositoryBundle
 from ...services.embeddings import EmbeddingProvider
-from ..shared.pipeline import Pipeline
-from ..registration.pipeline import build_semantic_fingerprint_pipeline
+from ...services.vector_index import VectorIndex
+from ..violations import ViolationDetectionService
 from .schemas import RecentScanSummary, ScanCreateResponse, ScanDetailResponse, ScanDetailSchema, ScanMatchSchema
 
 
@@ -29,10 +31,13 @@ class ScanService:
     repositories: RepositoryBundle
     task_dispatcher: TaskDispatcher
     embedding_provider: EmbeddingProvider
-    pipeline: Pipeline | None = None
+    vector_index: VectorIndex
+    semantic_pipeline: SemanticPipeline | None = None
+    violation_service: ViolationDetectionService | None = None
 
     def __post_init__(self) -> None:
-        self.pipeline = build_semantic_fingerprint_pipeline(self.embedding_provider)
+        if self.semantic_pipeline is None:
+            self.semantic_pipeline = SemanticPipeline(self.embedding_provider)
 
     async def register_tasks(self) -> None:
         await self.task_dispatcher.register("scans.process_scan", self._run_scan_task)
@@ -126,14 +131,21 @@ class ScanService:
             if text is None:
                 raise ValueError("Scan text payload is required in current profile")
 
-            pipeline_result = await self.pipeline.execute({"text": text, "metadata": {}})
-            fingerprint_data = pipeline_result["fingerprint"]
-            embedding = pipeline_result.get("embedding", [])
+            payload = SemanticContentPayload(
+                asset_id=scan.id,
+                creator="scan-source",
+                asset_type=ContentType.TEXT,
+                text=text,
+                extra={"source": "external", "scan_id": str(scan.id)},
+            )
+            result = await self.semantic_pipeline.process(payload)
+            signature_json = result.signature.model_dump(mode="json")
+            embedding = result.embedding
 
             scan.fingerprint = ScanFingerprint(
-                summary=fingerprint_data.get("narrative"),
+                summary=result.signature.text_semantics.summary,
                 embeddings=embedding,
-                metadata=fingerprint_data,
+                metadata=signature_json,
             )
 
             matches = await self._compute_matches(scan.id, embedding)
@@ -159,6 +171,8 @@ class ScanService:
                     )
 
             await self._mark_job(scan.id, "completed")
+            if self.violation_service:
+                await self.violation_service.evaluate_scan(scan, matches)
         except Exception as exc:
             scan.status = ScanStatus.FAILED
             await self.repositories.scans.update_scan(scan)
@@ -166,22 +180,32 @@ class ScanService:
             raise
 
     async def _compute_matches(self, scan_id: UUID, scan_embedding: list[float]) -> list[ScanMatchRecord]:
-        assets = await self.repositories.content.list_assets()
+        if not scan_embedding:
+            return []
+        index_matches = await self.vector_index.query(scan_embedding, limit=5, min_score=0.4)
         matches: list[ScanMatchRecord] = []
-        for asset in assets:
-            if not asset.embeddings:
+        for key, score, metadata in index_matches:
+            asset_id_str = metadata.get("asset_id")
+            if not asset_id_str:
                 continue
-            similarity = self._cosine_similarity(scan_embedding, asset.embeddings)
+            try:
+                asset_uuid = UUID(asset_id_str)
+            except ValueError:
+                continue
+            asset = await self.repositories.content.get_asset(asset_uuid)
+            if not asset:
+                continue
             breakdown = {
-                "narrative": similarity,
-                "character": max(similarity - 0.05, 0),
-                "theme": max(similarity - 0.1, 0),
+                "fusion": score,
+                "text": score,
+                "audio": max(score - 0.05, 0),
+                "visual": max(score - 0.08, 0),
             }
-            risk_level = self._classify_risk(similarity)
+            risk_level = self._classify_risk(score)
             match = ScanMatchRecord(
                 scan_id=scan_id,
-                asset_id=asset.id,
-                similarity_overall=similarity,
+                asset_id=asset_uuid,
+                similarity_overall=score,
                 similarity_breakdown=breakdown,
                 risk_level=risk_level,
             )
@@ -189,19 +213,6 @@ class ScanService:
 
         matches.sort(key=lambda m: m.similarity_overall, reverse=True)
         return matches[:5]
-
-    @staticmethod
-    def _cosine_similarity(a: Iterable[float], b: Iterable[float]) -> float:
-        vec_a = list(a)
-        vec_b = list(b)
-        if not vec_a or not vec_b or len(vec_a) != len(vec_b):
-            return 0.0
-        dot = sum(x * y for x, y in zip(vec_a, vec_b))
-        mag_a = math.sqrt(sum(x**2 for x in vec_a))
-        mag_b = math.sqrt(sum(y**2 for y in vec_b))
-        if mag_a == 0 or mag_b == 0:
-            return 0.0
-        return dot / (mag_a * mag_b)
 
     @staticmethod
     def _classify_risk(similarity: float) -> RiskLevel:

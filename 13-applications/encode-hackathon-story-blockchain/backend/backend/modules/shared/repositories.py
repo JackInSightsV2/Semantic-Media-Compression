@@ -7,12 +7,15 @@ from .models import (
     AlertRecord,
     ContentAsset,
     DisputeRecord,
+    EvidenceBundleRecord,
     FingerprintRecord,
     IntegrationRecord,
     IntegrationRunRecord,
     JobRecord,
+    NotificationRecord,
     ScanMatchRecord,
     ScanRecord,
+    ViolationRecord,
 )
 
 
@@ -80,6 +83,24 @@ class IntegrationRepository(Protocol):
     async def list_runs(self, integration_id: UUID, limit: int = 20) -> list[IntegrationRunRecord]: ...
 
 
+class EvidenceRepository(Protocol):
+    async def create_evidence(self, evidence: EvidenceBundleRecord) -> EvidenceBundleRecord: ...
+
+    async def list_evidence(self, asset_id: UUID | None = None) -> list[EvidenceBundleRecord]: ...
+
+
+class ViolationRepository(Protocol):
+    async def create_violation(self, violation: ViolationRecord) -> ViolationRecord: ...
+
+    async def list_violations(self, asset_id: UUID | None = None) -> list[ViolationRecord]: ...
+
+
+class NotificationRepository(Protocol):
+    async def create_notification(self, notification: NotificationRecord) -> NotificationRecord: ...
+
+    async def list_notifications(self, recipient: str | None = None) -> list[NotificationRecord]: ...
+
+
 class RepositoryBundle(Protocol):
     content: ContentRepository
     scans: ScanRepository
@@ -87,3 +108,6 @@ class RepositoryBundle(Protocol):
     alerts: AlertRepository
     jobs: JobRepository
     integrations: IntegrationRepository
+    evidence: EvidenceRepository
+    violations: ViolationRepository
+    notifications: NotificationRepository

@@ -1,0 +1,13 @@
+from __future__ import annotations
+
+from typing import Protocol
+
+
+class AssetStore(Protocol):
+    async def persist_bytes(self, *, path: str, data: bytes, content_type: str | None = None) -> str: ...
+
+    async def persist_text(self, *, path: str, text: str, content_type: str | None = None) -> str: ...
+
+    async def fetch_bytes(self, uri: str) -> bytes: ...
+
+    async def delete(self, uri: str) -> None: ...

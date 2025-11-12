@@ -38,6 +38,14 @@ async def create_scan(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
 
+@router.get("/recent", response_model=list[RecentScanSummary])
+async def list_recent_scans(
+    limit: int = 10,
+    service: ScanService = Depends(get_scan_service),
+) -> list[RecentScanSummary]:
+    return await service.list_recent_scans(limit=limit)
+
+
 @router.get("/{scan_id}", response_model=ScanDetailResponse)
 async def get_scan(
     scan_id: UUID,
@@ -47,11 +55,3 @@ async def get_scan(
         return await service.get_scan(scan_id)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
-
-
-@router.get("/recent", response_model=list[RecentScanSummary])
-async def list_recent_scans(
-    limit: int = 10,
-    service: ScanService = Depends(get_scan_service),
-) -> list[RecentScanSummary]:
-    return await service.list_recent_scans(limit=limit)

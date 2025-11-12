@@ -122,6 +122,7 @@ def _build_platform_clients(settings: AppSettings) -> dict[str, PlatformClient]:
             [
                 ("Forest Journey", "A serene walk through the ancient forest with mist and quiet melodies."),
                 ("Dreamscape Themes", "Exploration of dreamscapes and surreal storytelling elements."),
+                ("Hackathon Stories", "Once upon a time in a hackathon with creative stories and innovative ideas."),
             ],
         )
 
@@ -133,6 +134,7 @@ def _build_platform_clients(settings: AppSettings) -> dict[str, PlatformClient]:
             [
                 ("Mist Morning", "Caption about misty forests and calm tones with dreamlike imagery."),
                 ("Urban Fantasy", "Narrative blending city lights with enchanted woods."),
+                ("Hackathon Time", "Creative hackathon project showcasing innovative storytelling techniques."),
             ],
         )
 
@@ -144,6 +146,7 @@ def _build_platform_clients(settings: AppSettings) -> dict[str, PlatformClient]:
             [
                 ("Storytime", "Narration about growth and transformation in magical forests."),
                 ("Ambient Beats", "Calm tempo audio clip describing serene moods."),
+                ("Hackathon Creative", "Once upon a time we built something amazing at the hackathon event."),
             ],
         )
 

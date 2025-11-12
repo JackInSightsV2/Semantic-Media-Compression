@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from uuid import UUID
 
+from backend.core.container import get_container
+
 
 def test_registration_scan_dispute_dashboard_flow(client) -> None:
     upload_response = client.post(
@@ -19,17 +21,26 @@ def test_registration_scan_dispute_dashboard_flow(client) -> None:
     assert detail_data["asset"]["title"] == "Test Story"
     assert detail_data["fingerprints"]
 
+    semantic = detail_data["asset"]["semantic_fingerprint"]
+    assert "ipfs_cid" in semantic
+    assert "zk_proof" in semantic
+    assert "raw_text" not in semantic
+
+    container = get_container()
+    ciphertext = container.ipfs_client.fetch_ciphertext(semantic["ipfs_cid"])
+    assert b"hackathon" not in ciphertext
+
     story_response = client.post(
         "/api/registration/register-story",
         json={
             "asset_id": str(asset_id),
-            "story_ip_asset_id": "story-123",
-            "story_token_id": "token-456",
-            "tx_hash": "0xabc",
+            "metadata": {"chain": "testnet"},
         },
     )
     assert story_response.status_code == 200
-    assert story_response.json()["status"] == "registered"
+    story_payload = story_response.json()
+    assert story_payload["status"] == "registered"
+    assert story_payload["ipfs_cid"] == semantic["ipfs_cid"]
 
     scan_response = client.post(
         "/api/scans",

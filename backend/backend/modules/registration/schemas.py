@@ -28,18 +28,25 @@ class FingerprintSchema(BaseModel):
     metadata: dict[str, Any]
 
 
+class EncryptionMaterial(BaseModel):
+    key: str
+    nonce: str
+    key_digest: str
+
+
 class BuildFingerprintResponse(BaseModel):
     asset_id: UUID
     fingerprint: dict[str, Any]
     embeddings: list[float]
     fingerprints: list[FingerprintSchema]
+    ipfs_cid: str
+    zk_proof: str
+    encryption_material: EncryptionMaterial
 
 
 class StoryRegistrationRequest(BaseModel):
     asset_id: UUID
-    story_ip_asset_id: str
-    story_token_id: str
-    tx_hash: str
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class StoryRegistrationResponse(BaseModel):
@@ -47,6 +54,8 @@ class StoryRegistrationResponse(BaseModel):
     story_ip_asset_id: str
     story_token_id: str
     tx_hash: str
+    ipfs_cid: str
+    zk_proof: str
     status: ContentStatus
 
 

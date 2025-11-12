@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import base64
+import hashlib
+import json
 from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
 from fastapi import UploadFile
 
+from ...adapters.ipfs.base import IPFSClient
 from ...adapters.storage.base import AssetStore
 from ...adapters.tasks.base import TaskDispatcher
 from ...modules.shared.models import (
@@ -17,12 +21,15 @@ from ...modules.shared.models import (
     JobRecord,
 )
 from ...modules.shared.repositories import RepositoryBundle
+from ...services.crypto import EncryptionService
 from ...services.embeddings import EmbeddingProvider
+from ...services.story.protocol import StoryProtocolClient
 from .pipeline import build_semantic_fingerprint_pipeline
 from .schemas import (
     BuildFingerprintRequest,
     BuildFingerprintResponse,
     ContentAssetSchema,
+    EncryptionMaterial,
     FingerprintSchema,
     RegistrationDetailResponse,
     StoryRegistrationRequest,
@@ -37,6 +44,9 @@ class RegistrationService:
     asset_store: AssetStore
     task_dispatcher: TaskDispatcher
     embedding_provider: EmbeddingProvider
+    encryption_service: EncryptionService
+    ipfs_client: IPFSClient
+    story_client: StoryProtocolClient
 
     def __post_init__(self) -> None:
         self._pipeline = build_semantic_fingerprint_pipeline(self.embedding_provider)
@@ -98,7 +108,22 @@ class RegistrationService:
         fingerprint_data = pipeline_result["fingerprint"]
         embedding = pipeline_result.get("embedding", [])
 
-        asset.semantic_fingerprint = fingerprint_data | {"raw_text": text}
+        plaintext_bytes = json.dumps(fingerprint_data, sort_keys=True).encode("utf-8")
+        encrypted_payload = self.encryption_service.encrypt(plaintext_bytes)
+        ipfs_result = await self.ipfs_client.upload_encrypted(encrypted_payload)
+
+        asset.semantic_fingerprint = {
+            "narrative": fingerprint_data.get("narrative"),
+            "keywords": fingerprint_data.get("keywords", []),
+            "ipfs_cid": ipfs_result.cid,
+            "zk_proof": ipfs_result.proof,
+            "encryption": {
+                "key_digest": encrypted_payload.key_digest,
+                "nonce": ipfs_result.metadata.get("nonce"),
+            },
+            "fingerprint_hash": encrypted_payload.payload_hash,
+            "document_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+        }
         asset.embeddings = embedding
         await self.repositories.content.update_asset(asset)
 
@@ -125,11 +150,20 @@ class RegistrationService:
                 )
             )
 
+        encryption_material = EncryptionMaterial(
+            key=base64.b64encode(encrypted_payload.key).decode("utf-8"),
+            nonce=base64.b64encode(encrypted_payload.nonce).decode("utf-8"),
+            key_digest=encrypted_payload.key_digest,
+        )
+
         return BuildFingerprintResponse(
             asset_id=asset.id,
             fingerprint=fingerprint_data,
             embeddings=embedding,
             fingerprints=fingerprints,
+            ipfs_cid=ipfs_result.cid,
+            zk_proof=ipfs_result.proof,
+            encryption_material=encryption_material,
         )
 
     async def register_story(self, request: StoryRegistrationRequest) -> StoryRegistrationResponse:
@@ -137,17 +171,32 @@ class RegistrationService:
         if not asset:
             raise ValueError(f"Asset {request.asset_id} not found")
 
-        asset.story_ip_asset_id = request.story_ip_asset_id
-        asset.story_token_id = request.story_token_id
-        asset.semantic_fingerprint["story_tx_hash"] = request.tx_hash
+        fingerprint_meta = asset.semantic_fingerprint
+        ipfs_cid = fingerprint_meta.get("ipfs_cid")
+        proof = fingerprint_meta.get("zk_proof")
+        if not ipfs_cid or not proof:
+            raise ValueError("Asset fingerprint has not been pushed to IPFS yet")
+
+        story_result = await self.story_client.register_asset(
+            asset_id=asset.id,
+            cid=ipfs_cid,
+            proof=proof,
+            metadata=request.metadata,
+        )
+
+        asset.story_ip_asset_id = story_result.ip_asset_id
+        asset.story_token_id = story_result.token_id
+        asset.semantic_fingerprint["story_tx_hash"] = story_result.tx_hash
         asset.status = ContentStatus.REGISTERED
         await self.repositories.content.update_asset(asset)
 
         return StoryRegistrationResponse(
             asset_id=asset.id,
-            story_ip_asset_id=asset.story_ip_asset_id,
-            story_token_id=asset.story_token_id,
-            tx_hash=request.tx_hash,
+            story_ip_asset_id=story_result.ip_asset_id,
+            story_token_id=story_result.token_id,
+            tx_hash=story_result.tx_hash,
+            ipfs_cid=ipfs_cid,
+            zk_proof=proof,
             status=asset.status,
         )
 
@@ -177,17 +226,25 @@ class RegistrationService:
         text_override = payload.get("text")
         request = BuildFingerprintRequest(asset_id=asset_id, text_override=text_override)
         try:
-            await self.build_fingerprint(request)
-            await self._mark_job(asset_id, "completed")
+            result = await self.build_fingerprint(request)
+            await self._mark_job(asset_id, "completed", payload=result.model_dump())
         except Exception as exc:
             await self._mark_job(asset_id, "failed", str(exc))
             raise
 
-    async def _mark_job(self, asset_id: UUID, status: str, error: str | None = None) -> None:
+    async def _mark_job(
+        self,
+        asset_id: UUID,
+        status: str,
+        error: str | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> None:
         jobs = await self.repositories.jobs.list_jobs(job_type="registration.upload")
         for job in jobs:
             if job.reference_id == asset_id:
                 job.status = status
                 job.error = error
+                if payload is not None:
+                    job.payload = payload
                 await self.repositories.jobs.update_job(job)
                 break

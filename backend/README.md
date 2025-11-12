@@ -6,7 +6,7 @@
  
  - Modular domain packages for registrations, scans, disputes, and analytics.
  - Adapter-based infrastructure layer for databases, storage, embeddings, and task dispatchers.
- - Pluggable background processing pipeline for semantic fingerprinting and similarity checks.
+- Pluggable background processing pipeline for semantic fingerprinting and similarity checks with zero-knowledge IPFS commitments.
  - Pydantic settings with profile-aware dependency overrides (`local-dev`, `sqlite`, `postgres`, `supabase-prod`).
  - Structured logging and health checks for observability.
  

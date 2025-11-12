@@ -57,6 +57,9 @@ def _register_events(app: FastAPI, container: AppContainer) -> None:
             asset_store=container.asset_store,
             task_dispatcher=container.task_dispatcher,
             embedding_provider=container.embedding_provider,
+            encryption_service=container.encryption_service,
+            ipfs_client=container.ipfs_client,
+            story_client=container.story_client,
         )
         scan_service = ScanService(
             repositories=container.repositories,

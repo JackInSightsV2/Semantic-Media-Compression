@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import lru_cache
+from uuid import UUID
 
+from ..adapters.ipfs.in_memory import InMemoryIPFSClient
 from ..adapters.repositories.in_memory import (
     InMemoryAlertRepository,
     InMemoryContentRepository,
@@ -16,7 +18,9 @@ from ..adapters.storage.in_memory import InMemoryAssetStore
 from ..adapters.tasks.base import TaskDispatcher
 from ..adapters.tasks.synchronous import SynchronousTaskDispatcher
 from ..modules.shared.repositories import RepositoryBundle
+from ..services.crypto import EncryptionService
 from ..services.embeddings import EmbeddingProvider, MockEmbeddingProvider
+from ..services.story.protocol import MockStoryProtocolClient, StoryProtocolClient
 from .logging import configure_logging
 from .settings import (
     AppSettings,
@@ -45,6 +49,9 @@ class AppContainer:
     asset_store: AssetStore
     task_dispatcher: TaskDispatcher
     embedding_provider: EmbeddingProvider
+    encryption_service: EncryptionService
+    ipfs_client: InMemoryIPFSClient
+    story_client: StoryProtocolClient
 
 
 def _build_repositories(settings: AppSettings) -> RepositoryContainer:
@@ -95,6 +102,9 @@ def get_container() -> AppContainer:
     asset_store = _build_asset_store(settings)
     dispatcher = _build_task_dispatcher(settings)
     embedding_provider = _build_embedding_provider(settings)
+    encryption_service = EncryptionService()
+    ipfs_client = InMemoryIPFSClient()
+    story_client = MockStoryProtocolClient(namespace=UUID("8a78d159-4f9d-4ec6-85d9-13d8f8f6c70d"))
 
     return AppContainer(
         settings=settings,
@@ -102,4 +112,7 @@ def get_container() -> AppContainer:
         asset_store=asset_store,
         task_dispatcher=dispatcher,
         embedding_provider=embedding_provider,
+        encryption_service=encryption_service,
+        ipfs_client=ipfs_client,
+        story_client=story_client,
     )

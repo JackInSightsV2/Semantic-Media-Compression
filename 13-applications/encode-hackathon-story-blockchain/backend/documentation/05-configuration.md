@@ -84,6 +84,14 @@ TASK_RESULT_BACKEND=redis://localhost:6379/0
 EXT_PINATA_JWT=your-pinata-jwt-token
 
 # Story Protocol
+# Use mock client (default) or real SDK client
+STORY_USE_MOCK=true
+STORY_WALLET_PRIVATE_KEY=your-private-key-without-0x-prefix
+STORY_RPC_PROVIDER_URL=https://aeneid.storyrpc.io
+STORY_CHAIN_ID=1315
+STORY_SPG_NFT_CONTRACT=0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc
+
+# Legacy Story Protocol API key (deprecated, kept for compatibility)
 EXT_STORY_PROTOCOL_API_KEY=your-story-api-key
 
 # Hugging Face (for embeddings)
@@ -137,7 +145,12 @@ EMBEDDING_PROFILE=mock
 # EXT_INSTAGRAM_ACCESS_TOKEN=your-token
 # EXT_TIKTOK_API_KEY=your-key
 # EXT_PINATA_JWT=your-jwt
-# EXT_STORY_PROTOCOL_API_KEY=your-key
+
+# Story Protocol (uses mock by default)
+# STORY_USE_MOCK=true  # Set to false to use real SDK
+# STORY_WALLET_PRIVATE_KEY=your-private-key
+# STORY_RPC_PROVIDER_URL=https://aeneid.storyrpc.io
+# STORY_CHAIN_ID=1315
 
 # Logging
 LOG_LEVEL=INFO
@@ -234,7 +247,13 @@ TASK_RESULT_BACKEND=redis://your-redis-cloud-url:6379/0
 EMBEDDING_PROFILE=remote-api
 EXT_HF_API_TOKEN=your-hf-token
 EXT_PINATA_JWT=your-pinata-jwt
-EXT_STORY_PROTOCOL_API_KEY=your-story-key
+
+# Story Protocol - Real SDK (required for production)
+STORY_USE_MOCK=false
+STORY_WALLET_PRIVATE_KEY=your-production-private-key
+STORY_RPC_PROVIDER_URL=https://rpc.story.foundation  # or testnet URL
+STORY_CHAIN_ID=1514  # 1514 for mainnet, 1315 for testnet
+STORY_SPG_NFT_CONTRACT=your-spg-contract-address
 ```
 
 **Features:**

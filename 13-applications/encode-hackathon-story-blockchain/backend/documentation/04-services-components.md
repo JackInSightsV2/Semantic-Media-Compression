@@ -338,8 +338,18 @@ async def report_violation(content_hash, infringing_url, evidence_hash) -> Story
 ```
 
 **Implementations:**
-- `MockStoryProtocolClient`: Mock implementation for testing
-- Future: Real Story Protocol SDK integration
+- `MockStoryProtocolClient`: Mock implementation for testing and development
+- `RealStoryProtocolClient`: Real implementation using Story Protocol Python SDK
+
+**Configuration:**
+The client is selected automatically based on environment variables:
+- `STORY_USE_MOCK=true`: Forces use of mock client (default)
+- `STORY_WALLET_PRIVATE_KEY`: Private key for real client (without 0x prefix)
+- `STORY_RPC_PROVIDER_URL`: RPC provider URL (defaults to Aeneid testnet)
+- `STORY_CHAIN_ID`: Chain ID (1315 for Aeneid testnet, 1514 for mainnet)
+- `STORY_SPG_NFT_CONTRACT`: Optional SPG NFT contract address for minting
+
+If `STORY_USE_MOCK` is `true` or `STORY_WALLET_PRIVATE_KEY` is not set, the mock client is used.
 
 ---
 

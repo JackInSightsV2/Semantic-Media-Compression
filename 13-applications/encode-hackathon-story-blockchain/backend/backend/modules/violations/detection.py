@@ -146,7 +146,18 @@ class ViolationDetectionService:
         return violation
 
     def _classify(self, score: float) -> ViolationConfidence | None:
+        """
+        Classify violation confidence based on similarity score.
+        
+        Higher scores map to higher confidence levels:
+        - CRITICAL: score >= violation_threshold (0.85) - highest confidence, clear violation
+        - LIKELY: score >= 0.75 and < violation_threshold - high confidence, likely violation
+        - REVIEW: score >= review_threshold (0.7) and < 0.75 - moderate confidence, needs manual review
+        - None: score < review_threshold (0.7) - below threshold, not processed as violation
+        """
         if score >= self.settings.violation_threshold:
+            return ViolationConfidence.CRITICAL
+        if score >= 0.75:  # Intermediate threshold for LIKELY confidence
             return ViolationConfidence.LIKELY
         if score >= self.settings.review_threshold:
             return ViolationConfidence.REVIEW

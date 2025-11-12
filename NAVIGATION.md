@@ -64,6 +64,7 @@ This documentation explores the complete vision, but practical work starts with 
 8. [Ethical Framework](./04-ethical-considerations/ethical-framework-overview.md)
 9. [Legal Analysis](./05-legal-copyright/legal-framework-analysis.md)
 10. [Future Effects](./08-future-implications/long-term-impact-analysis.md)
+11. [Semantic JSON Evolution](./08-future-implications/semantic-json-evolution.md) - Advanced model roadmap for semantic fidelity
 
 ### 🤔 **Philosophy & Theory Path** (2-3 hours)
 1. [Theoretical Foundation](./01-theoretical-validation/theoretical-foundation-overview.md)
@@ -90,6 +91,7 @@ This documentation explores the complete vision, but practical work starts with 
 2. [Technical Architecture](./07-technical-architecture/technical-system-overview.md) - System design
 3. [Implementation Standards](./08-implementation-standards/standards-development-overview.md) - Technical standards
 4. [Practical Examples](./06-business-applications/practical-examples-case-studies.md) - Theoretical case studies
+5. [Semantic JSON Evolution](./08-future-implications/semantic-json-evolution.md) - Model advances that cut semantic loss
 
 
 ### 🌍 **Policy & Governance Path** (1-2 hours)

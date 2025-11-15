@@ -1,0 +1,230 @@
+{
+  "schema_metadata": {
+    "id": "argumentative_essay_distillation",
+    "version": "1.0.0",
+    "released_at": "2025-11-15T00:00:00Z",
+    "draft": "2020-12",
+    "hash": "<SHA256 of schema_definition only>",
+    "description": "Semantic distillation schema capsule for argumentative essays.",
+    "authors": ["Byte Insights"],
+    "license": "proprietary",
+    "protection": {
+      "integrity_model": "sha256(schema_definition)",
+      "storage_guidelines": "Immutable. Hash stored on-chain when necessary.",
+      "ip_protection_notes": "Schema capsule is designed to be self-contained for IP locking."
+    }
+  },
+  "schema_definition": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ArgumentativeEssayDistillationBlueprint",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "thesis",
+      "claim_hierarchy",
+      "evidence",
+      "counterarguments",
+      "assumptions_and_values",
+      "structure_and_rhetoric",
+      "implications",
+      "sensitivities"
+    ],
+    "properties": {
+      "thesis": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["statement"],
+        "properties": {
+          "statement": { "type": "string" },
+          "problem_statement": { "type": "string" }
+        }
+      },
+      "claim_hierarchy": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["main_claims"],
+        "properties": {
+          "main_claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "statement"],
+              "properties": {
+                "id": { "type": "string" },
+                "statement": { "type": "string" },
+                "subclaims": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "depends_on": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "evidence": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["claim_id", "type", "description"],
+          "properties": {
+            "claim_id": { "type": "string" },
+            "type": { "type": "string" },
+            "description": { "type": "string" },
+            "strength": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            }
+          }
+        }
+      },
+      "counterarguments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "statement"],
+          "properties": {
+            "id": { "type": "string" },
+            "statement": { "type": "string" },
+            "targets_claim_id": { "type": "string" },
+            "reply": { "type": "string" },
+            "status": {
+              "type": "string",
+              "enum": ["rebutted", "conceded", "unresolved"],
+              "default": "unresolved"
+            }
+          }
+        }
+      },
+      "assumptions_and_values": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["assumptions", "value_judgments", "key_definitions"],
+        "properties": {
+          "assumptions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "value_judgments": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "key_definitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["term", "definition"],
+              "properties": {
+                "term": { "type": "string" },
+                "definition": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "structure_and_rhetoric": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["outline"],
+        "properties": {
+          "outline": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "label", "purpose"],
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "purpose": { "type": "string" },
+                "linked_claim_ids": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          },
+          "rhetorical_techniques": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "implications": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recommended_actions"],
+        "properties": {
+          "recommended_actions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "policy_or_decision_implications": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "sensitivities": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["misinterpretation_risks"],
+        "properties": {
+          "misinterpretation_risks": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "sensitive_topics": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "operational_guidance": {
+    "intended_use": "Semantic distillation of argumentative essays.",
+    "example_valid_document": {
+      "thesis": {
+        "statement": "AI regulation should focus on capability thresholds rather than model size.",
+        "problem_statement": "Current policy debates often mis-target proxies such as parameter count."
+      },
+      "claim_hierarchy": {
+        "main_claims": []
+      },
+      "evidence": [],
+      "counterarguments": [],
+      "assumptions_and_values": {
+        "assumptions": [],
+        "value_judgments": [],
+        "key_definitions": []
+      },
+      "structure_and_rhetoric": {
+        "outline": [],
+        "rhetorical_techniques": []
+      },
+      "implications": {
+        "recommended_actions": [],
+        "policy_or_decision_implications": []
+      },
+      "sensitivities": {
+        "misinterpretation_risks": [],
+        "sensitive_topics": []
+      }
+    },
+    "migration": {
+      "supersedes": "0.0.1",
+      "migrates_cleanly": true,
+      "notes": "First stable semantic version of argumentative essay distillation schema."
+    }
+  }
+}
+
+

@@ -153,35 +153,35 @@ export default function Dashboard() {
                 
                 {isMenuOpen && (
                   <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[160px] z-50">
-                    <button className="w-full text-left px-4 py-2 text-sm text-blue-600 font-medium hover:bg-gray-50">
+                    <Link href="/" className="block w-full text-left px-4 py-2 text-sm text-blue-600 font-medium hover:bg-gray-50">
                       Dashboard
-                    </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    </Link>
+                    <Link href="/register" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       My Content
-                    </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    </Link>
+                    <Link href="/dispute" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       Disputes
-                    </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    </Link>
+                    <Link href="/compare" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       Analytics
-                    </button>
+                    </Link>
                   </div>
                 )}
               </div>
               
               <nav className="hidden lg:flex items-center gap-6">
-                <button className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 text-sm">
+                <Link href="/" className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 text-sm">
                   Dashboard
-                </button>
-                <button className="text-gray-600 hover:text-gray-900 text-sm">
+                </Link>
+                <Link href="/register" className="text-gray-600 hover:text-gray-900 text-sm">
                   My Content
-                </button>
-                <button className="text-gray-600 hover:text-gray-900 text-sm">
+                </Link>
+                <Link href="/dispute" className="text-gray-600 hover:text-gray-900 text-sm">
                   Disputes
-                </button>
-                <button className="text-gray-600 hover:text-gray-900 text-sm">
+                </Link>
+                <Link href="/compare" className="text-gray-600 hover:text-gray-900 text-sm">
                   Analytics
-                </button>
+                </Link>
               </nav>
               
               <div className="hidden xl:block relative w-80">
@@ -265,12 +265,12 @@ export default function Dashboard() {
             <h2 className="text-xs font-bold text-gray-700">OVERVIEW</h2>
             
             <div className="mt-3 space-y-1">
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-blue-600 bg-blue-50 rounded-lg">
+              <Link href="/" className="w-full flex items-center gap-3 px-3 py-2 text-blue-600 bg-blue-50 rounded-lg">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 <span className="text-sm font-medium">Dashboard</span>
-              </button>
+              </Link>
               
               <Link href="/quick-scan" className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,7 +292,7 @@ export default function Dashboard() {
                 <span className="text-sm">Register Content</span>
               </Link>
               
-              <button className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <Link href="/register" className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <div className="flex items-center gap-3">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
@@ -300,14 +300,14 @@ export default function Dashboard() {
                   <span className="text-sm">My Library</span>
                 </div>
                 <span className="text-xs font-medium text-gray-500 bg-gray-200 px-2 py-0.5 rounded">{registeredContentCount}</span>
-              </button>
+              </Link>
               
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <Link href="/compare" className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
                 </svg>
                 <span className="text-sm">Semantic Fingerprints</span>
-              </button>
+              </Link>
             </div>
           </div>
           
@@ -315,14 +315,14 @@ export default function Dashboard() {
             <h2 className="text-xs font-bold text-gray-700">MONITORING</h2>
             
             <div className="mt-3 space-y-1">
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <Link href="/quick-scan" className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span className="text-sm">Content Scanner</span>
-              </button>
+              </Link>
               
-              <button className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <Link href="/dispute" className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <div className="flex items-center gap-3">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -330,15 +330,15 @@ export default function Dashboard() {
                   <span className="text-sm">Potential Matches</span>
                 </div>
                 <span className="text-xs font-semibold text-yellow-800 bg-yellow-400 px-2 py-0.5 rounded-full">8</span>
-              </button>
+              </Link>
               
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <Link href="/dispute" className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
                 <span className="text-sm">Watch Lists</span>
-              </button>
+              </Link>
             </div>
           </div>
           

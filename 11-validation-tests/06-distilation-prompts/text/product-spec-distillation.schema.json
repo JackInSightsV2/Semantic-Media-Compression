@@ -1,0 +1,197 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://semantic-media-compression.local/schemas/product-spec-distillation.schema.json",
+  "title": "ProductSpecDistillationBlueprint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "problem_and_goals",
+    "personas_and_use_cases",
+    "functional_requirements",
+    "non_functional_requirements",
+    "data_and_integrations",
+    "edge_cases",
+    "acceptance_criteria",
+    "risks_and_open_questions"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "0.0.1",
+      "description": "Schema version of the distillation blueprint."
+    },
+    "problem_and_goals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["problem", "goals"],
+      "properties": {
+        "problem": { "type": "string" },
+        "goals": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "non_goals": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "personas_and_use_cases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["personas", "use_cases"],
+      "properties": {
+        "personas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "description"],
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" },
+              "goals": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "constraints": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "use_cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "steps"],
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "persona_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "steps": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "functional_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "inputs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "behaviours": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "outputs": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "non_functional_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "performance": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reliability": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "security_and_privacy": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ux_constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "data_and_integrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "external_systems": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "edge_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description"],
+        "properties": {
+          "description": { "type": "string" },
+          "expected_behaviour": { "type": "string" }
+        }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "risks_and_open_questions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["risks", "open_questions"],
+      "properties": {
+        "risks": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+
+

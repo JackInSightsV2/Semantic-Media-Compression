@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://semantic.local/schemas/meta/schema-definition/v1.json",
+  "title": "SchemaCapsuleMetaDefinition",
+  "type": "object",
+  "required": ["schema_metadata", "schema_definition"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_metadata": {
+      "type": "object",
+      "required": ["id", "version", "released_at", "draft", "description"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "released_at": { "type": "string", "format": "date-time" },
+        "draft": { "type": "string", "const": "2020-12" },
+        "description": { "type": "string" },
+        "authors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "license": { "type": "string" }
+      }
+    },
+    "schema_definition": {
+      "type": "object",
+      "required": ["$schema", "title", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "const": "https://json-schema.org/draft/2020-12/schema"
+        },
+        "title": { "type": "string" },
+        "type": { "type": "string", "const": "object" }
+      }
+    },
+    "operational_guidance": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
+
+

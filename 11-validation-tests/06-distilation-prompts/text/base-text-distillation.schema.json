@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://semantic-media-compression.local/schemas/base-text-distillation.schema.json",
+  "title": "BaseTextDistillationBlueprint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "overview",
+    "audience_context",
+    "structure",
+    "key_concepts",
+    "claims_and_evidence",
+    "style_voice",
+    "risks_and_constraints"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "0.0.1",
+      "description": "Schema version of the distillation blueprint."
+    },
+    "overview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core_purpose", "summary_bullets"],
+      "properties": {
+        "core_purpose": { "type": "string" },
+        "summary_bullets": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "audience_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_audience", "prior_knowledge", "tone", "usage_context"],
+      "properties": {
+        "primary_audience": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "prior_knowledge": { "type": "string" },
+        "tone": { "type": "string" },
+        "usage_context": { "type": "string" }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sections"],
+      "properties": {
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "purpose", "key_points", "order_index"],
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "purpose": { "type": "string" },
+              "key_points": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 1
+              },
+              "order_index": { "type": "integer", "minimum": 0 },
+              "depends_on": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "logical_progression": {
+          "type": "string",
+          "description": "Description of how sections connect and build on each other."
+        }
+      }
+    },
+    "key_concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "definition"],
+        "properties": {
+          "name": { "type": "string" },
+          "definition": { "type": "string" },
+          "distinctions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "related_terms": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "claims_and_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claims"],
+      "properties": {
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "statement"],
+            "properties": {
+              "id": { "type": "string" },
+              "statement": { "type": "string" },
+              "supports_main_purpose": { "type": "boolean" },
+              "assumptions": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["type", "description"],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "e.g. data, example, anecdote, authority"
+                    },
+                    "description": { "type": "string" },
+                    "strength": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"],
+                      "description": "How strongly this supports the claim."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "style_voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["persona", "tone_descriptors", "stylistic_patterns"],
+      "properties": {
+        "persona": { "type": "string" },
+        "tone_descriptors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "stylistic_patterns": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "risks_and_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["must_not_lose", "constraints", "failure_modes"],
+      "properties": {
+        "must_not_lose": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+
+

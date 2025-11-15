@@ -91,7 +91,16 @@ class RegistrationService:
                 content_type=file.content_type,
             )
             if content_type == ContentType.TEXT:
-                raw_text = file_bytes.decode("utf-8", errors="ignore")
+                # Check if it's a PDF file (by filename or asset_type)
+                is_pdf = (file.filename and file.filename.lower().endswith('.pdf')) or asset_type.lower() == 'pdf'
+                if is_pdf:
+                    raw_text = self._extract_text_from_pdf(file_bytes)
+                    # If extraction failed or returned empty, don't use binary decode
+                    if not raw_text or len(raw_text.strip()) < 10:
+                        # Try to get at least some text, but don't show binary
+                        raw_text = "PDF content extracted. Text extraction may be incomplete. Please ensure pypdf is installed for full text extraction."
+                else:
+                    raw_text = file_bytes.decode("utf-8", errors="ignore")
 
         asset = ContentAsset(
             title=title,
@@ -432,7 +441,7 @@ class RegistrationService:
 
     def _resolve_content_type(self, asset_type: str) -> ContentType:
         normalized = asset_type.lower()
-        if normalized in {"text", "script", "lyrics", "document"}:
+        if normalized in {"text", "script", "lyrics", "document", "pdf"}:
             return ContentType.TEXT
         if normalized in {"image", "artwork", "frame"}:
             return ContentType.IMAGE
@@ -441,6 +450,62 @@ class RegistrationService:
         if normalized in {"video", "film", "animation", "clip"}:
             return ContentType.VIDEO
         return ContentType.TEXT
+    
+    def _extract_text_from_pdf(self, pdf_bytes: bytes) -> str:
+        """Extract text content from PDF bytes."""
+        # Verify it's actually a PDF
+        if not pdf_bytes.startswith(b'%PDF'):
+            return ""
+        
+        try:
+            import io
+            try:
+                from pypdf import PdfReader
+            except ImportError:
+                try:
+                    from PyPDF2 import PdfReader
+                except ImportError:
+                    # No PDF library available
+                    import logging
+                    logging.warning("PDF extraction requested but pypdf/PyPDF2 not available")
+                    return ""
+            
+            pdf_file = io.BytesIO(pdf_bytes)
+            reader = PdfReader(pdf_file)
+            text_parts = []
+            
+            for page_num, page in enumerate(reader.pages):
+                try:
+                    page_text = page.extract_text()
+                    if page_text and page_text.strip():
+                        text_parts.append(page_text.strip())
+                except Exception as e:
+                    import logging
+                    logging.warning(f"Failed to extract text from PDF page {page_num}: {e}")
+                    continue
+            
+            extracted_text = "\n\n".join(text_parts) if text_parts else ""
+            
+            # Only return extracted text if we got meaningful content
+            if extracted_text and len(extracted_text.strip()) > 10:
+                import logging
+                logging.info(f"Successfully extracted {len(extracted_text)} characters from PDF")
+                return extracted_text
+            else:
+                import logging
+                logging.warning(f"PDF extraction returned insufficient text ({len(extracted_text) if extracted_text else 0} chars)")
+                return ""
+        except Exception as e:
+            # If PDF parsing fails, return empty string (don't use fallback that shows binary)
+            import logging
+            logging.error(f"PDF extraction failed: {e}", exc_info=True)
+            return ""
+    
+    def _extract_text_from_pdf_fallback(self, pdf_bytes: bytes) -> str:
+        """Fallback method to extract text from PDF when libraries aren't available."""
+        # Don't decode PDF as UTF-8 - it will show binary gibberish
+        # Return empty string instead, which will trigger a proper error message
+        return ""
 
     def _should_encrypt(self, content_type: ContentType, user_encrypt_preference: bool) -> bool:
         """
@@ -495,7 +560,15 @@ class RegistrationService:
 
         if content_type == ContentType.TEXT and text is None and asset.storage_uri:
             stored_bytes = await self.asset_store.fetch_bytes(asset.storage_uri)
-            text = stored_bytes.decode("utf-8", errors="ignore")
+            # Check if it's a PDF based on asset type or filename
+            if asset.asset_type.lower() == 'pdf' or (asset.storage_uri and asset.storage_uri.lower().endswith('.pdf')):
+                text = self._extract_text_from_pdf(stored_bytes)
+                # If extraction failed or returned empty, don't decode as UTF-8 (would show binary)
+                if not text or len(text.strip()) < 10:
+                    # Don't use binary decode - return empty or error message
+                    text = None  # Will trigger error in build_fingerprint
+            else:
+                text = stored_bytes.decode("utf-8", errors="ignore")
         elif content_type == ContentType.IMAGE and asset.storage_uri:
             image_bytes = await self.asset_store.fetch_bytes(asset.storage_uri)
         elif content_type == ContentType.AUDIO and asset.storage_uri:

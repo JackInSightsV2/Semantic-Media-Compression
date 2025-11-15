@@ -183,13 +183,45 @@ class SemanticPipeline:
         normalized_text: str | None = None
 
         if payload.text:
-            normalized_text = " ".join(payload.text.strip().split())
+            # Sanitize text - remove any binary content that might have leaked through
+            text_str = payload.text
+            # Check if this looks like binary PDF content (starts with %PDF or contains PDF object markers)
+            if isinstance(text_str, bytes):
+                text_str = text_str.decode("utf-8", errors="ignore")
+            if text_str.startswith('%PDF') or '%PDF' in text_str[:100] or 'obj <<' in text_str[:200]:
+                # This is binary PDF content, not extracted text
+                # Return empty or error message instead
+                text_str = "PDF content detected but text extraction failed. Please ensure the PDF contains extractable text."
+            
+            normalized_text = " ".join(text_str.strip().split())
             text_tokens = _tokenize(normalized_text)
+            
+            # Generate a smarter summary - first sentence or first 280 chars, whichever is shorter
+            # Try to find a good summary point (end of sentence)
+            summary = normalized_text[:280]
+            if len(normalized_text) > 280:
+                # Try to find the last sentence ending before 280 chars
+                sentence_endings = ['.', '!', '?']
+                last_sentence_end = -1
+                for i in range(279, max(0, 200), -1):
+                    if normalized_text[i] in sentence_endings and (i == len(normalized_text) - 1 or normalized_text[i+1] == ' '):
+                        last_sentence_end = i + 1
+                        break
+                if last_sentence_end > 0:
+                    summary = normalized_text[:last_sentence_end].strip()
+                else:
+                    # If no sentence ending found, truncate at word boundary
+                    last_space = normalized_text[:280].rfind(' ')
+                    if last_space > 150:  # Only use word boundary if it's not too short
+                        summary = normalized_text[:last_space].strip() + '...'
+                    else:
+                        summary = normalized_text[:280].strip() + '...'
+            
             text_semantics = TextSemantics(
                 entities=_extract_entities(text_tokens),
                 themes=_extract_themes(text_tokens),
                 tone=_infer_tone(text_tokens),
-                summary=normalized_text[:280],
+                summary=summary,
                 keywords=_derive_keywords(text_tokens),
                 language=_detect_language(normalized_text),
             )

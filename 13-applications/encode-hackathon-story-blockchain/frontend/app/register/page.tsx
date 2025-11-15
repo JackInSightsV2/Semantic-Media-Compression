@@ -55,6 +55,20 @@ export default function RegisterPage() {
   
   const { registerContent } = useRegisteredContent();
 
+  // Helper to get descriptive content type
+  const getContentTypeLabel = (assetType: string, fileName?: string): string => {
+    const type = assetType?.toLowerCase() || '';
+    const ext = fileName?.split('.').pop()?.toLowerCase() || '';
+    
+    if (type === 'pdf' || ext === 'pdf') return 'PDF Document';
+    if (type === 'text' || ['txt', 'md', 'doc', 'docx'].includes(ext)) return 'Text Document';
+    if (type === 'image' || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'Image';
+    if (type === 'audio' || ['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) return 'Audio';
+    if (type === 'video' || ['mp4', 'avi', 'mov', 'webm'].includes(ext)) return 'Video';
+    
+    return assetType ? assetType.charAt(0).toUpperCase() + assetType.slice(1) : 'Unknown';
+  };
+
   // Restore state from sessionStorage on mount (only if coming from view-json)
   useEffect(() => {
     const savedStep = sessionStorage.getItem('registerStep');
@@ -110,13 +124,15 @@ export default function RegisterPage() {
     try {
       // Determine asset type from file extension
       const extension = file.name.split('.').pop()?.toLowerCase();
-      let assetType: 'text' | 'image' | 'audio' | 'video' = 'text';
+      let assetType: 'text' | 'image' | 'audio' | 'video' | 'pdf' = 'text';
       if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension || '')) {
         assetType = 'image';
       } else if (['mp3', 'wav', 'ogg', 'm4a'].includes(extension || '')) {
         assetType = 'audio';
       } else if (['mp4', 'avi', 'mov', 'webm'].includes(extension || '')) {
         assetType = 'video';
+      } else if (extension === 'pdf') {
+        assetType = 'pdf'; // PDFs will be treated as text content but need special parsing
       }
 
       // Upload to backend
@@ -126,7 +142,7 @@ export default function RegisterPage() {
         title: file.name,
         asset_type: assetType,
         file: file,
-        encrypt: shouldUseQrCode(assetType), // Only encrypt non-art content
+        encrypt: assetType !== 'image', // Only encrypt non-art content (images don't get encrypted)
       });
 
       setAssetId(uploadResponse.asset_id);
@@ -135,12 +151,18 @@ export default function RegisterPage() {
       const pollAsset = async () => {
         try {
           const details = await getAssetDetails(uploadResponse.asset_id);
+          // Update asset details to show content type immediately
           setAssetDetails(details);
           
-          if (details.asset.status === 'completed' || details.asset.status === 'registered') {
+          // Check if fingerprint has been built (has semantic_fingerprint data)
+          const hasFingerprint = details.asset.semantic_fingerprint && 
+                                 Object.keys(details.asset.semantic_fingerprint).length > 0;
+          
+          if (hasFingerprint || details.asset.status === 'completed' || details.asset.status === 'registered') {
+            // Fingerprint is ready, move to build step
             setCurrentStep('build');
           } else if (details.asset.status === 'processing') {
-            // Continue polling
+            // Still processing, continue polling
             setTimeout(pollAsset, 2000);
           } else {
             setError(`Asset processing failed: ${details.asset.status}`);
@@ -155,7 +177,9 @@ export default function RegisterPage() {
       // Start polling after a short delay
       setTimeout(pollAsset, 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to upload asset');
+      console.error('Upload error:', err);
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to upload asset';
+      setError(errorMessage);
       setCurrentStep('upload');
     }
   };
@@ -578,16 +602,94 @@ export default function RegisterPage() {
                 </div>
               </div>
             ) : currentStep === 'analyze' ? (
-              <div className="bg-blue-50 rounded-lg p-8 text-center relative z-10">
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 animate-pulse">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+              <div className="bg-blue-50 rounded-lg p-8 relative z-10">
+                {assetDetails ? (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">Content Analyzed</h3>
+                        <p className="text-gray-600 text-sm">Content type detected and summary generated</p>
+                      </div>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-600 text-white">
+                        ✓ Complete
+                      </span>
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-blue-200 p-6 space-y-4">
+                      <div>
+                        <span className="text-gray-700 font-medium text-sm block mb-2">Content Type:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {getContentTypeLabel(assetDetails.asset.asset_type, uploadedFile?.name)}
+                          </span>
+                          {uploadedFile && (
+                            <span className="text-gray-500 text-sm">
+                              ({uploadedFile.name.split('.').pop()?.toUpperCase()} file)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-gray-700 font-medium text-sm block mb-2">Quick Summary:</span>
+                        {assetDetails.asset.semantic_fingerprint?.canonical?.text_semantics?.summary ? (
+                          <p className="text-gray-900 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            {assetDetails.asset.semantic_fingerprint.canonical.text_semantics.summary}
+                          </p>
+                        ) : (
+                          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div className="flex items-center gap-2 text-gray-500">
+                              <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                              <span className="text-sm">Generating summary from content...</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {assetDetails.asset.semantic_fingerprint?.canonical?.text_semantics?.keywords && 
+                       assetDetails.asset.semantic_fingerprint.canonical.text_semantics.keywords.length > 0 && (
+                        <div>
+                          <span className="text-gray-700 font-medium text-sm block mb-2">Keywords:</span>
+                          <div className="flex flex-wrap gap-2">
+                            {assetDetails.asset.semantic_fingerprint.canonical.text_semantics.keywords.slice(0, 10).map((keyword: string, idx: number) => (
+                              <span key={idx} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                                {keyword}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                        <div>
+                          <span className="text-gray-700 font-medium text-sm block mb-1">File Name:</span>
+                          <p className="text-gray-900 text-sm">{uploadedFile?.name || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-700 font-medium text-sm block mb-1">Status:</span>
+                          <p className="text-gray-900 text-sm capitalize">{assetDetails.asset.status || 'Processing'}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Analyzing PDF...</h3>
-                  <p className="text-gray-600">Extracting content and metadata</p>
-                </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 animate-pulse">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Analyzing Content...</h3>
+                    <p className="text-gray-600">Extracting content type and generating summary</p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="bg-gradient-to-r from-green-50/60 to-blue-50/60 rounded-lg border border-green-100 p-6 relative z-10">

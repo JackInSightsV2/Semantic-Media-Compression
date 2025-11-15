@@ -1,0 +1,385 @@
+{
+  "schema_metadata": {
+    "id": "research_paper_distillation",
+    "version": "1.0.0",
+    "released_at": "2025-11-15T00:00:00Z",
+    "draft": "2020-12",
+    "hash": "<SHA256 of schema_definition only>",
+    "description": "Semantic distillation schema capsule for research papers and technical reports.",
+    "authors": ["Byte Insights"],
+    "license": "proprietary",
+    "protection": {
+      "integrity_model": "sha256(schema_definition)",
+      "storage_guidelines": "Immutable. Hash stored on-chain when necessary.",
+      "ip_protection_notes": "Schema capsule is designed to be self-contained for IP locking."
+    }
+  },
+  "schema_definition": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ResearchPaperDistillationBlueprint",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "problem_and_motivation",
+      "prior_work",
+      "contributions",
+      "setup_and_assumptions",
+      "methodology",
+      "results",
+      "limitations",
+      "implications",
+      "document_structure",
+      "quotes_and_anecdotes",
+      "tone_metadata"
+    ],
+    "properties": {
+      "problem_and_motivation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["problem", "why_it_matters"],
+        "properties": {
+          "problem": { "type": "string" },
+          "why_it_matters": { "type": "string" },
+          "scope": { "type": "string" }
+        }
+      },
+      "prior_work": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary"],
+        "properties": {
+          "summary": { "type": "string" },
+          "limitations_in_prior_work": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "contributions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "description"],
+          "properties": {
+            "id": { "type": "string" },
+            "description": { "type": "string" },
+            "changes_or_enables": { "type": "string" }
+          }
+        }
+      },
+      "setup_and_assumptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["assumptions"],
+        "properties": {
+          "assumptions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "key_definitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["term", "definition"],
+              "properties": {
+                "term": { "type": "string" },
+                "definition": { "type": "string" }
+              }
+            }
+          },
+          "validity_constraints": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "methodology": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["high_level_description", "flow"],
+        "properties": {
+          "high_level_description": { "type": "string" },
+          "flow": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["step_id", "description"],
+              "properties": {
+                "step_id": { "type": "string" },
+                "description": { "type": "string" },
+                "inputs": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "outputs": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          },
+          "experimental_design": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "datasets": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "baselines": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "metrics": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "critical_decisions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "trade_offs": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "results": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["quantitative", "qualitative"],
+        "properties": {
+          "quantitative": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["description"],
+              "properties": {
+                "description": { "type": "string" },
+                "compared_to": { "type": "string" }
+              }
+            }
+          },
+          "qualitative": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "limitations": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stated", "implied"],
+        "properties": {
+          "stated": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "implied": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "failure_modes": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "implications": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recommended_uses"],
+        "properties": {
+          "recommended_uses": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "misuse_risks": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "future_work": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "document_structure": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sections"],
+        "properties": {
+          "contents_list": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "has_contents": { "type": "boolean" },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "section_id": { "type": "string" },
+                    "title": { "type": "string" },
+                    "page": { "type": ["integer", "null"] }
+                  }
+                }
+              }
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "title", "level"],
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "level": { "type": "integer", "minimum": 1, "maximum": 6 },
+                "numbering": { "type": ["string", "null"] },
+                "subsections": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["id", "title", "level"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "title": { "type": "string" },
+                      "level": { "type": "integer" },
+                      "numbering": { "type": ["string", "null"] }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "figures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "caption"],
+              "properties": {
+                "id": { "type": "string" },
+                "caption": { "type": "string" },
+                "section_id": { "type": ["string", "null"] },
+                "description": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "tables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "caption"],
+              "properties": {
+                "id": { "type": "string" },
+                "caption": { "type": "string" },
+                "section_id": { "type": ["string", "null"] },
+                "description": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "title_page": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string" },
+              "subtitle": { "type": ["string", "null"] },
+              "author": { "type": "string" },
+              "dedication": { "type": "string" },
+              "acknowledgments": { "type": "string" }
+            }
+          },
+          "appendix": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "has_appendix": { "type": "boolean" },
+              "sections": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "quotes_and_anecdotes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text"],
+          "properties": {
+            "text": { "type": "string" },
+            "context": { "type": "string" },
+            "section_id": { "type": "string" },
+            "attribution": { "type": ["string", "null"] }
+          }
+        }
+      },
+      "tone_metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "style": { "type": "string" },
+          "urgency_level": { "type": "string" },
+          "formality": { "type": "string" },
+          "key_phrases": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "operational_guidance": {
+    "intended_use": "Semantic distillation of research papers and technical reports.",
+    "example_valid_document": {
+      "problem_and_motivation": {
+        "problem": "Current AI systems lack reliable situational awareness capabilities.",
+        "why_it_matters": "Without situational awareness, AI systems may make decisions in contexts they don't understand.",
+        "scope": "Focus on large language models and their deployment contexts."
+      },
+      "prior_work": {
+        "summary": "Previous work has focused on alignment and safety, but not on contextual awareness.",
+        "limitations_in_prior_work": []
+      },
+      "contributions": [],
+      "setup_and_assumptions": {
+        "assumptions": []
+      },
+      "methodology": {
+        "high_level_description": "",
+        "flow": []
+      },
+      "results": {
+        "quantitative": [],
+        "qualitative": []
+      },
+      "limitations": {
+        "stated": [],
+        "implied": []
+      },
+      "implications": {
+        "recommended_uses": []
+      }
+    },
+    "migration": {
+      "supersedes": "0.0.1",
+      "migrates_cleanly": true,
+      "notes": "First stable semantic version of research paper distillation schema."
+    }
+  }
+}
+

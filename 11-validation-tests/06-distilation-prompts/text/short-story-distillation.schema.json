@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://semantic-media-compression.local/schemas/short-story-distillation.schema.json",
+  "title": "ShortStoryDistillationBlueprint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "overview",
+    "characters",
+    "world_and_setting",
+    "plot_structure",
+    "themes_and_symbolism",
+    "emotional_arc_and_tone",
+    "pov_and_voice",
+    "non_negotiables"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "0.0.1",
+      "description": "Schema version of the distillation blueprint."
+    },
+    "overview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logline", "synopsis"],
+      "properties": {
+        "logline": { "type": "string" },
+        "synopsis": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3
+        }
+      }
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name_or_label", "role", "core_traits"],
+        "properties": {
+          "id": { "type": "string" },
+          "name_or_label": { "type": "string" },
+          "role": { "type": "string" },
+          "core_traits": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "motivations": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "fears": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "internal_conflicts": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "external_conflicts": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "arc_summary": { "type": "string" }
+        }
+      }
+    },
+    "world_and_setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time_place", "environment", "cultural_context", "world_rules"],
+      "properties": {
+        "time_place": { "type": "string" },
+        "environment": { "type": "string" },
+        "cultural_context": { "type": "string" },
+        "world_rules": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "plot_structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beats"],
+      "properties": {
+        "beats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "position", "description"],
+            "properties": {
+              "id": { "type": "string" },
+              "position": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Approximate relative position in story (0-1)."
+              },
+              "description": { "type": "string" },
+              "characters_involved": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "stakes": { "type": "string" },
+              "is_turning_point": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "themes_and_symbolism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_themes"],
+      "properties": {
+        "primary_themes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "secondary_themes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["symbol", "meaning"],
+            "properties": {
+              "symbol": { "type": "string" },
+              "meaning": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "emotional_arc_and_tone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall_arc"],
+      "properties": {
+        "overall_arc": { "type": "string" },
+        "scene_emotional_beats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["beat_id", "emotion"],
+            "properties": {
+              "beat_id": { "type": "string" },
+              "emotion": { "type": "string" },
+              "intensity": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              }
+            }
+          }
+        },
+        "baseline_tone": { "type": "string" }
+      }
+    },
+    "pov_and_voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pov_type", "narrator_reliability", "voice_characteristics"],
+      "properties": {
+        "pov_type": { "type": "string" },
+        "narrator_reliability": { "type": "string" },
+        "voice_characteristics": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "non_negotiables": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core_events", "character_constraints", "world_constraints"],
+      "properties": {
+        "core_events": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "character_constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "world_constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+
+

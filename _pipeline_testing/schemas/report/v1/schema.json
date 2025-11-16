@@ -1,0 +1,269 @@
+{
+  "schema_metadata": {
+    "id": "report_distillation",
+    "version": "1.0.0",
+    "released_at": "2025-01-27T00:00:00Z",
+    "draft": "2020-12",
+    "hash": "<SHA256 of schema_definition only>",
+    "description": "Semantic distillation schema capsule for reports including policy reports, research reports, submissions, and analytical documents.",
+    "authors": ["Byte Insights"],
+    "license": "proprietary",
+    "protection": {
+      "integrity_model": "sha256(schema_definition)",
+      "storage_guidelines": "Immutable. Hash stored on-chain when necessary.",
+      "ip_protection_notes": "Schema capsule is designed to be self-contained for IP locking."
+    }
+  },
+  "schema_definition": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ReportDistillationBlueprint",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "executive_summary",
+      "purpose_and_scope",
+      "methodology",
+      "findings",
+      "recommendations",
+      "conclusions",
+      "document_structure",
+      "tone_metadata"
+    ],
+    "properties": {
+      "executive_summary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary"],
+        "properties": {
+          "summary": { "type": "string" },
+          "key_points": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "recommendations_summary": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "purpose_and_scope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["purpose"],
+        "properties": {
+          "purpose": { "type": "string" },
+          "scope": { "type": ["string", "null"] },
+          "objectives": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "background": { "type": ["string", "null"] },
+          "context": { "type": ["string", "null"] }
+        }
+      },
+      "methodology": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description"],
+        "properties": {
+          "description": { "type": "string" },
+          "data_sources": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "data_collection_methods": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "analysis_approach": { "type": ["string", "null"] },
+          "limitations": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "findings": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["main_findings"],
+        "properties": {
+          "main_findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["finding"],
+              "properties": {
+                "finding": { "type": "string" },
+                "evidence": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "significance": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "quantitative_data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["description"],
+              "properties": {
+                "description": { "type": "string" },
+                "value": { "type": ["string", "null"] },
+                "context": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "qualitative_insights": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "trends": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "recommendations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["recommendation"],
+          "properties": {
+            "recommendation": { "type": "string" },
+            "priority": { "type": ["string", "null"] },
+            "rationale": { "type": ["string", "null"] },
+            "implementation": { "type": ["string", "null"] },
+            "expected_outcomes": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      },
+      "conclusions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary"],
+        "properties": {
+          "summary": { "type": "string" },
+          "implications": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "future_considerations": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "document_structure": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sections"],
+        "properties": {
+          "contents_list": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "has_contents": { "type": "boolean" },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "section_id": { "type": "string" },
+                    "title": { "type": "string" },
+                    "page": { "type": ["integer", "null"] }
+                  }
+                }
+              }
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "title", "level"],
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "level": { "type": "integer", "minimum": 1, "maximum": 6 },
+                "numbering": { "type": ["string", "null"] },
+                "subsections": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["id", "title", "level"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "title": { "type": "string" },
+                      "level": { "type": "integer" },
+                      "numbering": { "type": ["string", "null"] }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "tables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "caption"],
+              "properties": {
+                "id": { "type": "string" },
+                "caption": { "type": "string" },
+                "section_id": { "type": ["string", "null"] },
+                "description": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "figures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "caption"],
+              "properties": {
+                "id": { "type": "string" },
+                "caption": { "type": "string" },
+                "section_id": { "type": ["string", "null"] },
+                "description": { "type": ["string", "null"] }
+              }
+            }
+          }
+        }
+      },
+      "tone_metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "style": { "type": "string" },
+          "formality": { "type": "string" },
+          "objectivity": { "type": "string" },
+          "key_phrases": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "operational_guidance": {
+    "intended_use": "Semantic distillation of reports including policy reports, research reports, submissions, and analytical documents.",
+    "migration": {
+      "supersedes": null,
+      "migrates_cleanly": true,
+      "notes": "First version of report distillation schema."
+    }
+  }
+}
+

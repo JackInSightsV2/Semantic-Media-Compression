@@ -19,6 +19,23 @@
     "title": "ResearchPaperDistillationBlueprint",
     "type": "object",
     "additionalProperties": false,
+    "$defs": {
+      "section_item": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "level"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "level": { "type": "integer" },
+          "numbering": { "type": ["string", "null"] },
+          "subsections": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/section_item" }
+          }
+        }
+      }
+    },
     "required": [
       "problem_and_motivation",
       "prior_work",
@@ -237,29 +254,14 @@
           "sections": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["id", "title", "level"],
+              "allOf": [
+                { "$ref": "#/$defs/section_item" },
+                {
               "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
-                "level": { "type": "integer", "minimum": 1, "maximum": 6 },
-                "numbering": { "type": ["string", "null"] },
-                "subsections": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["id", "title", "level"],
-                    "properties": {
-                      "id": { "type": "string" },
-                      "title": { "type": "string" },
-                      "level": { "type": "integer" },
-                      "numbering": { "type": ["string", "null"] }
-                    }
+                    "level": { "type": "integer", "minimum": 1, "maximum": 6 }
                   }
                 }
-              }
+              ]
             }
           },
           "figures": {

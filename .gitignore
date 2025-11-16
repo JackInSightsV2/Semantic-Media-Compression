@@ -133,3 +133,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Pipeline testing data
+_pipeline_testing/data/

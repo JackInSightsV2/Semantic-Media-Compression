@@ -1,8 +1,8 @@
 {
   "schema_metadata": {
     "id": "research_paper_distillation",
-    "version": "1.0.1",
-    "released_at": "2025-11-15T17:05:00Z",
+    "version": "1.0.0",
+    "released_at": "2025-11-15T00:00:00Z",
     "draft": "2020-12",
     "hash": "<SHA256 of schema_definition only>",
     "description": "Semantic distillation schema capsule for research papers and technical reports.",
@@ -19,6 +19,23 @@
     "title": "ResearchPaperDistillationBlueprint",
     "type": "object",
     "additionalProperties": false,
+    "$defs": {
+      "section_item": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "level"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "level": { "type": "integer" },
+          "numbering": { "type": ["string", "null"] },
+          "subsections": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/section_item" }
+          }
+        }
+      }
+    },
     "required": [
       "problem_and_motivation",
       "prior_work",
@@ -30,7 +47,9 @@
       "implications",
       "document_structure",
       "quotes_and_anecdotes",
-      "tone_metadata"
+      "tone_metadata",
+      "layout_metadata",
+      "examples_and_case_studies"
     ],
     "properties": {
       "problem_and_motivation": {
@@ -162,7 +181,7 @@
               "required": ["description"],
               "properties": {
                 "description": { "type": "string" },
-                "compared_to": { "type": "string" }
+                "compared_to": { "type": ["string", "null"] }
               }
             }
           },
@@ -237,29 +256,14 @@
           "sections": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["id", "title", "level"],
-              "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
-                "level": { "type": "integer", "minimum": 1, "maximum": 6 },
-                "numbering": { "type": ["string", "null"] },
-                "subsections": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["id", "title", "level"],
-                    "properties": {
-                      "id": { "type": "string" },
-                      "title": { "type": "string" },
-                      "level": { "type": "integer" },
-                      "numbering": { "type": ["string", "null"] }
-                    }
+              "allOf": [
+                { "$ref": "#/$defs/section_item" },
+                {
+                  "properties": {
+                    "level": { "type": "integer", "minimum": 1, "maximum": 6 }
                   }
                 }
-              }
+              ]
             }
           },
           "figures": {
@@ -286,7 +290,14 @@
                 "id": { "type": "string" },
                 "caption": { "type": "string" },
                 "section_id": { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "table_data": {
+                  "type": ["object", "null"],
+                  "additionalProperties": true,
+                  "description": "Full table data with rows and columns. Structure depends on table format."
+                },
+                "row_count": { "type": ["integer", "null"] },
+                "column_count": { "type": ["integer", "null"] }
               }
             }
           },
@@ -297,6 +308,10 @@
               "title": { "type": ["string", "null"] },
               "subtitle": { "type": ["string", "null"] },
               "author": { "type": ["string", "null"] },
+              "author_affiliations": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
               "dedication": { "type": ["string", "null"] },
               "acknowledgments": { "type": ["string", "null"] }
             }
@@ -309,6 +324,25 @@
               "sections": {
                 "type": "array",
                 "items": { "type": "string" }
+              }
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["citation"],
+              "properties": {
+                "id": { "type": ["string", "null"] },
+                "citation": { "type": "string" },
+                "authors": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "title": { "type": ["string", "null"] },
+                "venue": { "type": ["string", "null"] },
+                "year": { "type": ["integer", "null"] }
               }
             }
           }
@@ -340,6 +374,90 @@
             "items": { "type": "string" }
           }
         }
+      },
+      "layout_metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "format_type": {
+            "type": "string",
+            "description": "Document format: 'working_paper', 'published_paper', 'technical_report', 'manuscript', etc."
+          },
+          "has_copyright": { "type": "boolean" },
+          "copyright_notice": { "type": ["string", "null"] },
+          "has_footnotes": { "type": "boolean" },
+          "has_page_numbers": { "type": "boolean" },
+          "header_content": { "type": ["string", "null"] },
+          "footer_content": { "type": ["string", "null"] },
+          "typography_style": {
+            "type": "string",
+            "description": "Typography style: 'plain_text', 'formatted', 'academic', etc."
+          },
+          "section_numbering_style": {
+            "type": "string",
+            "description": "How sections are numbered: 'arabic' (1, 2, 3), 'roman' (I, II, III), 'alphanumeric' (1a, 1b), 'none', etc."
+          },
+          "heading_style": {
+            "type": "string",
+            "description": "Heading formatting: 'numbered' (1. Title), 'unnumbered' (Title), 'mixed', etc."
+          },
+          "abstract_placement": {
+            "type": "string",
+            "description": "Where abstract appears: 'before_title', 'after_title', 'after_intro', 'none'"
+          },
+          "citation_style_in_text": {
+            "type": "string",
+            "description": "How citations appear in text: 'author_year' (Smith 2020), 'numbered' ([1]), 'footnote', 'none', etc."
+          },
+          "reference_section_style": {
+            "type": "string",
+            "description": "Reference section format: 'numbered_list', 'author_year', 'footnotes', 'none', etc."
+          },
+          "paragraph_spacing": {
+            "type": "string",
+            "description": "Paragraph spacing: 'single', 'double', 'spaced' (blank lines between), 'compact'"
+          },
+          "list_formatting": {
+            "type": "string",
+            "description": "How lists are formatted: 'bullets', 'numbered', 'dashes', 'none', etc."
+          },
+          "section_transitions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Observable patterns in how sections transition (e.g., 'abrupt', 'summary_before_next', 'continuation', etc.)"
+          },
+          "document_flow_pattern": {
+            "type": "string",
+            "description": "Overall document flow: 'chronological', 'thematic', 'problem_solution', 'narrative', 'reference', etc."
+          }
+        }
+      },
+      "examples_and_case_studies": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["description"],
+          "properties": {
+            "description": { "type": "string" },
+            "type": {
+              "type": "string",
+              "description": "Type: 'case_study', 'historical_example', 'company_example', 'technical_example', 'entrepreneur_example', etc."
+            },
+            "section_id": { "type": ["string", "null"] },
+            "specific_details": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Specific facts, numbers, names, dates, locations mentioned"
+            },
+            "citations": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "In-text citations or reference IDs mentioned with this example"
+            }
+          }
+        },
+        "description": "All specific examples, case studies, historical instances, company examples, entrepreneur stories, etc. mentioned in the document"
       }
     }
   },

@@ -173,7 +173,8 @@ def extract_entities_general(text: str, focus: str = "general") -> Dict[str, Lis
         'potential_locations': [],
         'potential_organizations': [],
         'potential_people': [],
-        'potential_dates': []
+        'potential_dates': [],
+        'potential_titles': []  # For narrative fiction
     }
     
     # Always extract years and dates
@@ -243,6 +244,35 @@ def extract_entities_general(text: str, focus: str = "general") -> Dict[str, Lis
             matches = re.findall(pattern, text)
             locations.extend([m if isinstance(m, str) else ' '.join(m) for m in matches])
         entities['potential_locations'] = list(set(locations))[:20]
+    
+    # Extract titles for narrative fiction (focus="general")
+    if focus == "general":
+        # Look for titles in common patterns:
+        # 1. Lines that are all caps or title case at the start of document
+        # 2. Lines with quotes around them (e.g., "The Philosopher's Joke")
+        # 3. Lines after "Title:" or "Title Page"
+        # 4. Standalone lines with title case (often titles)
+        title_patterns = [
+            r'^"([^"]{5,100})"$',  # Quoted titles on their own line
+            r'^([A-Z][A-Za-z\s\']{5,100})$',  # Title case on its own line (start of doc)
+            r'(?:^Title[:\s]+)([A-Z][A-Za-z\s\']{5,100})$',  # After "Title:"
+            r'(?:^The\s+)([A-Z][a-z]+(?:\'s)?\s+[A-Z][a-z]+)',  # "The [Title]"
+        ]
+        titles = set()
+        lines = text.split('\n')[:50]  # Check first 50 lines for titles
+        for i, line in enumerate(lines):
+            line = line.strip()
+            if not line or len(line) < 5:
+                continue
+            for pattern in title_patterns:
+                matches = re.findall(pattern, line, re.MULTILINE)
+                for match in matches:
+                    if isinstance(match, tuple):
+                        match = ' '.join(match)
+                    # Filter out common false positives
+                    if match and not any(word in match.lower() for word in ['copyright', 'project gutenberg', 'ebook', 'license']):
+                        titles.add(match)
+        entities['potential_titles'] = list(titles)[:10]  # Limit to 10
     
     return entities
 
@@ -356,6 +386,13 @@ def format_ner_hints_for_prompt(ner_results: Dict[str, any], focus: str = "citat
         if entities.get('potential_locations'):
             hints.append(f"\nPotential Locations ({len(entities['potential_locations'][:10])}):")
             hints.append(", ".join(entities['potential_locations'][:10]))
+        
+        # Add titles for narrative fiction
+        if entities.get('potential_titles'):
+            hints.append(f"\n\nPotential Titles ({len(entities['potential_titles'])}):")
+            for title in entities['potential_titles']:
+                hints.append(f"  - \"{title}\"")
+            hints.append("\n⚠️ IMPORTANT: Verify the title matches the document EXACTLY. Use the exact title as it appears in the document, not these suggestions.")
     
     if len(hints) == 1:  # Only header was added
         return "No pre-extracted entity hints available."

@@ -78,6 +78,11 @@ PREPROCESSING_CONFIG: Dict[str, PreprocessingConfig] = {
         use_ner=True,
         ner_focus="entities"
     ),
+    "technical_documentation": PreprocessingConfig(
+        use_grobid=False,
+        use_ner=True,
+        ner_focus="entities"
+    ),
     "api": PreprocessingConfig(
         use_grobid=False,
         use_ner=True,

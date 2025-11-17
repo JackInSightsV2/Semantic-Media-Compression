@@ -2,11 +2,13 @@
   "schema_metadata": {
     "id": "report_distillation",
     "version": "1.0.0",
-    "released_at": "2025-01-27T00:00:00Z",
+    "released_at": "2025-11-16T00:00:00Z",
     "draft": "2020-12",
     "hash": "<SHA256 of schema_definition only>",
     "description": "Semantic distillation schema capsule for reports including policy reports, research reports, submissions, and analytical documents.",
-    "authors": ["Byte Insights"],
+    "authors": [
+      "Byte Insights"
+    ],
     "license": "proprietary",
     "protection": {
       "integrity_model": "sha256(schema_definition)",
@@ -19,166 +21,362 @@
     "title": "ReportDistillationBlueprint",
     "type": "object",
     "additionalProperties": false,
-    "required": [
-      "executive_summary",
-      "purpose_and_scope",
-      "methodology",
-      "findings",
-      "recommendations",
-      "conclusions",
-      "document_structure",
-      "tone_metadata"
-    ],
-    "properties": {
-      "executive_summary": {
+    "$defs": {
+      "section_item": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["summary"],
+        "required": [
+          "id",
+          "title",
+          "level"
+        ],
         "properties": {
-          "summary": { "type": "string" },
-          "key_points": {
-            "type": "array",
-            "items": { "type": "string" }
+          "id": {
+            "type": "string"
           },
-          "recommendations_summary": {
+          "title": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "numbering": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subsections": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "$ref": "#/$defs/section_item"
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "problem_and_motivation",
+      "prior_work",
+      "contributions",
+      "setup_and_assumptions",
+      "methodology",
+      "results",
+      "limitations",
+      "implications",
+      "document_structure",
+      "quotes_and_anecdotes",
+      "tone_metadata",
+      "layout_metadata",
+      "examples_and_case_studies"
+    ],
+    "properties": {
+      "problem_and_motivation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "problem",
+          "why_it_matters"
+        ],
+        "properties": {
+          "problem": {
+            "type": "string"
+          },
+          "why_it_matters": {
+            "type": "string"
+          },
+          "scope": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
-      "purpose_and_scope": {
+      "prior_work": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["purpose"],
+        "required": [
+          "summary"
+        ],
         "properties": {
-          "purpose": { "type": "string" },
-          "scope": { "type": ["string", "null"] },
-          "objectives": {
-            "type": "array",
-            "items": { "type": "string" }
+          "summary": {
+            "type": "string"
           },
-          "background": { "type": ["string", "null"] },
-          "context": { "type": ["string", "null"] }
+          "limitations_in_prior_work": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "contributions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "description"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "changes_or_enables": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "setup_and_assumptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "assumptions"
+        ],
+        "properties": {
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "key_definitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "term",
+                "definition"
+              ],
+              "properties": {
+                "term": {
+                  "type": "string"
+                },
+                "definition": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "validity_constraints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         }
       },
       "methodology": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["description"],
+        "required": [
+          "high_level_description",
+          "flow"
+        ],
         "properties": {
-          "description": { "type": "string" },
-          "data_sources": {
-            "type": "array",
-            "items": { "type": "string" }
+          "high_level_description": {
+            "type": "string"
           },
-          "data_collection_methods": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "analysis_approach": { "type": ["string", "null"] },
-          "limitations": {
-            "type": "array",
-            "items": { "type": "string" }
-          }
-        }
-      },
-      "findings": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["main_findings"],
-        "properties": {
-          "main_findings": {
+          "flow": {
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["finding"],
+              "required": [
+                "step_id",
+                "description"
+              ],
               "properties": {
-                "finding": { "type": "string" },
-                "evidence": {
-                  "type": "array",
-                  "items": { "type": "string" }
+                "step_id": {
+                  "type": "string"
                 },
-                "significance": { "type": ["string", "null"] }
+                "description": {
+                  "type": "string"
+                },
+                "inputs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "outputs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
               }
             }
           },
-          "quantitative_data": {
+          "experimental_design": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "datasets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "baselines": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metrics": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "critical_decisions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trade_offs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "results": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "quantitative",
+          "qualitative"
+        ],
+        "properties": {
+          "quantitative": {
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["description"],
+              "required": [
+                "description"
+              ],
               "properties": {
-                "description": { "type": "string" },
-                "value": { "type": ["string", "null"] },
-                "context": { "type": ["string", "null"] }
+                "description": {
+                  "type": "string"
+                },
+                "compared_to": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
               }
             }
           },
-          "qualitative_insights": {
+          "qualitative": {
             "type": "array",
-            "items": { "type": "string" }
-          },
-          "trends": {
-            "type": "array",
-            "items": { "type": "string" }
-          }
-        }
-      },
-      "recommendations": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["recommendation"],
-          "properties": {
-            "recommendation": { "type": "string" },
-            "priority": { "type": ["string", "null"] },
-            "rationale": { "type": ["string", "null"] },
-            "implementation": { "type": ["string", "null"] },
-            "expected_outcomes": {
-              "type": "array",
-              "items": { "type": "string" }
+            "items": {
+              "type": "string"
             }
           }
         }
       },
-      "conclusions": {
+      "limitations": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["summary"],
+        "required": [
+          "stated",
+          "implied"
+        ],
         "properties": {
-          "summary": { "type": "string" },
-          "implications": {
+          "stated": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "future_considerations": {
+          "implied": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
+          },
+          "failure_modes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "implications": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "recommended_uses"
+        ],
+        "properties": {
+          "recommended_uses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "misuse_risks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "future_work": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
       "document_structure": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["sections"],
+        "required": [
+          "sections"
+        ],
         "properties": {
           "contents_list": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "has_contents": { "type": "boolean" },
+              "has_contents": {
+                "type": "boolean"
+              },
               "items": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
-                    "section_id": { "type": "string" },
-                    "title": { "type": "string" },
-                    "page": { "type": ["integer", "null"] }
+                    "section_id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    }
                   }
                 }
               }
@@ -187,27 +385,49 @@
           "sections": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["id", "title", "level"],
-              "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
-                "level": { "type": "integer", "minimum": 1, "maximum": 6 },
-                "numbering": { "type": ["string", "null"] },
-                "subsections": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["id", "title", "level"],
-                    "properties": {
-                      "id": { "type": "string" },
-                      "title": { "type": "string" },
-                      "level": { "type": "integer" },
-                      "numbering": { "type": ["string", "null"] }
+              "allOf": [
+                {
+                  "$ref": "#/$defs/section_item"
+                },
+                {
+                  "properties": {
+                    "level": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 6
                     }
                   }
+                }
+              ]
+            }
+          },
+          "figures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "caption"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": "string"
+                },
+                "section_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               }
             }
@@ -217,27 +437,185 @@
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "caption"],
+              "required": [
+                "id",
+                "caption"
+              ],
               "properties": {
-                "id": { "type": "string" },
-                "caption": { "type": "string" },
-                "section_id": { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] }
+                "id": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": "string"
+                },
+                "section_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "table_data": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "additionalProperties": true,
+                  "description": "Full table data with rows and columns. Structure depends on table format."
+                },
+                "row_count": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "column_count": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
               }
             }
           },
-          "figures": {
+          "title_page": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subtitle": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "author": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "author_affiliations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "dedication": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "acknowledgments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "appendix": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "has_appendix": {
+                "type": "boolean"
+              },
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "references": {
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "caption"],
+              "required": [
+                "citation"
+              ],
               "properties": {
-                "id": { "type": "string" },
-                "caption": { "type": "string" },
-                "section_id": { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] }
+                "id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "citation": {
+                  "type": "string"
+                },
+                "authors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "venue": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "year": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
               }
+            }
+          }
+        }
+      },
+      "quotes_and_anecdotes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "context": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "section_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "attribution": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         }
@@ -246,24 +624,181 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "style": { "type": "string" },
-          "formality": { "type": "string" },
-          "objectivity": { "type": "string" },
+          "style": {
+            "type": "string"
+          },
+          "urgency_level": {
+            "type": "string"
+          },
+          "formality": {
+            "type": "string"
+          },
           "key_phrases": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         }
+      },
+      "layout_metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "format_type": {
+            "type": "string",
+            "description": "Document format: 'working_paper', 'published_paper', 'technical_report', 'manuscript', etc."
+          },
+          "has_copyright": {
+            "type": "boolean"
+          },
+          "copyright_notice": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "has_footnotes": {
+            "type": "boolean"
+          },
+          "has_page_numbers": {
+            "type": "boolean"
+          },
+          "header_content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "footer_content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "typography_style": {
+            "type": "string",
+            "description": "Typography style: 'plain_text', 'formatted', 'academic', etc."
+          },
+          "section_numbering_style": {
+            "type": "string",
+            "description": "How sections are numbered: 'arabic' (1, 2, 3), 'roman' (I, II, III), 'alphanumeric' (1a, 1b), 'none', etc."
+          },
+          "heading_style": {
+            "type": "string",
+            "description": "Heading formatting: 'numbered' (1. Title), 'unnumbered' (Title), 'mixed', etc."
+          },
+          "abstract_placement": {
+            "type": "string",
+            "description": "Where abstract appears: 'before_title', 'after_title', 'after_intro', 'none'"
+          },
+          "citation_style_in_text": {
+            "type": "string",
+            "description": "How citations appear in text: 'author_year' (Smith 2020), 'numbered' ([1]), 'footnote', 'none', etc."
+          },
+          "reference_section_style": {
+            "type": "string",
+            "description": "Reference section format: 'numbered_list', 'author_year', 'footnotes', 'none', etc."
+          },
+          "paragraph_spacing": {
+            "type": "string",
+            "description": "Paragraph spacing: 'single', 'double', 'spaced' (blank lines between), 'compact'"
+          },
+          "list_formatting": {
+            "type": "string",
+            "description": "How lists are formatted: 'bullets', 'numbered', 'dashes', 'none', etc."
+          },
+          "section_transitions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Observable patterns in how sections transition (e.g., 'abrupt', 'summary_before_next', 'continuation', etc.)"
+          },
+          "document_flow_pattern": {
+            "type": "string",
+            "description": "Overall document flow: 'chronological', 'thematic', 'problem_solution', 'narrative', 'reference', etc."
+          }
+        }
+      },
+      "examples_and_case_studies": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "description"
+          ],
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "description": "Type: 'case_study', 'historical_example', 'company_example', 'technical_example', 'entrepreneur_example', etc."
+            },
+            "section_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "specific_details": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Specific facts, numbers, names, dates, locations mentioned"
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "In-text citations or reference IDs mentioned with this example"
+            }
+          }
+        },
+        "description": "All specific examples, case studies, historical instances, company examples, entrepreneur stories, etc. mentioned in the document"
       }
     }
   },
   "operational_guidance": {
     "intended_use": "Semantic distillation of reports including policy reports, research reports, submissions, and analytical documents.",
+    "example_valid_document": {
+      "problem_and_motivation": {
+        "problem": "Current policies need evaluation and improvement.",
+        "why_it_matters": "Effective policies ensure compliance and positive outcomes.",
+        "scope": "Focus on large language models and their deployment contexts."
+      },
+      "prior_work": {
+        "summary": "Previous work has focused on alignment and safety, but not on contextual awareness.",
+        "limitations_in_prior_work": []
+      },
+      "contributions": [],
+      "setup_and_assumptions": {
+        "assumptions": []
+      },
+      "methodology": {
+        "high_level_description": "",
+        "flow": []
+      },
+      "results": {
+        "quantitative": [],
+        "qualitative": []
+      },
+      "limitations": {
+        "stated": [],
+        "implied": []
+      },
+      "implications": {
+        "recommended_uses": []
+      }
+    },
     "migration": {
-      "supersedes": null,
+      "supersedes": "0.0.1",
       "migrates_cleanly": true,
-      "notes": "First version of report distillation schema."
+      "notes": "First semantic version of report distillation schema, based on research paper structure."
     }
   }
 }
-

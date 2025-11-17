@@ -39,6 +39,7 @@ CATEGORY_MAP = {
     "narrative": ("narrative_fiction", "narrative_fiction", "narrative_fiction_distillation"),
     "story": ("narrative_fiction", "narrative_fiction", "narrative_fiction_distillation"),
     "technical": ("technical_documentation", "technical_documentation", "technical_documentation_distillation"),
+    "technical_documentation": ("technical_documentation", "technical_documentation", "technical_documentation_distillation"),
     "api": ("technical_documentation", "technical_documentation", "technical_documentation_distillation"),
     "docs": ("technical_documentation", "technical_documentation", "technical_documentation_distillation"),
     "report": ("reports", "report", "report_distillation"),

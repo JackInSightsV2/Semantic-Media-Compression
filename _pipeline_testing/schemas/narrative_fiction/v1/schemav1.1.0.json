@@ -12,6 +12,127 @@
       "integrity_model": "sha256(schema_definition)",
       "storage_guidelines": "Immutable. Hash stored on-chain when necessary.",
       "ip_protection_notes": "Schema capsule is designed to be self-contained for IP locking."
+    },
+    "distillation_config": {
+      "passes": [
+        {
+          "name": "Pass 1",
+          "fields": ["story_overview"],
+          "always_include": ["document_structure", "tone_metadata"],
+          "notes": "Foundation pass - extract story overview (including premise), document structure, and tone. Keep focused to avoid token limits."
+        },
+        {
+          "name": "Pass 2",
+          "fields": ["characters"],
+          "always_include": [],
+          "notes": "Extract basic character info: name, role, description, character_arc, goals, flaws, motivations, backstory, voice_distinction, relationships, key_traits. Keep focused to avoid token limits."
+        },
+        {
+          "name": "Pass 2b",
+          "fields": ["characters"],
+          "always_include": [],
+          "notes": "Extract character depth: micro_mechanics (facial expressions, body language, tells, vocal tone), psychological_architecture (internal monologue, biases, trauma patterns, desire vs need), interaction_systems (influence patterns, dominance/submission, attraction/avoidance, mentor-student, rivalry). Focus on main characters first."
+        },
+        {
+          "name": "Pass 3",
+          "fields": ["plot_structure"],
+          "always_include": [],
+          "notes": "Dedicated pass for plot structure - extract acts/chapters, inciting incident, climax, resolution, turning points, stakes, conflict, and key_choices with consequences"
+        },
+        {
+          "name": "Pass 4",
+          "fields": ["setting"],
+          "always_include": [],
+          "notes": "Extract structured worldbuilding: geography, culture, technology/magic, politics, economy, lore, social_dynamics, environmental_metaphors, world_simulation_rules. Keep focused to avoid token limits."
+        },
+        {
+          "name": "Pass 4b",
+          "fields": ["setting"],
+          "always_include": [],
+          "notes": "CRITICAL: Extract ALL physical_objects_and_props with prop_logic (why_exists, how_got_there, consistent_behavior, triggers_plot_events, plot_events_triggered). These are plot-critical elements."
+        },
+        {
+          "name": "Pass 5",
+          "fields": ["themes"],
+          "always_include": [],
+          "notes": "Extract themes, symbolism, motifs, moral questions, and philosophical_moral_layers (ethical dilemmas, moral frameworks, personal codes, ideological clashes) - focused pass"
+        },
+        {
+          "name": "Pass 6",
+          "fields": ["quotes_and_dialogue"],
+          "always_include": [],
+          "notes": "Extract quotes and dialogue for FIRST HALF of story: verbatim with subtext, silences/pauses - these serve as markers to prevent repetition during reinflation. For long stories, extract approximately the first half of all quotes/dialogue."
+        },
+        {
+          "name": "Pass 6a",
+          "fields": ["quotes_and_dialogue"],
+          "always_include": [],
+          "notes": "Extract quotes and dialogue for SECOND HALF of story: verbatim with subtext, silences/pauses. Extract the remaining quotes/dialogue not covered in Pass 6."
+        },
+        {
+          "name": "Pass 7",
+          "fields": ["narrative_sequence"],
+          "always_include": [],
+          "notes": "Dedicated pass for narrative sequence - chronological vs narrative order, plus temporal_mechanics (flashbacks, flashforwards, time dilation, loops, subjective vs objective time)"
+        },
+        {
+          "name": "Pass 8",
+          "fields": ["scenes"],
+          "always_include": [],
+          "notes": "Extract scene basics for FIRST HALF of scenes: scene_id, chapter_or_act, location, characters_present, summary, purpose, key_dialogue, narrative_function, entry_tension, exit_consequence, exact_sequence_of_actions. For long stories with many scenes, extract approximately the first half of all scenes."
+        },
+        {
+          "name": "Pass 8a",
+          "fields": ["scenes"],
+          "always_include": [],
+          "notes": "Extract scene basics for SECOND HALF of scenes: scene_id, chapter_or_act, location, characters_present, summary, purpose, key_dialogue, narrative_function, entry_tension, exit_consequence, exact_sequence_of_actions. Extract the remaining scenes not covered in Pass 8."
+        },
+        {
+          "name": "Pass 8b",
+          "fields": ["scenes"],
+          "always_include": [],
+          "notes": "Extract scene details: physical_actions, micro_actions, sensory_details (all 5 senses - visual, sound, smell, touch, taste), emotional_beats, emotional_landing (new truth/power shift/goal change/emotional turn), sensory_absence (what's not seen/said, silence as agent, obscurity). Focus on key scenes first."
+        },
+        {
+          "name": "Pass 9",
+          "fields": ["narrative_flow", "storytelling_techniques"],
+          "always_include": [],
+          "notes": "Extract narrative flow (including breathing_room, emotional_beats, emotional_logic) and storytelling techniques (including narrative_authority, reader_manipulation tools)"
+        },
+        {
+          "name": "Pass 10",
+          "fields": ["narrative_style"],
+          "always_include": [],
+          "notes": "Extract narrative style - pacing, tone shifts, sentence structure, rhetorical/literary devices, dialogue/descriptive style, meta_layers (genre conventions, tropes, audience expectations, self-awareness), rhythm_and_cadence (sentence rhythm, paragraph choreography, scene length modulation, dialogue breath patterns)"
+        },
+        {
+          "name": "Pass 11",
+          "fields": ["macro_cohesion", "hidden_systems"],
+          "always_include": [],
+          "notes": "Extract macro-level cohesion: payoffs_to_setups, thematic_consistency, contrast, continuity (logical, emotional, plot, character), logistics_continuity (practical constraints, geography limitations, causality mapping, plot holes avoided). Also extract hidden_systems: audience_secrets, character_secrets, self_deception"
+        },
+        {
+          "name": "Pass 12",
+          "fields": ["layout_metadata"],
+          "always_include": [],
+          "notes": "Extract observable layout patterns - critical for preserving original formatting"
+        },
+        {
+          "name": "Pass 13",
+          "fields": [],
+          "always_include": ["document_structure"]
+        },
+        {
+          "name": "Pass 14",
+          "fields": [],
+          "always_include": ["document_structure"]
+        },
+        {
+          "name": "Pass 15",
+          "fields": [],
+          "always_include": ["document_structure"]
+        }
+      ]
     }
   },
   "schema_definition": {
@@ -32,7 +153,8 @@
       "narrative_sequence",
       "scenes",
       "narrative_flow",
-      "storytelling_techniques"
+      "storytelling_techniques",
+      "hidden_systems"
     ],
     "properties": {
       "story_overview": {
@@ -42,6 +164,7 @@
         "properties": {
           "title": { "type": "string" },
           "author": { "type": ["string", "null"] },
+          "premise": { "type": ["string", "null"], "description": "The core idea or 'what if' that drives the story" },
           "summary": { "type": "string" },
           "genre": {
             "type": "array",
@@ -59,12 +182,154 @@
           "required": ["name", "role"],
           "properties": {
             "name": { "type": "string" },
-            "role": { "type": "string" },
+            "role": { "type": "string", "description": "protagonist, antagonist, supporting, mentor, etc." },
             "description": { "type": ["string", "null"] },
-            "character_arc": { "type": ["string", "null"] },
+            "goals": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "What the character wants to achieve"
+            },
+            "flaws": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Character weaknesses, limitations, or negative traits"
+            },
+            "motivations": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "What drives the character's actions and decisions"
+            },
+            "backstory": { "type": ["string", "null"], "description": "Relevant history that shapes the character's behavior" },
+            "character_arc": { "type": ["string", "null"], "description": "How the character changes throughout the story (growth, regression, or stasis)" },
             "key_traits": {
               "type": "array",
               "items": { "type": "string" }
+            },
+            "voice_distinction": { "type": ["string", "null"], "description": "How this character speaks and thinks uniquely (speech patterns, vocabulary, thought style)" },
+            "micro_mechanics": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "facial_expressions": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Characteristic facial expressions"
+                },
+                "body_language": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Characteristic body language patterns"
+                },
+                "micro_expressions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["expression", "contradiction"],
+                    "properties": {
+                      "expression": { "type": "string" },
+                      "contradiction": { "type": "string", "description": "What dialogue or behavior it contradicts" }
+                    }
+                  },
+                  "description": "Micro-expressions that contradict dialogue"
+                },
+                "tells": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Nervous habits, personal quirks, tells that reveal character"
+                },
+                "vocal_tone": {
+                  "type": ["string", "null"],
+                  "description": "Characteristic vocal tone and prosody"
+                }
+              }
+            },
+            "psychological_architecture": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "internal_monologue_structure": {
+                  "type": ["string", "null"],
+                  "description": "How the character's internal thoughts are structured"
+                },
+                "biases": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Cognitive biases the character exhibits"
+                },
+                "trauma_patterns": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Trauma patterns, triggers, and responses"
+                },
+                "desire_vs_need_conflict": {
+                  "type": ["string", "null"],
+                  "description": "Conflict between what character wants vs what they need"
+                }
+              }
+            },
+            "interaction_systems": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "influence_patterns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["target", "method"],
+                    "properties": {
+                      "target": { "type": "string", "description": "Who they influence" },
+                      "method": { "type": "string", "description": "How they influence (persuasion, manipulation, example, etc.)" }
+                    }
+                  },
+                  "description": "How this character influences others"
+                },
+                "dominance_submission": {
+                  "type": ["string", "null"],
+                  "description": "Dominance/submission patterns in relationships"
+                },
+                "attraction_avoidance": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["target"],
+                    "properties": {
+                      "target": { "type": "string" },
+                      "dynamic": { "type": "string", "description": "attraction or avoidance" },
+                      "reason": { "type": ["string", "null"] }
+                    }
+                  }
+                },
+                "mentor_student": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["role", "other"],
+                    "properties": {
+                      "role": { "type": "string", "description": "mentor or student" },
+                      "other": { "type": "string", "description": "The other person in the relationship" }
+                    }
+                  }
+                },
+                "rivalry_escalation": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["rival"],
+                    "properties": {
+                      "rival": { "type": "string" },
+                      "escalation_points": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
             },
             "relationships": {
               "type": "array",
@@ -88,6 +353,12 @@
         "required": ["structure_type"],
         "properties": {
           "structure_type": { "type": "string" },
+          "stakes": { "type": ["string", "null"], "description": "What could be gained or lost in the story" },
+          "conflict": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Types of conflict: internal, external, interpersonal, environmental"
+          },
           "acts_or_chapters": {
             "type": "array",
             "items": {
@@ -115,6 +386,25 @@
           "key_turning_points": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "key_choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["choice", "character"],
+              "properties": {
+                "choice": { "type": "string", "description": "The decision made" },
+                "character": { "type": "string", "description": "Who made the choice" },
+                "context": { "type": ["string", "null"], "description": "When and why the choice was made" },
+                "consequences": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Ripples and effects from this choice"
+                }
+              }
+            },
+            "description": "Major decisions that drive the plot"
           }
         }
       },
@@ -125,6 +415,18 @@
         "properties": {
           "primary_setting": { "type": "string" },
           "time_period": { "type": ["string", "null"] },
+          "geography": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "physical_landscapes": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Mountains, forests, cities, etc."
+              },
+              "climate": { "type": ["string", "null"], "description": "Weather patterns, seasons, environmental conditions" }
+            }
+          },
           "locations": {
             "type": "array",
             "items": {
@@ -138,10 +440,371 @@
               }
             }
           },
+          "culture": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "norms": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Social norms and expectations"
+              },
+              "rituals": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Ceremonies, traditions, customs"
+              },
+              "beliefs": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Religious, philosophical, or cultural beliefs"
+              }
+            }
+          },
+          "technology_or_magic": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "systems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["name"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "description": { "type": ["string", "null"] },
+                    "rules": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Limitations, constraints, or rules of the system"
+                    },
+                    "limitations": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "What the system cannot do"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "politics": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "power_structures": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Government types, hierarchies, authority systems"
+              },
+              "factions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["name"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "description": { "type": ["string", "null"] },
+                    "goals": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "relationships": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Relationships with other factions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "economy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "resources": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Available resources, materials, commodities"
+              },
+              "trade": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Trade routes, commerce, exchange systems"
+              },
+              "scarcity_dynamics": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "What is scarce, what is abundant, economic pressures"
+              }
+            }
+          },
+          "lore": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "myths": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Myths, legends, folklore"
+              },
+              "history": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Important past events, historical context"
+              },
+              "important_past_events": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Events that shape the current story"
+              }
+            }
+          },
+          "social_dynamics": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "power_imbalances": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["relationship"],
+                  "properties": {
+                    "relationship": { "type": "string", "description": "Who has power over whom" },
+                    "source": { "type": ["string", "null"], "description": "Source of power (wealth, status, knowledge, etc.)" },
+                    "manifestation": { "type": ["string", "null"], "description": "How power imbalance manifests" }
+                  }
+                }
+              },
+              "alliances": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["members"],
+                  "properties": {
+                    "members": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "purpose": { "type": ["string", "null"] },
+                    "stability": { "type": ["string", "null"], "description": "How stable the alliance is" }
+                  }
+                }
+              },
+              "faction_tensions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["factions"],
+                  "properties": {
+                    "factions": { "type": "string", "description": "Which factions are in tension" },
+                    "source": { "type": ["string", "null"] },
+                    "escalation": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "social_rules": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Social rules defining acceptable behavior"
+              },
+              "reputation_status": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["character"],
+                  "properties": {
+                    "character": { "type": "string" },
+                    "reputation": { "type": ["string", "null"] },
+                    "perceived_status": { "type": ["string", "null"] }
+                  }
+                }
+              }
+            }
+          },
+          "environmental_metaphors": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "weather_emotional_tone": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["weather", "emotion"],
+                  "properties": {
+                    "weather": { "type": "string" },
+                    "emotion": { "type": "string" },
+                    "position": { "type": ["string", "null"] }
+                  }
+                },
+                "description": "Weather reflecting emotional tone"
+              },
+              "environment_theme_echo": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["environment", "theme"],
+                  "properties": {
+                    "environment": { "type": "string" },
+                    "theme": { "type": "string" },
+                    "how": { "type": ["string", "null"], "description": "How environment echoes theme" }
+                  }
+                }
+              },
+              "spatial_symbolism": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["space"],
+                  "properties": {
+                    "space": { "type": "string", "description": "Type of space (high_places, thresholds, enclosed_spaces, etc.)" },
+                    "symbolic_meaning": { "type": ["string", "null"] },
+                    "instances": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "world_simulation_rules": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "resource_flows": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How resources flow through the world"
+              },
+              "physics_constraints": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Physical constraints that affect the story"
+              },
+              "magic_constraints": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Magic system constraints and limitations"
+              },
+              "ecological_impacts": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Ecological impacts and environmental consequences"
+              },
+              "linguistics": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "dialects": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["dialect"],
+                      "properties": {
+                        "dialect": { "type": "string" },
+                        "speakers": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "characteristics": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        }
+                      }
+                    }
+                  },
+                  "invented_languages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["name"],
+                      "properties": {
+                        "name": { "type": "string" },
+                        "rules": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "speakers": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "cultural_evolution": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How culture evolves and changes over time"
+              }
+            }
+          },
           "atmosphere": { "type": ["string", "null"] },
           "world_building_elements": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": { "type": "string" },
+            "description": "Additional world-building elements not covered above"
+          },
+          "physical_objects_and_props": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string", "description": "Name or description of the physical object/prop" },
+                "description": { "type": ["string", "null"], "description": "Detailed description of the object" },
+                "appears_in_scenes": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Scene IDs or scene descriptions where this object appears"
+                },
+                "used_by_characters": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Character names who interact with this object"
+                },
+                "significance": { "type": ["string", "null"], "description": "Why this object matters (e.g., 'evidence item', 'plot-critical', 'symbolic')" },
+                "is_evidence": { "type": ["boolean", "null"], "description": "Whether this object serves as proof or evidence in the story" },
+                "prop_logic": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "why_exists": { "type": ["string", "null"], "description": "Why this prop exists in the story" },
+                    "how_got_there": { "type": ["string", "null"], "description": "How the prop got to where it is" },
+                    "consistent_behavior": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "How the prop behaves consistently over time"
+                    },
+                    "triggers_plot_events": {
+                      "type": ["boolean", "null"],
+                      "description": "Whether this prop triggers plot events"
+                    },
+                    "plot_events_triggered": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "What plot events this prop triggers"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "All significant physical objects, props, evidence items, and artifacts mentioned in the story"
           }
         }
       },
@@ -170,9 +833,102 @@
               }
             }
           },
+          "motifs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["pattern"],
+              "properties": {
+                "pattern": { "type": "string", "description": "Recurring pattern, image, or element" },
+                "appearances": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Where and how this motif appears"
+                },
+                "significance": { "type": ["string", "null"], "description": "What this motif represents or reinforces" }
+              }
+            },
+            "description": "Recurring patterns or images throughout the story"
+          },
           "moral_questions": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "philosophical_moral_layers": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ethical_dilemmas": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["dilemma"],
+                  "properties": {
+                    "dilemma": { "type": "string" },
+                    "characters_involved": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "position": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "moral_frameworks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["framework"],
+                  "properties": {
+                    "framework": { "type": "string", "description": "Type (utilitarian, deontological, cultural, virtue_ethics, etc.)" },
+                    "characters": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Characters who operate under this framework"
+                    },
+                    "examples": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              },
+              "personal_codes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["character", "code"],
+                  "properties": {
+                    "character": { "type": "string" },
+                    "code": { "type": "string", "description": "Personal code of honor or ethics" },
+                    "violations": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "When/how this code is violated or tested"
+                    }
+                  }
+                }
+              },
+              "ideological_clashes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["ideologies"],
+                  "properties": {
+                    "ideologies": { "type": "string", "description": "Which ideologies clash" },
+                    "characters": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "manifestation": { "type": ["string", "null"] }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -204,6 +960,64 @@
           "narrative_voice_characteristics": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "meta_layers": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "genre_conventions": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Genre conventions used"
+              },
+              "tropes_used": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Tropes employed in the story"
+              },
+              "tropes_subverted": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Tropes that are subverted or inverted"
+              },
+              "audience_expectations": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "What expectations the story sets up or plays with"
+              },
+              "self_awareness": {
+                "type": ["boolean", "null"],
+                "description": "Whether the story is self-aware or meta-commentary"
+              },
+              "meta_commentary": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Instances of meta-commentary on storytelling, genre, or narrative itself"
+              }
+            }
+          },
+          "rhythm_and_cadence": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "sentence_rhythm": {
+                "type": ["string", "null"],
+                "description": "Patterns in sentence rhythm (short/long, staccato/flowing, etc.)"
+              },
+              "paragraph_choreography": {
+                "type": ["string", "null"],
+                "description": "How paragraphs are structured and flow"
+              },
+              "scene_length_modulation": {
+                "type": ["string", "null"],
+                "description": "How scene lengths vary (short action scenes, long reflection scenes, etc.)"
+              },
+              "dialogue_breath_patterns": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Breath patterns in dialogue (pauses, interruptions, overlapping speech)"
+              }
+            }
           }
         }
       },
@@ -269,8 +1083,13 @@
           "required": ["text"],
           "properties": {
             "text": { "type": "string" },
-            "speaker": { "type": ["string", "null"] },
-            "context": { "type": ["string", "null"] },
+            "speaker": { "type": ["string", "null"], "description": "Who said this quote (character name or narrator)" },
+            "recipient": { "type": ["string", "null"], "description": "Who this quote is addressed to (character name, audience, or null if internal monologue/narration)" },
+            "conversation_participants": { "type": ["array", "null"], "items": { "type": "string" }, "description": "All characters present in the conversation/exchange this quote is part of" },
+            "context": { "type": ["string", "null"], "description": "Narrative context: what's happening in the story when this is said" },
+            "conversation_context": { "type": ["string", "null"], "description": "Conversation context: what topic/subject is being discussed, what prompted this quote" },
+            "subtext": { "type": ["string", "null"], "description": "What the character means but doesn't explicitly say" },
+            "has_silence_or_pause": { "type": ["boolean", "null"], "description": "Whether there are meaningful silences or pauses around this dialogue" },
             "section_id": { "type": ["string", "null"] },
             "scene_id": { "type": ["string", "null"] },
             "chapter_id": { "type": ["string", "null"] },
@@ -308,6 +1127,68 @@
           "narrative_techniques": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "temporal_mechanics": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "timeline_consistency": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How timeline consistency is maintained or broken"
+              },
+              "flashbacks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["position", "content"],
+                  "properties": {
+                    "position": { "type": "string", "description": "Where in narrative this occurs" },
+                    "content": { "type": "string", "description": "What is flashed back to" },
+                    "trigger": { "type": ["string", "null"], "description": "What triggers the flashback" },
+                    "purpose": { "type": ["string", "null"], "description": "Why this flashback is included" }
+                  }
+                }
+              },
+              "flashforwards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["position", "content"],
+                  "properties": {
+                    "position": { "type": "string" },
+                    "content": { "type": "string" },
+                    "trigger": { "type": ["string", "null"] },
+                    "purpose": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "time_dilation": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Instances where time moves at different rates"
+              },
+              "time_loops": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["description"],
+                  "properties": {
+                    "description": { "type": "string" },
+                    "trigger": { "type": ["string", "null"] },
+                    "resolution": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "subjective_vs_objective_time": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Instances where subjective time perception differs from objective time"
+              }
+            }
           }
         }
       },
@@ -327,11 +1208,110 @@
             },
             "summary": { "type": "string" },
             "purpose": { "type": ["string", "null"] },
+            "entry_tension": { "type": ["string", "null"], "description": "What energy or conflict starts the scene" },
+            "exit_consequence": { "type": ["string", "null"], "description": "What changes by the end of the scene" },
+            "physical_actions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Movement, fights, tasks, rituals - major physical actions"
+            },
+            "micro_actions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Small behaviors that reveal character (gestures, expressions, subtle movements)"
+            },
+            "sensory_details": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "visual": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Color, shape, motion, visual elements"
+                },
+                "sound": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Dialogue, ambience, distinct noises"
+                },
+                "smell": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Atmosphere, memory triggers"
+                },
+                "touch": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Texture, temperature, tactile sensations"
+                },
+                "taste": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Food, environments, metaphoric 'flavour'"
+                }
+              }
+            },
+            "emotional_beats": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["emotion", "character"],
+                "properties": {
+                  "emotion": { "type": "string", "description": "The emotional state or feeling" },
+                  "character": { "type": "string", "description": "Who experiences this emotion" },
+                  "trigger": { "type": ["string", "null"], "description": "What caused this emotional shift" },
+                  "significance": { "type": ["string", "null"], "description": "Why this emotional beat matters" }
+                }
+              },
+              "description": "Shifts in feeling throughout the scene"
+            },
             "key_dialogue": {
               "type": "array",
               "items": { "type": "string" }
             },
-            "narrative_function": { "type": ["string", "null"] }
+            "narrative_function": { "type": ["string", "null"] },
+            "emotional_landing": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "new_truth": { "type": ["string", "null"], "description": "A new truth revealed by scene end" },
+                "power_shift": { "type": ["string", "null"], "description": "A shift in power dynamics" },
+                "goal_change": { "type": ["string", "null"], "description": "A change in character goal" },
+                "emotional_turn": { "type": ["string", "null"], "description": "An emotional turn or shift" },
+                "landing_type": {
+                  "type": ["string", "null"],
+                  "description": "Which type of landing (new_truth, power_shift, goal_change, emotional_turn)"
+                }
+              },
+              "description": "The Rule of Emotional Landing - what the scene ends with"
+            },
+            "sensory_absence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "what_not_seen": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "What isn't seen but is significant"
+                },
+                "what_not_said": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "What isn't said but is significant"
+                },
+                "silence_as_agent": {
+                  "type": ["boolean", "null"],
+                  "description": "Whether silence acts as a narrative agent"
+                },
+                "obscurity": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Darkness, fog, obscurity that affects the scene"
+                }
+              },
+              "description": "Sensory absence - what's missing is as important as what's present"
+            }
           }
         }
       },
@@ -354,8 +1334,106 @@
               }
             }
           },
+          "breathing_room": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["position"],
+              "properties": {
+                "position": { "type": "string", "description": "Where in the narrative this occurs" },
+                "description": { "type": ["string", "null"], "description": "What happens during this breathing room" },
+                "purpose": { "type": ["string", "null"], "description": "Why this pause is needed (emotional cooldown, reflection, etc.)" }
+              }
+            },
+            "description": "Emotional cooldown periods between intense events"
+          },
+          "emotional_beats": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["emotion", "position"],
+              "properties": {
+                "emotion": { "type": "string", "description": "The emotional state or feeling" },
+                "position": { "type": "string", "description": "Where in the narrative this occurs" },
+                "characters_involved": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "trigger": { "type": ["string", "null"], "description": "What caused this emotional shift" },
+                "significance": { "type": ["string", "null"], "description": "Why this emotional beat matters" }
+              }
+            },
+            "description": "Major emotional shifts throughout the story"
+          },
           "climax_position": { "type": ["string", "null"] },
-          "resolution_style": { "type": ["string", "null"] }
+          "resolution_style": { "type": ["string", "null"] },
+          "emotional_logic": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "emotional_continuity": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["from_scene", "to_scene"],
+                  "properties": {
+                    "from_scene": { "type": "string" },
+                    "to_scene": { "type": "string" },
+                    "emotional_flow": { "type": ["string", "null"], "description": "How emotion flows between scenes" }
+                  }
+                },
+                "description": "Emotional continuity from scene to scene"
+              },
+              "character_emotional_realism": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["character"],
+                  "properties": {
+                    "character": { "type": "string" },
+                    "consistency": { "type": ["string", "null"], "description": "How emotional responses are consistent" },
+                    "no_whiplash": { "type": ["boolean", "null"], "description": "Whether character avoids emotional whiplash" }
+                  }
+                }
+              },
+              "attachment_dynamics": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["characters"],
+                  "properties": {
+                    "characters": { "type": "string", "description": "Which characters" },
+                    "attachment_type": { "type": ["string", "null"], "description": "Type of attachment" },
+                    "development": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "psychological_patterns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["pattern"],
+                  "properties": {
+                    "pattern": { "type": "string", "description": "Type (projection, repression, longing, shame, etc.)" },
+                    "characters": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "instances": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "storytelling_techniques": {
@@ -381,6 +1459,354 @@
                 "purpose": { "type": "string" }
               }
             }
+          },
+          "narrative_authority": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reliability": {
+                "type": "string",
+                "description": "How reliable is the narrator (reliable, unreliable, partially_reliable, unknown)"
+              },
+              "reliability_indicators": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Evidence of reliability or unreliability"
+              },
+              "framing_device": {
+                "type": ["string", "null"],
+                "description": "How the story is framed (journal, documentary, testimony, myth, direct_narration, etc.)"
+              },
+              "story_layers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["layer", "description"],
+                  "properties": {
+                    "layer": { "type": "string", "description": "Layer name (e.g., 'outer_frame', 'inner_story', 'nested_tale')" },
+                    "description": { "type": "string" },
+                    "narrator": { "type": ["string", "null"] },
+                    "purpose": { "type": ["string", "null"] }
+                  }
+                },
+                "description": "Story-within-story layers"
+              }
+            }
+          },
+          "reader_manipulation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "red_herrings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["element"],
+                  "properties": {
+                    "element": { "type": "string", "description": "What is the red herring" },
+                    "position": { "type": ["string", "null"] },
+                    "purpose": { "type": ["string", "null"], "description": "What it misleads the reader about" }
+                  }
+                }
+              },
+              "dramatic_irony": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["situation"],
+                  "properties": {
+                    "situation": { "type": "string", "description": "The ironic situation" },
+                    "what_reader_knows": { "type": ["string", "null"] },
+                    "what_character_knows": { "type": ["string", "null"] },
+                    "position": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "delayed_payoffs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["setup", "payoff"],
+                  "properties": {
+                    "setup": { "type": "string" },
+                    "payoff": { "type": "string" },
+                    "delay_length": { "type": ["string", "null"], "description": "How long the delay is" },
+                    "position_setup": { "type": ["string", "null"] },
+                    "position_payoff": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "perspective_switches": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["position"],
+                  "properties": {
+                    "position": { "type": "string" },
+                    "from_perspective": { "type": ["string", "null"] },
+                    "to_perspective": { "type": ["string", "null"] },
+                    "purpose": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "unresolved_tension_threads": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["thread"],
+                  "properties": {
+                    "thread": { "type": "string", "description": "The unresolved tension or question" },
+                    "introduced_at": { "type": ["string", "null"] },
+                    "purpose": { "type": ["string", "null"] },
+                    "resolved": { "type": ["boolean", "null"], "description": "Whether this thread is eventually resolved" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "macro_cohesion": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "payoffs_to_setups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["setup", "payoff"],
+              "properties": {
+                "setup": { "type": "string", "description": "What was introduced or foreshadowed" },
+                "payoff": { "type": "string", "description": "How it was resolved or paid off" },
+                "position_setup": { "type": ["string", "null"], "description": "Where the setup occurs" },
+                "position_payoff": { "type": ["string", "null"], "description": "Where the payoff occurs" },
+                "significance": { "type": ["string", "null"], "description": "Why this payoff matters" }
+              }
+            },
+            "description": "Everything introduced must serve purpose - track setups and their payoffs"
+          },
+          "thematic_consistency": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["theme", "reinforcement"],
+              "properties": {
+                "theme": { "type": "string", "description": "The theme being reinforced" },
+                "reinforcement": { "type": "string", "description": "How this element reinforces the theme" },
+                "element": { "type": ["string", "null"], "description": "What story element reinforces this (character, plot point, symbol, etc.)" }
+              }
+            },
+            "description": "How every major element reinforces the theme"
+          },
+          "contrast": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["elements"],
+              "properties": {
+                "elements": { "type": "string", "description": "What is being contrasted (e.g., 'light vs dark', 'calm vs chaos')" },
+                "instances": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Where and how this contrast appears"
+                },
+                "purpose": { "type": ["string", "null"], "description": "Why this contrast is used" }
+              }
+            },
+            "description": "Contrasting elements that create tension or meaning"
+          },
+          "continuity": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "logical_consistency": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How plot logic is maintained throughout"
+              },
+              "emotional_consistency": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How emotional arcs are maintained"
+              },
+              "plot_consistency": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How plot threads are maintained and resolved"
+              },
+              "character_consistency": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How character behavior and development is consistent"
+              }
+            },
+            "description": "Logical, emotional, and plot consistency throughout the story"
+          },
+          "logistics_continuity": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "practical_constraints": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["constraint"],
+                  "properties": {
+                    "constraint": { "type": "string", "description": "Type (travel_time, resources, injuries, etc.)" },
+                    "impact": { "type": ["string", "null"] },
+                    "how_maintained": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "geography_limitations": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Geography-driven limitations that affect the plot"
+              },
+              "causality_mapping": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["cause", "effect"],
+                  "properties": {
+                    "cause": { "type": "string" },
+                    "effect": { "type": "string" },
+                    "chain": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Chain of causality"
+                    }
+                  }
+                }
+              },
+              "plot_holes_avoided": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "How potential plot holes are avoided or addressed"
+              }
+            }
+          }
+        }
+      },
+      "hidden_systems": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "audience_secrets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["secret"],
+              "properties": {
+                "secret": { "type": "string", "description": "Secret the audience doesn't know yet" },
+                "revealed_at": { "type": ["string", "null"], "description": "When/where it's revealed" },
+                "hints": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Hints or foreshadowing"
+                }
+              }
+            },
+            "description": "Secrets the audience doesn't know yet"
+          },
+          "character_secrets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["secret", "keeper"],
+              "properties": {
+                "secret": { "type": "string" },
+                "keeper": { "type": "string", "description": "Who keeps the secret" },
+                "from_whom": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Who the secret is kept from"
+                },
+                "revealed": { "type": ["boolean", "null"], "description": "Whether secret is eventually revealed" }
+              }
+            },
+            "description": "Secrets characters keep from each other"
+          },
+          "self_deception": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["character", "secret"],
+              "properties": {
+                "character": { "type": "string" },
+                "secret": { "type": "string", "description": "Secret the character keeps from themselves" },
+                "manifestation": { "type": ["string", "null"], "description": "How this self-deception manifests" },
+                "realization": { "type": ["string", "null"], "description": "When/how character realizes the truth" }
+              }
+            },
+            "description": "Secrets characters keep from themselves"
+          }
+        }
+      },
+      "layout_metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "format_type": {
+            "type": "string",
+            "description": "Document format: 'novel', 'short_story', 'novelette', 'ebook', 'manuscript', etc."
+          },
+          "has_copyright": { "type": "boolean" },
+          "copyright_notice": { "type": ["string", "null"] },
+          "has_footnotes": { "type": "boolean" },
+          "has_page_numbers": { "type": "boolean" },
+          "header_content": { "type": ["string", "null"] },
+          "footer_content": { "type": ["string", "null"] },
+          "typography_style": {
+            "type": "string",
+            "description": "Typography style: 'plain_text', 'formatted', 'ebook', 'manuscript', etc."
+          },
+          "paragraph_spacing": {
+            "type": "string",
+            "description": "Paragraph spacing: 'single', 'double', 'spaced' (blank lines between), 'compact'"
+          },
+          "section_numbering_style": {
+            "type": "string",
+            "description": "How sections are numbered: 'arabic' (1, 2, 3), 'roman' (I, II, III), 'chapter' (Chapter 1), 'none', etc."
+          },
+          "heading_style": {
+            "type": "string",
+            "description": "Heading formatting: 'numbered' (1. Title), 'unnumbered' (Title), 'mixed', etc."
+          },
+          "section_markers": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Observable section break markers (e.g., '***', '---', blank lines)"
+          },
+          "scene_breaks": {
+            "type": "string",
+            "description": "How scenes are separated: 'blank_lines', 'markers', 'paragraph_breaks', etc."
+          },
+          "section_transitions": {
+            "type": "string",
+            "description": "Section transition patterns: 'abrupt', 'summary_before_next', 'continuation', 'thematic_link'"
+          },
+          "document_flow_pattern": {
+            "type": "string",
+            "description": "Document flow: 'chronological', 'non-linear', 'frame_narrative', 'episodic', 'linear', etc."
+          },
+          "list_formatting": {
+            "type": "string",
+            "description": "List formatting: 'bullets', 'numbered', 'dashes', 'none'"
           }
         }
       }

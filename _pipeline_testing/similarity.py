@@ -24,8 +24,14 @@ Your task is to compare an original document with its reinflated version and ass
 Evaluate across these dimensions:
 1. Semantic Similarity (0-100): How well does the reinflated version capture the core meaning, concepts, and ideas?
 2. Structure Preservation (0-100): How well does it preserve the document structure, organization, and flow?
-3. Layout Fidelity (0-100): How well does it match the original formatting, headings, and visual organization?
+3. Layout Fidelity (0-100): Focus on STRUCTURAL ALIGNMENT - do chapters, sections, and headings align between original and reinflated? Do NOT penalize plain text vs markdown formatting differences. Score based on: chapter/section alignment, heading hierarchy matching, structural organization preservation. Ignore formatting style differences (plain text vs markdown headings).
 4. Information Completeness (0-100): What percentage of key information, facts, and details are preserved?
+
+CRITICAL FOR LAYOUT FIDELITY:
+- DO NOT penalize plain text vs markdown formatting (e.g., "# Title" vs "Title" is fine if they align)
+- DO penalize missing chapters/sections, misaligned headings, or structural mismatches
+- Focus on: Are the same chapters present? Do headings match in hierarchy? Is the structure preserved?
+- Format differences (plain text vs markdown) should NOT reduce the score
 
 Provide a detailed analysis with specific examples of what was preserved well and what was lost or changed."""
 

@@ -3,3 +3,7 @@ python-dotenv>=1.0.0
 PyPDF2>=3.0.0
 jsonschema>=4.20.0
 
+# Optional dependencies for additional file format support
+python-docx>=1.0.0  # For DOCX file support
+ebooklib>=0.18      # For EPUB file support
+

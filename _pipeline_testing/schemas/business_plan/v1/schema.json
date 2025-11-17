@@ -12,6 +12,55 @@
       "integrity_model": "sha256(schema_definition)",
       "storage_guidelines": "Immutable. Hash stored on-chain when necessary.",
       "ip_protection_notes": "Schema capsule is designed to be self-contained for IP locking."
+    },
+    "distillation_config": {
+      "passes": [
+        {
+          "name": "Pass 1",
+          "fields": ["executive_summary", "company_description", "market_analysis"],
+          "always_include": ["document_structure", "quotes_and_anecdotes", "tone_metadata"]
+        },
+        {
+          "name": "Pass 2",
+          "fields": ["products_and_services", "marketing_strategy"],
+          "always_include": []
+        },
+        {
+          "name": "Pass 3",
+          "fields": ["operations", "management_team"],
+          "always_include": []
+        },
+        {
+          "name": "Pass 4",
+          "fields": ["financial_projections", "funding_requirements", "risks_and_challenges"],
+          "always_include": []
+        },
+        {
+          "name": "Pass 5",
+          "fields": [],
+          "always_include": ["document_structure"]
+        },
+        {
+          "name": "Pass 6",
+          "fields": [],
+          "always_include": ["document_structure"]
+        },
+        {
+          "name": "Pass 7",
+          "fields": [],
+          "always_include": ["document_structure"]
+        },
+        {
+          "name": "Pass 8",
+          "fields": ["layout_metadata"],
+          "always_include": []
+        },
+        {
+          "name": "Pass 9",
+          "fields": ["examples_and_case_studies"],
+          "always_include": []
+        }
+      ]
     }
   },
   "schema_definition": {
@@ -19,6 +68,23 @@
     "title": "BusinessPlanDistillationBlueprint",
     "type": "object",
     "additionalProperties": false,
+    "$defs": {
+      "section_item": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "level"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "level": { "type": "integer" },
+          "numbering": { "type": ["string", "null"] },
+          "subsections": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/section_item" }
+          }
+        }
+      }
+    },
     "required": [
       "executive_summary",
       "company_description",
@@ -30,7 +96,10 @@
       "financial_projections",
       "funding_requirements",
       "document_structure",
-      "tone_metadata"
+      "quotes_and_anecdotes",
+      "tone_metadata",
+      "layout_metadata",
+      "examples_and_case_studies"
     ],
     "properties": {
       "executive_summary": {
@@ -311,29 +380,14 @@
           "sections": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["id", "title", "level"],
-              "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
-                "level": { "type": "integer", "minimum": 1, "maximum": 6 },
-                "numbering": { "type": ["string", "null"] },
-                "subsections": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["id", "title", "level"],
-                    "properties": {
-                      "id": { "type": "string" },
-                      "title": { "type": "string" },
-                      "level": { "type": "integer" },
-                      "numbering": { "type": ["string", "null"] }
-                    }
+              "allOf": [
+                { "$ref": "#/$defs/section_item" },
+                {
+                  "properties": {
+                    "level": { "type": "integer", "minimum": 1, "maximum": 6 }
                   }
                 }
-              }
+              ]
             }
           },
           "tables": {
@@ -346,7 +400,14 @@
                 "id": { "type": "string" },
                 "caption": { "type": "string" },
                 "section_id": { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "table_data": {
+                  "type": ["object", "null"],
+                  "additionalProperties": true,
+                  "description": "Full table data with rows and columns. Structure depends on table format."
+                },
+                "row_count": { "type": ["integer", "null"] },
+                "column_count": { "type": ["integer", "null"] }
               }
             }
           },
@@ -363,6 +424,65 @@
                 "description": { "type": ["string", "null"] }
               }
             }
+          },
+          "title_page": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": ["string", "null"] },
+              "subtitle": { "type": ["string", "null"] },
+              "author": { "type": ["string", "null"] },
+              "author_affiliations": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "dedication": { "type": ["string", "null"] },
+              "acknowledgments": { "type": ["string", "null"] }
+            }
+          },
+          "appendix": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "has_appendix": { "type": "boolean" },
+              "sections": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["citation"],
+              "properties": {
+                "id": { "type": ["string", "null"] },
+                "citation": { "type": "string" },
+                "authors": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "title": { "type": ["string", "null"] },
+                "venue": { "type": ["string", "null"] },
+                "year": { "type": ["integer", "null"] }
+              }
+            }
+          }
+        }
+      },
+      "quotes_and_anecdotes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text"],
+          "properties": {
+            "text": { "type": "string" },
+            "context": { "type": ["string", "null"] },
+            "section_id": { "type": ["string", "null"] },
+            "attribution": { "type": ["string", "null"] }
           }
         }
       },
@@ -371,11 +491,94 @@
         "additionalProperties": false,
         "properties": {
           "style": { "type": "string" },
+          "urgency_level": { "type": "string" },
           "formality": { "type": "string" },
-          "persuasiveness": { "type": "string" },
           "key_phrases": {
             "type": "array",
             "items": { "type": "string" }
+          }
+        }
+      },
+      "layout_metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "format_type": {
+            "type": "string",
+            "description": "Document format: 'business_plan', 'strategic_plan', 'pitch_deck', 'financial_plan', etc."
+          },
+          "has_copyright": { "type": "boolean" },
+          "copyright_notice": { "type": ["string", "null"] },
+          "has_footnotes": { "type": "boolean" },
+          "has_page_numbers": { "type": "boolean" },
+          "header_content": { "type": ["string", "null"] },
+          "footer_content": { "type": ["string", "null"] },
+          "typography_style": {
+            "type": "string",
+            "description": "Typography style: 'plain_text', 'formatted', 'professional', etc."
+          },
+          "section_numbering_style": {
+            "type": "string",
+            "description": "How sections are numbered: 'arabic' (1, 2, 3), 'roman' (I, II, III), 'alphanumeric' (1a, 1b), 'none', etc."
+          },
+          "heading_style": {
+            "type": "string",
+            "description": "Heading formatting: 'numbered' (1. Title), 'unnumbered' (Title), 'mixed', etc."
+          },
+          "abstract_placement": {
+            "type": "string",
+            "description": "Where executive summary appears: 'before_title', 'after_title', 'after_intro', 'none'"
+          },
+          "citation_style_in_text": {
+            "type": "string",
+            "description": "How citations appear in text: 'author_year' (Smith 2020), 'numbered' ([1]), 'footnote', 'none', etc."
+          },
+          "reference_section_style": {
+            "type": "string",
+            "description": "Reference section format: 'numbered_list', 'author_year', 'footnotes', 'none', etc."
+          },
+          "paragraph_spacing": {
+            "type": "string",
+            "description": "Paragraph spacing: 'single', 'double', 'spaced' (blank lines between), 'compact'"
+          },
+          "list_formatting": {
+            "type": "string",
+            "description": "How lists are formatted: 'bullets', 'numbered', 'dashes', 'none', etc."
+          },
+          "section_transitions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Observable patterns in how sections transition (e.g., 'abrupt', 'summary_before_next', 'continuation', etc.)"
+          },
+          "document_flow_pattern": {
+            "type": "string",
+            "description": "Overall document flow: 'chronological', 'thematic', 'problem_solution', 'strategic', 'financial', etc."
+          }
+        }
+      },
+      "examples_and_case_studies": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["description"],
+          "properties": {
+            "description": { "type": "string" },
+            "type": {
+              "type": "string",
+              "description": "Type: 'company_example', 'market_example', 'financial_example', 'case_study', 'success_story', 'industry_example', etc."
+            },
+            "section_id": { "type": ["string", "null"] },
+            "specific_details": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Specific facts, numbers, names, dates, locations mentioned"
+            },
+            "citations": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Any in-text citations or reference IDs mentioned with this example"
+            }
           }
         }
       }

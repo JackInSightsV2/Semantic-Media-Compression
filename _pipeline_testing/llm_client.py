@@ -44,6 +44,7 @@ def call_openrouter(
         "model": MODEL,
         "messages": messages,
         "temperature": temperature,
+        "max_tokens": 65536,  # 64K tokens max output - grok-4-fast supports up to 128K but 64K is safer for complex schemas
     }
     
     if response_format_json:
@@ -62,15 +63,63 @@ def call_openrouter(
 
 
 def extract_json_from_response(response: Dict[str, Any]) -> Dict[str, Any]:
-    """Extract JSON from API response."""
+    """Extract JSON from API response with improved error handling."""
     try:
         content = response["choices"][0]["message"]["content"]
         # Remove markdown code blocks if present
         if content.startswith("```"):
             lines = content.split("\n")
-            content = "\n".join(lines[1:-1]) if len(lines) > 2 else content
-        return json.loads(content)
-    except (KeyError, json.JSONDecodeError) as e:
+            # Find the closing ``` if it exists
+            if len(lines) > 2:
+                # Remove first line (```json or ```)
+                content = "\n".join(lines[1:])
+                # Find and remove last line if it's ```
+                if content.rstrip().endswith("```"):
+                    content = content[:content.rstrip().rfind("```")].rstrip()
+        
+        # Try to parse JSON
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError as e:
+            # If JSON is malformed, try to recover
+            # Check if error is near the end (likely truncation)
+            if e.pos >= len(content) * 0.9:  # Error in last 10% of content
+                # Try to find the last complete JSON structure
+                # Count braces and brackets to find where to close
+                open_braces = content.count('{') - content.count('}')
+                open_brackets = content.count('[') - content.count(']')
+                
+                if open_braces > 0 or open_brackets > 0:
+                    # Try to find a safe point to truncate and close
+                    # Look backwards from error position for a complete structure
+                    safe_pos = e.pos
+                    # Find the last complete object/array element before the error
+                    for i in range(min(e.pos, len(content) - 1), max(0, e.pos - 5000), -1):
+                        if content[i] in [',', '}', ']']:
+                            # Try to parse up to here and close structures
+                            test_content = content[:i+1]
+                            # Close any remaining open structures
+                            test_content += '}' * open_braces + ']' * open_brackets
+                            try:
+                                result = json.loads(test_content)
+                                print(f"  [WARNING] Recovered truncated JSON (closed {open_braces} braces, {open_brackets} brackets)")
+                                return result
+                            except:
+                                continue
+                    
+                    # Last resort: try to close at error position
+                    test_content = content[:e.pos]
+                    test_content += '}' * open_braces + ']' * open_brackets
+                    try:
+                        result = json.loads(test_content)
+                        print(f"  [WARNING] Recovered truncated JSON at error position")
+                        return result
+                    except:
+                        pass
+            
+            # If we can't recover, raise the error
+            raise ValueError(f"Failed to extract JSON from response: {e}")
+    except (KeyError, ValueError) as e:
         raise ValueError(f"Failed to extract JSON from response: {e}")
 
 

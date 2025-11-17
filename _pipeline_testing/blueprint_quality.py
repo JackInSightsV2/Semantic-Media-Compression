@@ -27,6 +27,14 @@ def check_blueprint_quality(blueprint: Dict[str, Any], original_text: str, categ
         
         if category == "research_paper":
             report = _check_research_paper_quality(blueprint, original_text)
+        elif category == "technical_documentation":
+            report = _check_technical_documentation_quality(blueprint, original_text)
+        elif category == "report":
+            report = _check_report_quality(blueprint, original_text)
+        elif category == "business_plan" or category == "business" or category == "plan":
+            report = _check_business_plan_quality(blueprint, original_text)
+        elif category == "narrative_fiction" or category == "fiction" or category == "narrative" or category == "story":
+            report = _check_narrative_fiction_quality(blueprint, original_text)
         else:
             # Default report for other categories
             report["quality_score"] = 100
@@ -117,11 +125,469 @@ def _check_research_paper_quality(blueprint: Dict[str, Any], original_text: str)
     if completeness_scores:
         # Cap scores at 100% (extra sections don't improve quality)
         capped_scores = [min(100, score) for score in completeness_scores]
-        report["quality_score"] = sum(capped_scores) / len(capped_scores)
+        base_score = sum(capped_scores) / len(capped_scores)
     else:
-        report["quality_score"] = 100  # If no metrics, assume good
+        base_score = 100  # If no metrics, assume good
+    
+    # Penalize for warnings - each warning reduces score by 10%
+    warning_penalty = min(len(report["warnings"]) * 10, 50)  # Max 50% penalty
+    report["quality_score"] = max(0, base_score - warning_penalty)
     
     return report
+
+
+def _check_technical_documentation_quality(blueprint: Dict[str, Any], original_text: str) -> Dict[str, Any]:
+    """Check quality for technical documentation blueprints."""
+    report = {
+        "completeness": {},
+        "warnings": [],
+        "metrics": {},
+        "quality_score": 0
+    }
+    
+    # Extract sections from original document
+    original_sections = _extract_sections_from_text(original_text)
+    blueprint_sections = blueprint.get('document_structure', {}).get('sections', [])
+    
+    # Compare section counts
+    original_section_count = len(original_sections)
+    blueprint_section_count = len(blueprint_sections)
+    
+    report["metrics"]["original_sections"] = original_section_count
+    report["metrics"]["blueprint_sections"] = blueprint_section_count
+    
+    # Only calculate completeness if we found sections
+    if original_section_count > 0:
+        report["completeness"]["sections"] = (blueprint_section_count / original_section_count * 100)
+        
+        # Check for missing sections
+        original_titles = {_normalize_title(s['title']) for s in original_sections}
+        blueprint_titles = {_normalize_title(s.get('title', '')) for s in blueprint_sections}
+        
+        missing_titles = original_titles - blueprint_titles
+        if missing_titles:
+            report["warnings"].append(f"Missing {len(missing_titles)} sections from blueprint: {list(missing_titles)[:5]}")
+        
+        # Check for extra sections in blueprint (might indicate duplicates)
+        extra_titles = blueprint_titles - original_titles
+        if extra_titles and len(extra_titles) > len(blueprint_titles) * 0.1:  # More than 10% extra
+            report["warnings"].append(f"Extra sections in blueprint (possible duplicates): {len(extra_titles)}")
+    else:
+        # If we couldn't extract sections, still report counts
+        report["warnings"].append("Could not extract sections from original text (check extraction pattern)")
+        if blueprint_section_count > 0:
+            report["completeness"]["sections"] = 100  # Assume complete if we can't verify
+    
+    # Check references
+    original_ref_count = _count_references_in_text(original_text)
+    blueprint_refs = blueprint.get('document_structure', {}).get('references', [])
+    blueprint_ref_count = len(blueprint_refs)
+    
+    report["metrics"]["original_references"] = original_ref_count
+    report["metrics"]["blueprint_references"] = blueprint_ref_count
+    if original_ref_count > 0:
+        report["completeness"]["references"] = (blueprint_ref_count / original_ref_count * 100)
+        if blueprint_ref_count < original_ref_count * 0.8:  # Less than 80%
+            report["warnings"].append(f"Missing references: {original_ref_count} in original, {blueprint_ref_count} in blueprint")
+    
+    # Check for key elements
+    structure = blueprint.get('document_structure', {})
+    
+    # Title page
+    title_page = structure.get('title_page', {})
+    if not title_page.get('title'):
+        report["warnings"].append("Missing title in blueprint")
+    
+    # Problem & motivation (for technical docs, this might be "overview" or "purpose")
+    problem = blueprint.get('problem_and_motivation', {})
+    if not problem.get('problem') and not problem.get('why_it_matters'):
+        report["warnings"].append("Missing problem statement or purpose in blueprint")
+    
+    # Check for examples/case studies (important for technical docs)
+    examples = blueprint.get('examples_and_case_studies', [])
+    report["metrics"]["examples_count"] = len(examples)
+    if len(examples) == 0:
+        report["warnings"].append("No examples or case studies found in blueprint")
+    
+    # Calculate overall quality score
+    completeness_scores = [v for v in report["completeness"].values() if isinstance(v, (int, float))]
+    if completeness_scores:
+        # Cap scores at 100% (extra sections don't improve quality)
+        capped_scores = [min(100, score) for score in completeness_scores]
+        base_score = sum(capped_scores) / len(capped_scores)
+    else:
+        base_score = 100  # If no metrics, assume good
+    
+    # Penalize for warnings - each warning reduces score by 10%
+    warning_penalty = min(len(report["warnings"]) * 10, 50)  # Max 50% penalty
+    report["quality_score"] = max(0, base_score - warning_penalty)
+    
+    return report
+
+
+def _check_report_quality(blueprint: Dict[str, Any], original_text: str) -> Dict[str, Any]:
+    """Check quality for report blueprints."""
+    report = {
+        "completeness": {},
+        "warnings": [],
+        "metrics": {},
+        "quality_score": 0
+    }
+    
+    # Extract sections from original document
+    original_sections = _extract_sections_from_text(original_text)
+    blueprint_sections = blueprint.get('document_structure', {}).get('sections', [])
+    
+    # Compare section counts
+    original_section_count = len(original_sections)
+    blueprint_section_count = len(blueprint_sections)
+    
+    report["metrics"]["original_sections"] = original_section_count
+    report["metrics"]["blueprint_sections"] = blueprint_section_count
+    
+    # Only calculate completeness if we found sections
+    if original_section_count > 0:
+        report["completeness"]["sections"] = (blueprint_section_count / original_section_count * 100)
+        
+        # Check for missing sections
+        original_titles = {_normalize_title(s['title']) for s in original_sections}
+        blueprint_titles = {_normalize_title(s.get('title', '')) for s in blueprint_sections}
+        
+        missing_titles = original_titles - blueprint_titles
+        if missing_titles:
+            report["warnings"].append(f"Missing {len(missing_titles)} sections from blueprint: {list(missing_titles)[:5]}")
+        
+        # Check for extra sections in blueprint (might indicate duplicates)
+        extra_titles = blueprint_titles - original_titles
+        if extra_titles and len(extra_titles) > len(blueprint_titles) * 0.1:  # More than 10% extra
+            report["warnings"].append(f"Extra sections in blueprint (possible duplicates): {len(extra_titles)}")
+    else:
+        # If we couldn't extract sections, still report counts
+        report["warnings"].append("Could not extract sections from original text (check extraction pattern)")
+        if blueprint_section_count > 0:
+            report["completeness"]["sections"] = 100  # Assume complete if we can't verify
+    
+    # Check references
+    original_ref_count = _count_references_in_text(original_text)
+    blueprint_refs = blueprint.get('document_structure', {}).get('references', [])
+    blueprint_ref_count = len(blueprint_refs)
+    
+    report["metrics"]["original_references"] = original_ref_count
+    report["metrics"]["blueprint_references"] = blueprint_ref_count
+    if original_ref_count > 0:
+        report["completeness"]["references"] = (blueprint_ref_count / original_ref_count * 100)
+        if blueprint_ref_count < original_ref_count * 0.8:  # Less than 80%
+            report["warnings"].append(f"Missing references: {original_ref_count} in original, {blueprint_ref_count} in blueprint")
+    
+    # Check for key elements
+    structure = blueprint.get('document_structure', {})
+    
+    # Title page
+    title_page = structure.get('title_page', {})
+    if not title_page.get('title'):
+        report["warnings"].append("Missing title in blueprint")
+    
+    # Problem & motivation (for reports, this might be "purpose" or "scope")
+    problem = blueprint.get('problem_and_motivation', {})
+    if not problem.get('problem') and not problem.get('why_it_matters'):
+        report["warnings"].append("Missing problem statement or purpose in blueprint")
+    
+    # Check for findings/recommendations (important for reports)
+    findings = blueprint.get('results', {})
+    recommendations = blueprint.get('implications', {}).get('recommended_uses', [])
+    report["metrics"]["recommendations_count"] = len(recommendations)
+    if len(recommendations) == 0:
+        report["warnings"].append("No recommendations found in blueprint")
+    
+    # Calculate overall quality score
+    completeness_scores = [v for v in report["completeness"].values() if isinstance(v, (int, float))]
+    if completeness_scores:
+        # Cap scores at 100% (extra sections don't improve quality)
+        capped_scores = [min(100, score) for score in completeness_scores]
+        base_score = sum(capped_scores) / len(capped_scores)
+    else:
+        base_score = 100  # If no metrics, assume good
+    
+    # Penalize for warnings - each warning reduces score by 10%
+    warning_penalty = min(len(report["warnings"]) * 10, 50)  # Max 50% penalty
+    report["quality_score"] = max(0, base_score - warning_penalty)
+    
+    return report
+
+
+def _check_business_plan_quality(blueprint: Dict[str, Any], original_text: str) -> Dict[str, Any]:
+    """Check quality for business plan blueprints."""
+    report = {
+        "completeness": {},
+        "warnings": [],
+        "metrics": {},
+        "quality_score": 0
+    }
+    
+    # Extract sections from original document
+    original_sections = _extract_sections_from_text(original_text)
+    blueprint_sections = blueprint.get('document_structure', {}).get('sections', [])
+    
+    # Compare section counts
+    original_section_count = len(original_sections)
+    blueprint_section_count = len(blueprint_sections)
+    
+    report["metrics"]["original_sections"] = original_section_count
+    report["metrics"]["blueprint_sections"] = blueprint_section_count
+    
+    # Only calculate completeness if we found sections
+    if original_section_count > 0:
+        report["completeness"]["sections"] = (blueprint_section_count / original_section_count * 100)
+        
+        # Check for missing sections
+        original_titles = {_normalize_title(s['title']) for s in original_sections}
+        blueprint_titles = {_normalize_title(s.get('title', '')) for s in blueprint_sections}
+        
+        missing_titles = original_titles - blueprint_titles
+        if missing_titles:
+            report["warnings"].append(f"Missing {len(missing_titles)} sections from blueprint: {list(missing_titles)[:5]}")
+        
+        # Check for extra sections in blueprint (might indicate duplicates)
+        extra_titles = blueprint_titles - original_titles
+        if extra_titles and len(extra_titles) > len(blueprint_titles) * 0.1:  # More than 10% extra
+            report["warnings"].append(f"Extra sections in blueprint (possible duplicates): {len(extra_titles)}")
+    else:
+        # If we couldn't extract sections, still report counts
+        report["warnings"].append("Could not extract sections from original text (check extraction pattern)")
+        if blueprint_section_count > 0:
+            report["completeness"]["sections"] = 100  # Assume complete if we can't verify
+    
+    # Check references
+    original_ref_count = _count_references_in_text(original_text)
+    blueprint_refs = blueprint.get('document_structure', {}).get('references', [])
+    blueprint_ref_count = len(blueprint_refs)
+    
+    report["metrics"]["original_references"] = original_ref_count
+    report["metrics"]["blueprint_references"] = blueprint_ref_count
+    if original_ref_count > 0:
+        report["completeness"]["references"] = (blueprint_ref_count / original_ref_count * 100)
+        if blueprint_ref_count < original_ref_count * 0.8:  # Less than 80%
+            report["warnings"].append(f"Missing references: {original_ref_count} in original, {blueprint_ref_count} in blueprint")
+    
+    # Check for key business plan elements
+    structure = blueprint.get('document_structure', {})
+    
+    # Title page
+    title_page = structure.get('title_page', {})
+    if not title_page.get('title'):
+        report["warnings"].append("Missing title in blueprint")
+    
+    # Executive summary
+    exec_summary = blueprint.get('executive_summary', {})
+    if not exec_summary.get('overview') or not exec_summary.get('mission'):
+        report["warnings"].append("Missing executive summary overview or mission in blueprint")
+    
+    # Company description
+    company = blueprint.get('company_description', {})
+    if not company.get('company_name') or not company.get('legal_structure'):
+        report["warnings"].append("Missing company name or legal structure in blueprint")
+    
+    # Financial projections (critical for business plans)
+    financials = blueprint.get('financial_projections', {})
+    projections = financials.get('projections', [])
+    report["metrics"]["financial_projections_count"] = len(projections)
+    if len(projections) == 0:
+        report["warnings"].append("No financial projections found in blueprint")
+    
+    # Funding requirements (critical for business plans)
+    funding = blueprint.get('funding_requirements', {})
+    if not funding.get('amount_needed'):
+        report["warnings"].append("Missing funding amount in blueprint")
+    
+    # Examples/case studies
+    examples = blueprint.get('examples_and_case_studies', [])
+    report["metrics"]["examples_count"] = len(examples)
+    
+    # Calculate overall quality score
+    completeness_scores = [v for v in report["completeness"].values() if isinstance(v, (int, float))]
+    if completeness_scores:
+        # Cap scores at 100% (extra sections don't improve quality)
+        capped_scores = [min(100, score) for score in completeness_scores]
+        base_score = sum(capped_scores) / len(capped_scores)
+    else:
+        base_score = 100  # If no metrics, assume good
+    
+    # Penalize for warnings - each warning reduces score by 10%
+    warning_penalty = min(len(report["warnings"]) * 10, 50)  # Max 50% penalty
+    report["quality_score"] = max(0, base_score - warning_penalty)
+    
+    return report
+
+
+def _check_narrative_fiction_quality(blueprint: Dict[str, Any], original_text: str) -> Dict[str, Any]:
+    """Check quality for narrative fiction blueprints."""
+    report = {
+        "completeness": {},
+        "warnings": [],
+        "metrics": {},
+        "quality_score": 0
+    }
+    
+    # Extract sections/chapters from original document (narrative fiction specific)
+    original_sections = _extract_narrative_fiction_sections(original_text)
+    blueprint_sections = blueprint.get('document_structure', {}).get('sections', [])
+    
+    # Compare section counts
+    original_section_count = len(original_sections)
+    blueprint_section_count = len(blueprint_sections)
+    
+    report["metrics"]["original_sections"] = original_section_count
+    report["metrics"]["blueprint_sections"] = blueprint_section_count
+    
+    # Only calculate completeness if we found sections
+    if original_section_count > 0:
+        report["completeness"]["sections"] = (blueprint_section_count / original_section_count * 100)
+        
+        # Check for missing sections
+        original_titles = {_normalize_title(s['title']) for s in original_sections}
+        blueprint_titles = {_normalize_title(s.get('title', '')) for s in blueprint_sections}
+        
+        missing_titles = original_titles - blueprint_titles
+        if missing_titles:
+            report["warnings"].append(f"Missing {len(missing_titles)} sections from blueprint: {list(missing_titles)[:5]}")
+        
+        # Check for extra sections in blueprint (might indicate duplicates)
+        extra_titles = blueprint_titles - original_titles
+        if extra_titles and len(extra_titles) > len(blueprint_titles) * 0.1:  # More than 10% extra
+            report["warnings"].append(f"Extra sections in blueprint (possible duplicates): {len(extra_titles)}")
+    else:
+        # If we couldn't extract sections, still report counts
+        report["warnings"].append("Could not extract sections from original text (check extraction pattern)")
+        if blueprint_section_count > 0:
+            report["completeness"]["sections"] = 100  # Assume complete if we can't verify
+    
+    # Check story overview
+    story_overview = blueprint.get('story_overview', {})
+    if not story_overview.get('title'):
+        report["warnings"].append("Missing title in blueprint")
+    if not story_overview.get('summary'):
+        report["warnings"].append("Missing story summary in blueprint")
+    
+    # Check characters
+    characters = blueprint.get('characters', [])
+    report["metrics"]["characters_count"] = len(characters)
+    if len(characters) == 0:
+        report["warnings"].append("No characters found in blueprint")
+    
+    # Check plot structure
+    plot_structure = blueprint.get('plot_structure', {})
+    acts_or_chapters = plot_structure.get('acts_or_chapters', [])
+    report["metrics"]["acts_or_chapters_count"] = len(acts_or_chapters)
+    if len(acts_or_chapters) == 0:
+        report["warnings"].append("No acts or chapters found in plot structure")
+    
+    # Check scenes
+    scenes = blueprint.get('scenes', [])
+    report["metrics"]["scenes_count"] = len(scenes)
+    if len(scenes) == 0:
+        report["warnings"].append("No scenes found in blueprint")
+    
+    # Check quotes and dialogue
+    quotes = blueprint.get('quotes_and_dialogue', [])
+    report["metrics"]["quotes_count"] = len(quotes)
+    if len(quotes) == 0:
+        report["warnings"].append("No quotes or dialogue found in blueprint")
+    
+    # Check setting
+    setting = blueprint.get('setting', {})
+    if not setting.get('primary_setting'):
+        report["warnings"].append("Missing primary setting in blueprint")
+    
+    # Check themes
+    themes = blueprint.get('themes', {})
+    primary_themes = themes.get('primary_themes', [])
+    report["metrics"]["primary_themes_count"] = len(primary_themes)
+    if len(primary_themes) == 0:
+        report["warnings"].append("No primary themes found in blueprint")
+    
+    # Calculate overall quality score
+    completeness_scores = [v for v in report["completeness"].values() if isinstance(v, (int, float))]
+    if completeness_scores:
+        # Cap scores at 100% (extra sections don't improve quality)
+        capped_scores = [min(100, score) for score in completeness_scores]
+        base_score = sum(capped_scores) / len(capped_scores)
+    else:
+        base_score = 100  # If no metrics, assume good
+    
+    # Penalize for warnings - each warning reduces score by 10%
+    warning_penalty = min(len(report["warnings"]) * 10, 50)  # Max 50% penalty
+    report["quality_score"] = max(0, base_score - warning_penalty)
+    
+    return report
+
+
+def _extract_narrative_fiction_sections(text: str) -> List[Dict[str, str]]:
+    """Extract section/chapter headings from narrative fiction text."""
+    sections = []
+    seen = set()
+    
+    # Pattern 1: All-caps titles (e.g., "THE PHILOSOPHER'S JOKE")
+    # Must be all caps, on its own line, followed by blank line or content
+    all_caps_pattern = r'^([A-Z][A-Z\s\']{3,50})$'
+    lines = text.split('\n')
+    
+    for i, line in enumerate(lines):
+        line_stripped = line.strip()
+        if not line_stripped:
+            continue
+        
+        # Check for all-caps title
+        if re.match(all_caps_pattern, line_stripped):
+            # Must be followed by blank line or content (not another all-caps)
+            if i + 1 < len(lines):
+                next_line = lines[i + 1].strip()
+                # Skip if next line is also all-caps (likely not a section break)
+                if next_line and not re.match(all_caps_pattern, next_line):
+                    # This looks like a section title
+                    title = line_stripped
+                    # Filter out common false positives
+                    if title in ['THE PROJECT GUTENBERG', 'START OF THE PROJECT', 'END OF THE PROJECT', 
+                                 'COPYRIGHT', 'PUBLISHED', 'CREDITS', 'LANGUAGE', 'RELEASE DATE']:
+                        continue
+                    if len(title) < 5 or len(title) > 100:
+                        continue
+                    # Skip if it looks like a copyright notice
+                    if 'copyright' in title.lower() or 'gutenberg' in title.lower():
+                        continue
+                    
+                    sig = f"title.{_normalize_title(title)}"
+                    if sig not in seen:
+                        seen.add(sig)
+                        sections.append({
+                            'number': str(len(sections) + 1),
+                            'title': title
+                        })
+    
+    # Pattern 2: Asterisk breaks (***) followed by title
+    asterisk_pattern = r'^\*{3,}\s*\n\s*([A-Z][^\n]{5,80})$'
+    matches = re.finditer(asterisk_pattern, text, re.MULTILINE)
+    for match in matches:
+        title = match.group(1).strip()
+        if len(title) < 5 or len(title) > 100:
+            continue
+        sig = f"asterisk.{_normalize_title(title)}"
+        if sig not in seen:
+            seen.add(sig)
+            sections.append({
+                'number': str(len(sections) + 1),
+                'title': title
+            })
+    
+    # Pattern 3: Numbered sections (fallback to original pattern)
+    numbered_sections = _extract_sections_from_text(text)
+    for section in numbered_sections:
+        sig = f"numbered.{_normalize_title(section['title'])}"
+        if sig not in seen:
+            seen.add(sig)
+            sections.append(section)
+    
+    # Sort by order found in text
+    return sections
 
 
 def _extract_sections_from_text(text: str) -> List[Dict[str, str]]:

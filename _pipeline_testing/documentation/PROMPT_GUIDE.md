@@ -200,3 +200,4 @@ Reinflation templates regenerate documents from blueprints. They:
 - Preserve executive summary structure
 - Maintain analytical tone
 
+

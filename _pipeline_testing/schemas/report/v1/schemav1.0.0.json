@@ -222,7 +222,13 @@
                 "id": { "type": "string" },
                 "caption": { "type": "string" },
                 "section_id": { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "table_data": {
+                  "type": ["object", "null"],
+                  "additionalProperties": true
+                },
+                "row_count": { "type": ["integer", "null"] },
+                "column_count": { "type": ["integer", "null"] }
               }
             }
           },
@@ -237,6 +243,51 @@
                 "caption": { "type": "string" },
                 "section_id": { "type": ["string", "null"] },
                 "description": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "title_page": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": ["string", "null"] },
+              "subtitle": { "type": ["string", "null"] },
+              "author": { "type": ["string", "null"] },
+              "author_affiliations": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "dedication": { "type": ["string", "null"] },
+              "acknowledgments": { "type": ["string", "null"] }
+            }
+          },
+          "appendix": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "has_appendix": { "type": "boolean" },
+              "sections": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "citation"],
+              "properties": {
+                "id": { "type": "string" },
+                "citation": { "type": "string" },
+                "authors": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "title": { "type": ["string", "null"] },
+                "venue": { "type": ["string", "null"] },
+                "year": { "type": ["integer", "null"] }
               }
             }
           }

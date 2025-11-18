@@ -80,18 +80,12 @@ def find_prompt_from_schema(schema_path: Path) -> Path:
         schema_path: Path to schema.json
     
     Returns:
-        Path to prompt.json (or prompt.md as fallback)
+        Path to prompt.json
     """
     prompt_path = schema_path.parent / "prompt.json"
-    if prompt_path.exists():
-        return prompt_path
-    
-    # Fallback to prompt.md
-    prompt_path = schema_path.parent / "prompt.md"
-    if prompt_path.exists():
-        return prompt_path
-    
-    raise FileNotFoundError(f"Prompt file not found in {schema_path.parent}")
+    if not prompt_path.exists():
+        raise FileNotFoundError(f"Prompt file not found in {schema_path.parent}")
+    return prompt_path
 
 
 def main():

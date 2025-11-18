@@ -7,11 +7,78 @@ from typing import Dict, Any, Optional, Tuple, Union
 
 
 def load_schema(schema_path: Path) -> Dict[str, Any]:
-    """Load the schema capsule and extract schema_definition."""
+    """Load the schema capsule and extract schema_definition.
+    
+    Supports both direct schema files and pointer files (containing just a filename string).
+    """
     if not schema_path.exists():
         raise FileNotFoundError(f"Schema not found at {schema_path}")
+    
     with open(schema_path, "r", encoding="utf-8") as f:
-        capsule = json.load(f)
+        content = f.read().strip()
+    
+    # Check if file is empty
+    if not content:
+        raise ValueError(f"Schema file is empty: {schema_path}")
+    
+    # Check if this is a pointer file (just a filename string, with or without quotes)
+    is_pointer = False
+    pointer_filename = None
+    
+    # Try to parse as JSON string (with quotes)
+    if content.startswith('"') and content.endswith('"'):
+        try:
+            pointer_filename = json.loads(content)
+            is_pointer = True
+        except json.JSONDecodeError:
+            pass
+    
+    # If not a JSON string, check if it's just a plain filename (no quotes, no JSON structure)
+    if not is_pointer:
+        # Check if content looks like a simple filename (no braces, brackets, etc.)
+        if not any(char in content for char in ['{', '[', ':', ',']):
+            # It's likely a plain filename pointer
+            pointer_filename = content.strip()
+            is_pointer = True
+    
+    if is_pointer and pointer_filename:
+        # It's a pointer file - resolve to actual schema file
+        actual_schema_path = schema_path.parent / pointer_filename.strip()
+        if not actual_schema_path.exists():
+            raise FileNotFoundError(
+                f"Schema pointer file {schema_path} points to non-existent file: {actual_schema_path}. "
+                f"Pointer content: '{pointer_filename}'"
+            )
+        
+        # Check file size
+        file_size = actual_schema_path.stat().st_size
+        if file_size == 0:
+            raise ValueError(f"Schema file is empty (0 bytes): {actual_schema_path}")
+        
+        schema_path = actual_schema_path
+    
+    # Load the actual schema file
+    try:
+        # Read the file content
+        with open(schema_path, "r", encoding="utf-8") as f:
+            file_content = f.read()
+        
+        # Strip whitespace
+        file_content = file_content.strip()
+        
+        if not file_content:
+            raise ValueError(f"Schema file is empty or contains only whitespace: {schema_path}")
+        
+        # Parse JSON
+        capsule = json.loads(file_content)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Schema file contains invalid JSON: {schema_path}. Error: {e}. File size: {schema_path.stat().st_size if schema_path.exists() else 0} bytes")
+    except UnicodeDecodeError as e:
+        raise ValueError(f"Schema file encoding error: {schema_path}. Error: {e}")
+    
+    if "schema_definition" not in capsule:
+        raise ValueError(f"Schema file does not contain 'schema_definition' key: {schema_path}")
+    
     return capsule["schema_definition"]
 
 
@@ -65,10 +132,4 @@ def extract_prompt_template(
     raise ValueError(f"Prompt template '{template_name}' not found in prompt.json")
 
 
-def load_schema_structure(schema_structure_path: Optional[Path]) -> Dict[str, Any]:
-    """Load schema structure file if it exists."""
-    if schema_structure_path and schema_structure_path.exists():
-        with open(schema_structure_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return {}
 

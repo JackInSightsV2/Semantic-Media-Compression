@@ -1,213 +1,215 @@
-# Semantic Media Compression - Research Paper Distillation Pipeline
+# Semantic Media Compression Pipeline
 
-A production-ready semantic distillation system that extracts the core meaning, structure, and essence of research papers into structured JSON blueprints, enabling high-fidelity reinflation and IP protection.
+A production-ready semantic distillation system that extracts the core meaning, structure, and essence of documents into structured JSON blueprints, enabling high-fidelity reinflation and IP protection.
 
 ## Overview
 
-This pipeline performs **semantic distillation** - extracting the essential meaning, structure, and creative elements from research papers while preserving the ability to faithfully regenerate the content. The system uses a multi-pass approach with LLMs to break down complex documents into structured blueprints that can be:
+This pipeline performs **semantic distillation** - extracting essential meaning, structure, and creative elements from documents while preserving the ability to faithfully regenerate the content. The system uses a multi-pass LLM approach to break down complex documents into structured blueprints that can be:
 
 - **Stored efficiently** (semantic compression)
-- **Reinflated with high fidelity** (88-92% semantic similarity)
+- **Reinflated with high fidelity** (85-92% semantic similarity)
 - **Protected for IP** (cryptographic hashing)
 - **Validated and versioned** (JSON Schema with semantic versioning)
+
+## Features
+
+- **Multi-category support**: Research papers, business plans, narrative fiction, technical documentation, and reports
+- **Schema-driven architecture**: Zero hardcoded prompts or schemas - everything is externalized
+- **Multi-pass extraction**: Breaks complex extraction into focused passes for better accuracy
+- **Parallel execution**: Independent passes run in parallel for faster processing
+- **Checkpoint/resume**: Resume interrupted runs from the last checkpoint
+- **Quality checking**: Automatic blueprint quality assessment and auto-fixing
+- **IP protection**: Cryptographic hashing for source and blueprint integrity
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.8+
+- OpenRouter API key
+
+### Installation
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate (Windows)
+.venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Configuration
+
+Create a `.env` file in the project root:
+
+```
+OPENROUTER_KEY=your_openrouter_api_key_here
+```
+
+### Basic Usage
+
+```bash
+# Process a research paper
+python main.py -category research -num 1
+
+# Process a business plan
+python main.py -category business -num 1
+
+# Process narrative fiction
+python main.py -category fiction -num 1
+
+# Test mode (only Pass 1)
+python main.py -category research -test
+
+# With reinflation and similarity report
+python main.py -category research --reinflate --report
+```
 
 ## Architecture
 
 ### Schema Capsule System
 
-The system uses a **Schema Capsule** format - a self-contained JSON file that embeds:
-- Schema definition (JSON Schema Draft 2020-12)
-- Schema metadata (version, authors, license, IP protection notes)
-- Operational guidance (intended use, migration notes)
+Each document category uses a **Schema Capsule** - a self-contained JSON file containing:
+- `schema_definition`: JSON Schema Draft 2020-12 definition
+- `schema_metadata`: Version, authors, license, IP protection notes
+- `distillation_config`: Pass configuration and field mappings
 
-**Location**: `schemas/research_paper/v1/schema.json`
+**Schema Pointer Files**: `schema.json` files are pointers to versioned schema files (e.g., `schemav1.0.0.json`), enabling easy version management.
 
-### Prompt-Based Extraction
+### Prompt System
 
-All prompts are externalized in `schemas/research_paper/v1/prompt.md`, allowing you to:
-- Modify prompts without touching Python code
-- Version prompts alongside schemas
-- Maintain consistency across document types
+All prompts are externalized in `prompt.json` files with:
+- `system_message`: System-level instructions
+- `distillation`: Templates for each extraction pass
+- `reinflation`: Templates for document regeneration
 
-**Key Principle**: The Python script loads and uses external files - no hardcoded prompts or schemas.
+**Key Principle**: No hardcoded prompts or schemas in Python code - everything is external and versioned.
 
-## Pipeline Process
+### Multi-Pass Extraction
 
-### Phase 1: Multi-Pass Distillation
+The pipeline automatically determines passes from the schema configuration. Each pass:
+- Extracts specific fields from the document
+- Validates against a schema snippet
+- Can run in parallel with other independent passes
+- Saves checkpoints for resumability
 
-The pipeline performs **4 extraction passes** to build a complete blueprint:
+### Pipeline Flow
 
-#### Pass 1: Problem, Prior Work, Structure, Quotes, Tone
-- Extracts problem statement and motivation
-- Summarizes prior work and limitations
-- **Extracts complete document structure**:
-  - All sections with exact titles, numbering (Roman numerals, Arabic, etc.)
-  - **ALL subsections** (e.g., IIIa, IIIb, IIIc, IIId) with hierarchy
-  - Contents list (table of contents) if present
-  - Figures and tables with captions and section mappings
-  - Title page information (title, author, dedication, acknowledgments)
-  - Appendix sections
-- **Extracts quotes and anecdotes verbatim** (for IP protection)
-- **Extracts tone metadata** (style, urgency, formality, key phrases)
+1. **Preprocessing** (optional): GROBID citation extraction, NER entity extraction
+2. **Pass Planning**: Automatically determines passes from schema configuration
+3. **Multi-Pass Distillation**: Extracts structured data in focused passes
+4. **Blueprint Merging**: Combines all pass results into final blueprint
+5. **Validation**: Validates against full JSON Schema
+6. **Quality Check**: Assesses blueprint quality and optionally auto-fixes issues
+7. **Reinflation** (optional): Regenerates document from blueprint
+8. **Similarity Report** (optional): Compares original vs reinflated document
 
-#### Pass 2: Contributions & Assumptions
-- Identifies core contributions (what's new or improved)
-- Extracts setup, assumptions, and key definitions
-- Maps validity constraints
+## Supported Categories
 
-#### Pass 3: Methodology
-- Extracts high-level approach and flow
-- Captures critical design decisions and trade-offs
-- Adapts for review papers vs original research
-
-#### Pass 4: Results, Limitations, Implications
-- Extracts quantitative and qualitative findings
-- Identifies stated and implied limitations
-- Captures practical implications and future work
-
-### Phase 2: Blueprint Generation & IP Protection
-
-After all passes complete:
-
-1. **Merge** all pass results into final blueprint
-2. **Validate** against full JSON Schema
-3. **Calculate hashes**:
-   - SHA256 hash of original PDF → `source.hash`
-   - SHA256 hash of blueprint JSON → `blueprint_hash`
-4. **Add integrity section** with:
-   - Blueprint hash (for tamper detection)
-   - Signed timestamp
-   - Placeholders for cryptographic signature/signer (for future blockchain integration)
-
-### Phase 3: Reinflation
-
-The blueprint is reinflated back into markdown using **structure-aware generation**:
-
-1. **Introduction**: Uses extracted title page info, problem, prior work, quotes, and tone
-2. **Body Sections**: 
-   - Iterates through **original document structure** (not imposed academic format)
-   - Generates each section/subsection separately
-   - Preserves exact numbering and hierarchy (e.g., IIIa, IIIb, IIIc, IIId)
-   - Inserts figure/table references inline
-   - Uses tone metadata to match original voice
-   - Preserves quotes verbatim
-3. **Conclusion**: Uses limitations, implications, and tone metadata
-4. **Front Matter**: Includes contents list, dedication, acknowledgments
-
-### Phase 4: Similarity Comparison
-
-An LLM evaluates the reinflated markdown against the original PDF, scoring:
-- **Semantic Similarity** (0-100): How well meaning is preserved
-- **Structure** (0-100): How well organization is maintained
-- **Layout** (0-100): How well formatting is preserved
-- **Overall Fidelity** (0-100): Combined assessment
-
-## Key Features
-
-### 1. Structure Preservation
-- Extracts and preserves **exact section hierarchy** (Roman numerals, Arabic numbering, subsections)
-- Handles complex structures (e.g., Section III with subsections IIIa-d)
-- Maintains original document organization during reinflation
-
-### 2. Quote & Anecdote Preservation
-- Extracts memorable quotes, anecdotes, and "SF-gossip" style comments **verbatim**
-- Maps quotes to sections for context
-- Preserves attribution when available
-- Critical for IP protection (unique fingerprint)
-
-### 3. Tone & Style Matching
-- Extracts tone metadata (style, urgency level, formality, key phrases)
-- Uses tone information during reinflation to match original voice
-- Preserves the document's unique character
-
-### 4. Contents List Restoration
-- Extracts table of contents if present
-- Restores in front matter during reinflation
-- Maintains page numbers and section mappings
-
-### 5. IP Protection
-- **Source hash**: SHA256 of original PDF (proves you had the source)
-- **Blueprint hash**: SHA256 of blueprint JSON (proves blueprint integrity)
-- **Integrity section**: Timestamp and placeholders for cryptographic signing
-- **Deterministic hashing**: Uses sorted keys for consistent JSON hashing
-
-### 6. Flexible Schema
-- Handles diverse research paper formats:
-  - Original research papers
-  - Review/survey papers
-  - Technical reports
-  - Essays and analytical documents
-- Nullable fields for missing information (no hallucination)
-- Adapts methodology/results sections based on document type
+| Category | Aliases | Description |
+|----------|---------|-------------|
+| Research Paper | `research`, `paper` | Academic papers, technical reports |
+| Business Plan | `business`, `plan` | Business plans, strategic documents |
+| Narrative Fiction | `fiction`, `narrative`, `story` | Novels, short stories, creative prose |
+| Technical Documentation | `technical`, `api`, `docs` | API manuals, user guides, specs |
+| Report | `report`, `reports` | Policy reports, submissions, analyses |
 
 ## Folder Structure
 
 ```
 _pipeline_testing/
-├── distill_essay.py              # Main pipeline script
-├── schemas/
-│   └── research_paper/
-│       └── v1/
-│           ├── schema.json       # Schema capsule (JSON Schema + metadata)
-│           ├── prompt.md         # All prompt templates
-│           ├── schema_structure.json  # Human-readable schema reference
-│           └── CHANGELOG.md      # Version history
-├── data/                         # Input PDFs go here
-├── output/                       # Generated blueprints, reinflated MD, reports
-│   └── {timestamp}/             # Each run in its own timestamped folder
-│       ├── blueprint_{timestamp}.json
-│       ├── reinflated_{timestamp}.md
-│       └── report_{timestamp}.json
-└── responses/                    # All LLM API responses
-    └── {timestamp}/              # Organized by run
-        └── pass{number}_attempt{number}_{timestamp}_{description}.json
+├── main.py                    # Main entry point
+├── config.py                  # Configuration and category mapping
+├── distillation.py            # Multi-pass extraction logic
+├── reinflation.py             # Document regeneration
+├── schema_loader.py           # Schema and prompt loading
+├── pass_planner.py            # Automatic pass planning
+├── validation.py              # JSON Schema validation
+├── blueprint_quality.py       # Quality assessment
+├── blueprint_fixer.py         # Auto-fixing logic
+├── similarity.py              # Similarity comparison
+├── file_handlers.py           # File I/O and hashing
+├── entity_extraction.py       # NER entity extraction
+├── grobid_client.py           # GROBID citation parsing
+├── preprocessing_config.py    # Preprocessing configuration
+├── chunking.py                # Text chunking utilities
+│
+├── schemas/                   # Schema definitions
+│   ├── research_paper/v1/
+│   │   ├── schema.json        # Pointer to schemav1.0.0.json
+│   │   ├── schemav1.0.0.json  # Schema capsule
+│   │   └── prompt.json        # Prompt templates
+│   ├── business_plan/v1/
+│   ├── narrative_fiction/v1/
+│   ├── technical_documentation/v1/
+│   └── report/v1/
+│
+├── data/                      # Input files
+│   ├── research_papers/
+│   ├── business_plans/
+│   ├── narrative_fiction/
+│   ├── technical_documentation/
+│   └── reports/
+│
+├── output/                     # Generated files
+│   └── {timestamp}/           # Timestamped run folders
+│       ├── blueprint_*.json
+│       ├── reinflated_*.md
+│       ├── report_*.json
+│       └── quality_report_*.json
+│
+└── responses/                  # LLM API responses
+    └── {timestamp}/            # Organized by run
 ```
 
-## Usage
+## Command-Line Options
 
-### Prerequisites
+```bash
+python main.py -category <category> [options]
 
-1. **Python 3.8+** with virtual environment
-2. **Dependencies** (install via `pip install -r requirements.txt`):
-   - `requests` - OpenRouter API calls
-   - `python-dotenv` - Environment variable management
-   - `PyPDF2` - PDF text extraction
-   - `jsonschema` - JSON Schema validation
+Required:
+  -category, --category    Category to process (research, business, fiction, etc.)
 
-3. **Environment Setup**:
-   ```bash
-   # Create virtual environment
-   python -m venv .venv
-   
-   # Activate (Windows)
-   .venv\Scripts\activate
-   
-   # Install dependencies
-   pip install -r requirements.txt
-   ```
+Optional:
+  -num, --num              Number of files to process (default: 1)
+  -test, --test            Test mode: only run Pass 1
+  -resume, --resume        Resume from last checkpoint
+  -passes, --passes        Number of passes to run (default: all)
+  --reinflate              Run reinflation after distillation
+  --report                 Generate similarity report (requires --reinflate)
+```
 
-4. **API Key**: Create `.env` file with:
-   ```
-   OPENROUTER_KEY=your_openrouter_api_key_here
-   ```
+## Standalone Tools
 
-### Running the Pipeline
+### Reinflation
 
-1. **Place PDF in `data/` folder**:
-   ```bash
-   cp /path/to/research_paper.pdf data/
-   ```
+Reinflate a document from an existing blueprint:
 
-2. **Run distillation**:
-   ```bash
-   python distill_essay.py
-   ```
+```bash
+python reinflate.py blueprint_file.json
+python reinflate.py blueprint_file.json -o output_dir
+```
 
-3. **Output**: All files saved in timestamped folders:
-   - `output/{timestamp}/blueprint_{timestamp}.json` - Semantic blueprint with hashes
-   - `output/{timestamp}/reinflated_{timestamp}.md` - Regenerated markdown
-   - `output/{timestamp}/report_{timestamp}.json` - Similarity scores and analysis
-   - `responses/{timestamp}/` - All intermediate LLM responses for analysis
+### Similarity Report
+
+Generate a similarity report comparing original and reinflated documents:
+
+```bash
+python report.py original_file.pdf reinflated_file.md
+```
+
+### Test Scripts
+
+- `test_grobid.py`: Test GROBID service connectivity
+- `test_reinflation.py`: Test reinflation from blueprint
+- `test_similarity.py`: Test similarity comparison
+
+### Utilities
+
+- `categorize_files.py`: Analyze and categorize files in data folder
 
 ## Blueprint Structure
 
@@ -216,229 +218,125 @@ The generated blueprint JSON contains:
 ```json
 {
   "schema_id": "research_paper_distillation",
-  "schema_version": "1.0.1",
-  "generated_at": "2025-11-15T22:19:30Z",
+  "schema_version": "1.0.0",
+  "generated_at": "2025-01-27T12:00:00Z",
   "source": {
     "type": "text",
-    "media_id": "document_id",
-    "filename": "document.pdf",
-    "hash": "SHA256 of original PDF",
-    "hash_algorithm": "SHA256"
+    "file": "document.pdf",
+    "hash": "SHA256 hash of original file"
   },
   "blueprint": {
-    "problem_and_motivation": { ... },
-    "prior_work": { ... },
-    "contributions": [ ... ],
-    "setup_and_assumptions": { ... },
-    "methodology": { ... },
-    "results": { ... },
-    "limitations": { ... },
-    "implications": { ... },
-    "document_structure": {
-      "contents_list": { ... },
-      "sections": [ ... ],
-      "figures": [ ... ],
-      "tables": [ ... ],
-      "title_page": { ... },
-      "appendix": { ... }
-    },
-    "quotes_and_anecdotes": [ ... ],
-    "tone_metadata": { ... }
+    // Category-specific extracted data
   },
-  "blueprint_hash": "SHA256 of blueprint JSON",
   "integrity": {
-    "blueprint_hash": "...",
-    "signed_at": "2025-11-15T22:19:30Z",
-    "signature": null,  // For future cryptographic signing
-    "signer": null      // For future cryptographic signing
+    "blueprint_hash": "SHA256 hash of blueprint JSON",
+    "algorithm": "sha256",
+    "signed_at": "2025-01-27T12:00:00Z"
   }
 }
 ```
 
-## Performance Metrics
+## Performance
 
-### Consistency Test Results (5 Runs)
-
-| Metric | Average | Range | Variance |
-|--------|---------|-------|----------|
-| **Semantic Similarity** | 88.8/100 | 85-92 | 7 points |
-| **Structure** | 81.5/100 | 75-85 | 10 points |
-| **Layout** | 75.3/100 | 65-78 | 13 points |
-| **Overall Fidelity** | 84.2/100 | 77-88 | 11 points |
-| **Token Usage** | 137,300 | 128K-143K | 10.2% |
-
-### Typical Performance
+### Typical Metrics
 
 - **Semantic Similarity**: 85-92/100 (excellent)
-- **Structure**: 75-90/100 (good to excellent)
-- **Layout**: 65-80/100 (good, room for improvement)
+- **Structure Preservation**: 75-90/100 (good to excellent)
+- **Layout Fidelity**: 65-80/100 (good)
 - **Overall Fidelity**: 77-88/100 (good to excellent)
 
 ### Token Usage
 
 - **Average per run**: ~137,000 tokens
 - **Breakdown**: ~100K prompt tokens, ~37K completion tokens
-- **Reasoning tokens**: ~17-18K (Grok-4-fast reasoning)
-- **Consistency**: 10% variance across runs (normal for LLM pipelines)
+- **Consistency**: ~10% variance across runs
 
-## Improvements Implemented
-
-### v1.0.1 Enhancements
-
-1. **Subsection Handling**: Sections with subsections (e.g., IIIa-d) are now generated separately, preserving exact hierarchy
-2. **Quote Preservation**: Memorable quotes and anecdotes extracted verbatim for IP fingerprinting
-3. **Tone Metadata**: Extracts and uses writing style, urgency, formality, and key phrases
-4. **Contents List**: Extracts and restores table of contents
-5. **Flexibility**: Made fields nullable to handle diverse paper formats (review papers, technical reports, etc.)
-6. **IP Protection**: Added cryptographic hashing (PDF hash, blueprint hash, integrity section)
-
-### Key Design Decisions
-
-1. **External Prompts & Schemas**: All prompts and schemas are external files, enabling versioning and modification without code changes
-2. **Multi-Pass Extraction**: Breaks complex extraction into focused passes to manage context windows and improve accuracy
-3. **Structure-Aware Reinflation**: Uses original document structure instead of imposing academic format
-4. **Deterministic Hashing**: Uses sorted JSON keys for consistent blueprint hashing
-5. **Timestamped Runs**: Each pipeline execution creates its own folder for easy comparison and analysis
-
-## IP Protection Capabilities
+## IP Protection
 
 The blueprint provides multiple layers of IP protection:
 
-### 1. Semantic Fingerprint
-- Unique combination of problem, contributions, methodology, results
-- Verbatim quotes create distinctive markers
-- Tone and style metadata capture authorial voice
-
-### 2. Structural Fingerprint
-- Exact section hierarchy and numbering
-- Figure/table placement patterns
-- Document organization structure
-
-### 3. Cryptographic Proof
-- **Source hash**: Proves you had the original document
-- **Blueprint hash**: Proves blueprint integrity (tamper detection)
-- **Timestamp**: Temporal evidence of creation
-- **Future-ready**: Placeholders for cryptographic signatures and blockchain timestamping
-
-### Current Status: **Partially Sufficient**
-
-✅ **Sufficient for basic IP protection**:
-- Semantic content is unique enough to prove ownership
-- Structure + quotes create distinctive fingerprint
-- Timestamp provides temporal evidence
-
-⚠️ **For strong IP protection, add**:
-- Cryptographic signature (proves ownership)
-- Blockchain timestamping (immutable proof)
-- Chain of custody tracking
+1. **Source Hash**: SHA256 of original file (proves you had the source)
+2. **Blueprint Hash**: SHA256 of blueprint JSON (tamper detection)
+3. **Timestamp**: Temporal evidence of creation
+4. **Semantic Fingerprint**: Unique combination of content, structure, and quotes
+5. **Structural Fingerprint**: Exact document organization
 
 ## Customization
 
+### Adding a New Category
+
+1. Create schema folder: `schemas/{category_name}/v1/`
+2. Create `schemav1.0.0.json` with schema capsule
+3. Create `schema.json` pointer file: `"schemav1.0.0.json"`
+4. Create `prompt.json` with distillation and reinflation templates
+5. Add category mapping to `config.py`:
+   ```python
+   "category_name": ("data_folder", "schema_folder", "schema_id")
+   ```
+
 ### Modifying Prompts
 
-Edit `schemas/research_paper/v1/prompt.md`:
-- Update extraction instructions
-- Refine reinflation templates
-- Add guidance for specific document types
+Edit `schemas/{category}/v1/prompt.json`:
+- Update `system_message` for overall behavior
+- Modify `distillation` templates for extraction passes
+- Adjust `reinflation` templates for document generation
 
-### Modifying Schema
+### Modifying Schemas
 
-Edit `schemas/research_paper/v1/schema.json`:
-- Add new fields to capture additional information
-- Make fields optional/nullable for flexibility
-- Update version number in `schema_metadata`
-
-### Adding New Document Types
-
-1. Create new schema folder: `schemas/{document_type}/v1/`
-2. Copy and adapt `schema.json` and `prompt.md`
-3. Update `distill_essay.py` to load from new schema directory
+1. Create new version: `schemav1.1.0.json`
+2. Update `schema.json` pointer to new version
+3. Update version in `schema_metadata`
 
 ## Troubleshooting
 
 ### Validation Errors
 
-If you see "None is not of type 'string'" errors:
-- The schema may need more fields to be nullable
-- Check the prompt to ensure it instructs using `null` for missing information
-- Review the response files in `responses/{timestamp}/` to see what the LLM returned
+- Check that schema fields are nullable where appropriate
+- Review `responses/{timestamp}/` to see what LLM returned
+- Ensure prompts instruct using `null` for missing information
 
-### Low Similarity Scores
+### Low Quality Scores
 
-1. **Review similarity report**: Check `output/{timestamp}/report_{timestamp}.json` for specific issues
-2. **Examine responses**: Look at `responses/{timestamp}/` to see what was extracted
-3. **Refine prompts**: Update `prompt.md` with more specific instructions
-4. **Check structure extraction**: Ensure document structure is being captured correctly in Pass 1
+1. Review `quality_report_*.json` for specific issues
+2. Check `responses/{timestamp}/` for extraction problems
+3. Refine prompts in `prompt.json`
+4. Verify document structure extraction in Pass 1
 
-### Token Usage Issues
+### Checkpoint/Resume
 
-- The pipeline uses ~137K tokens per run
-- For very long documents, the text is truncated in Pass 1 (first 100K chars for structure extraction)
-- Consider splitting extremely long documents or using document chunking strategies
-
-## Future Enhancements
-
-### Planned Features
-
-1. **Cryptographic Signing**: Add digital signature support to `integrity.signature`
-2. **Blockchain Timestamping**: Integrate with timestamping services for immutable proof
-3. **Multi-Format Support**: Extend to audio, video, and image distillation
-4. **Batch Processing**: Process multiple PDFs in one run
-5. **Compression Metrics**: Track compression ratio (original size vs blueprint size)
-
-### Schema Evolution
-
-- Current version: **v1.0.1**
-- Follow semantic versioning (MAJOR.MINOR.PATCH)
-- Update `CHANGELOG.md` for each version
-- Maintain backward compatibility when possible
+- Checkpoints are saved after each pass
+- Use `--resume` to continue from last checkpoint
+- Checkpoint files are automatically cleaned up on success
 
 ## Technical Details
 
 ### Model Configuration
 
 - **Model**: `x-ai/grok-4-fast` (via OpenRouter)
-- **Context Window**: 2M tokens (supports long documents)
+- **Context Window**: 2M tokens
 - **Temperature**: 
   - Distillation: 0.3 (focused extraction)
   - Reinflation: 0.7 (creative regeneration)
-- **Response Format**: JSON for extraction, free-form text for reinflation
 
 ### Validation
 
-- Each pass validates against a schema snippet
+- Each pass validates against schema snippet
 - Final blueprint validates against full schema
 - Uses JSON Schema Draft 2020-12
 - Retries up to 3 times on validation failure
 
 ### Error Handling
 
-- All API responses saved even if validation fails (for analysis)
+- All API responses saved for analysis
 - Retry mechanism with exponential backoff
 - Detailed error messages with file paths
-- Graceful degradation (warnings instead of failures where possible)
-
-## Contributing
-
-When modifying the pipeline:
-
-1. **Update schema version** in `schema.json` if structure changes
-2. **Update CHANGELOG.md** with changes
-3. **Test with multiple document types** to ensure flexibility
-4. **Maintain prompt/schema separation** - don't hardcode in Python
-5. **Preserve IP protection features** - hashing must remain functional
+- Graceful degradation where possible
 
 ## License
 
 Proprietary - Byte Insights
 
-## Authors
-
-Byte Insights
-
 ---
 
-**Last Updated**: 2025-11-15  
-**Schema Version**: 1.0.1  
-**Pipeline Version**: 1.0.0
-
+**Last Updated**: 2025-01-27  
+**Pipeline Version**: 2.0.0

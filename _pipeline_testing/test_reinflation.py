@@ -43,9 +43,6 @@ def main():
     # Get prompt path
     prompt_path = SCHEMAS_DIR / category / "v1" / "prompt.json"
     if not prompt_path.exists():
-        prompt_path = SCHEMAS_DIR / category / "v1" / "prompt.md"
-    
-    if not prompt_path.exists():
         print(f"Error: Prompt file not found: {prompt_path}")
         sys.exit(1)
     

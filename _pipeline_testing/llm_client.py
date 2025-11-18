@@ -2,8 +2,9 @@
 
 import json
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 import requests
+from requests.exceptions import HTTPError, RequestException
 from config import OPENROUTER_API_KEY, MODEL, OPENROUTER_API_URL
 
 
@@ -13,8 +14,7 @@ def call_openrouter(
     schema_snippet: Optional[Dict[str, Any]] = None,
     temperature: float = 0.3,
     response_format_json: bool = True,
-    schema_structure_path: Optional[Any] = None,
-) -> Dict[str, Any]:
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Call OpenRouter API with messages and optional schema.
     
@@ -24,11 +24,13 @@ def call_openrouter(
         schema_snippet: Optional JSON Schema snippet to include in prompt
         temperature: Model temperature
         response_format_json: Whether to request JSON response format
-        schema_structure_path: Optional path to schema structure file (unused, kept for compatibility)
     
     Returns:
-        API response dictionary
+        Tuple of (API response dictionary, metrics dictionary)
+        Metrics include: response_time_ms, usage (tokens), etc.
     """
+    start_time = time.time()
+    
     messages = [
         {"role": "system", "content": system_message},
         {"role": "user", "content": user_message}
@@ -57,9 +59,52 @@ def call_openrouter(
         "X-Title": "Semantic Media Compression"
     }
     
-    response = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=120)
-    response.raise_for_status()
-    return response.json()
+    # Retry logic for transient errors
+    max_retries = 3
+    retry_delay = 2  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=120)
+            response.raise_for_status()
+            response_data = response.json()
+            
+            # Calculate response time
+            response_time_ms = (time.time() - start_time) * 1000
+            
+            # Extract metrics
+            usage = response_data.get("usage", {})
+            metrics = {
+                "response_time_ms": response_time_ms,
+                "usage": usage,
+                "model": response_data.get("model", MODEL)
+            }
+            
+            return response_data, metrics
+        
+        except HTTPError as e:
+            # Check if it's a retryable error (5xx server errors)
+            if e.response.status_code >= 500 and attempt < max_retries - 1:
+                wait_time = retry_delay * (attempt + 1)  # Exponential backoff
+                print(f"  [WARNING] API server error {e.response.status_code}, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+                continue
+            else:
+                # Non-retryable error or out of retries
+                raise
+        
+        except RequestException as e:
+            # Network errors - retry
+            if attempt < max_retries - 1:
+                wait_time = retry_delay * (attempt + 1)
+                print(f"  [WARNING] Network error: {str(e)}, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+                continue
+            else:
+                raise
+    
+    # Should never reach here, but just in case
+    raise RuntimeError("Failed to get response after retries")
 
 
 def extract_json_from_response(response: Dict[str, Any]) -> Dict[str, Any]:

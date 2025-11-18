@@ -1,6 +1,7 @@
 """Multi-pass distillation logic - completely generic."""
 
 import time
+import requests
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from schema_loader import load_prompt, extract_prompt_template
@@ -80,24 +81,23 @@ def run_distillation_pass(
     always_include: Optional[List[str]] = None,
     text_limit: int = 100000,
     run_timestamp: str = "",
-    schema_structure_path: Optional[Path] = None,
     use_chunking: bool = True,
-    ner_hints: Optional[str] = None
+    ner_hints: Optional[str] = None,
+    logging_service: Optional[Any] = None
 ) -> Dict[str, Any]:
     """
     Generic pass function that works with any schema.
     
     Args:
         pass_number: Pass number (1-4)
-        pass_name: Name of pass template in prompt.md (e.g., "Pass 1")
+        pass_name: Name of pass template in prompt.json (e.g., "Pass 1")
         paper_text: Full text to extract from
         full_schema: Complete schema definition
-        prompt_path: Path to prompt.md
+        prompt_path: Path to prompt.json
         field_candidates: List of field names to look for in schema
         always_include: Fields to always include if they exist
         text_limit: Maximum characters of text to send
         run_timestamp: Timestamp for this run
-        schema_structure_path: Optional schema structure path (for compatibility)
     
     Returns:
         Extracted fields as dictionary
@@ -118,13 +118,19 @@ def run_distillation_pass(
     # Extract fields dynamically
     pass_fields, pass_required = extract_pass_fields(full_schema, field_candidates, always_include)
     
+    # Debug: log what fields are included in schema snippet
+    if pass_number == 1:
+        print(f"  [DEBUG] Pass 1 schema snippet includes fields: {list(pass_fields.keys())}")
+    
     if not pass_fields:
         raise ValueError(f"No {pass_name} fields found in schema. Schema may not be compatible.")
     
     # Build schema snippet
+    # The schema snippet includes the full field definitions with all nested properties
+    # So validation should work correctly if the LLM returns the proper structure
     schema_snippet = {
         "type": "object",
-        "additionalProperties": False,
+        "additionalProperties": False,  # Keep strict validation - schema includes all valid properties
         "required": pass_required,
         "properties": pass_fields,
     }
@@ -151,8 +157,9 @@ def run_distillation_pass(
             print(f"  [INFO] Processing chunk {i}/{len(chunks)} (chars {start_idx}-{end_idx})...")
             chunk_result = _run_single_chunk(
                 pass_number, pass_name, chunk_text, schema_snippet,
-                system_msg, user_template, run_timestamp, schema_structure_path, i,
-                previous_chunk_context=previous_chunk_context if i > 1 else None
+                system_msg, user_template, run_timestamp, i,
+                previous_chunk_context=previous_chunk_context if i > 1 else None,
+                logging_service=logging_service
             )
             if chunk_result:
                 all_results.append(chunk_result)
@@ -257,7 +264,8 @@ def run_distillation_pass(
         user_msg = user_template.replace("{TEXT}", paper_text[:text_limit])
         return _run_single_chunk(
             pass_number, pass_name, paper_text[:text_limit], schema_snippet,
-            system_msg, user_template, run_timestamp, schema_structure_path
+            system_msg, user_template, run_timestamp,
+            logging_service=logging_service
         )
 
 
@@ -269,9 +277,9 @@ def _run_single_chunk(
     system_msg: str,
     user_template: str,
     run_timestamp: str,
-    schema_structure_path: Optional[Path],
     chunk_num: Optional[int] = None,
-    previous_chunk_context: Optional[Dict[str, str]] = None
+    previous_chunk_context: Optional[Dict[str, str]] = None,
+    logging_service: Optional[Any] = None
 ) -> Dict[str, Any]:
     """Run extraction on a single chunk of text."""
     user_msg = user_template.replace("{TEXT}", chunk_text)
@@ -289,11 +297,18 @@ def _run_single_chunk(
     chunk_suffix = f"_chunk{chunk_num}" if chunk_num else ""
     
     attempt = 1
-    while attempt <= 3:
+    max_attempts = 3
+    while attempt <= max_attempts:
         try:
             print(f"  Attempt {attempt}{chunk_suffix}...")
-            response = call_openrouter(system_msg, user_msg, schema_snippet, schema_structure_path=schema_structure_path)
+            response, metrics = call_openrouter(system_msg, user_msg, schema_snippet)
             save_response(response, pass_number, attempt, f"{pass_name.lower().replace(' ', '_')}{chunk_suffix}", run_timestamp)
+            
+            # Log metrics if logging service is provided
+            if logging_service:
+                usage = metrics.get("usage", {})
+                response_time_ms = metrics.get("response_time_ms", 0)
+                logging_service.record_llm_call(response, response_time_ms)
             
             result = extract_json_from_response(response)
             
@@ -308,19 +323,40 @@ def _run_single_chunk(
                 print(f"  [OK] Chunk {chunk_num} extracted")
                 return result
             else:
-                # For non-chunked documents, validate fully
+                # For non-chunked documents, validate against schema snippet
+                # The schema snippet includes the full nested structure, so validation should pass
+                # if the LLM returns the correct structure
                 if validate_against_schema(result, schema_snippet):
                     print(f"  [OK] Pass {pass_number} validation successful")
                     return result
                 else:
                     print("  [ERROR] Validation failed, retrying...")
                     attempt += 1
-                    time.sleep(2)
+                    if attempt <= max_attempts:
+                        time.sleep(2)
+                    continue
+        except requests.exceptions.HTTPError as e:
+            # API server errors - already retried in call_openrouter, but log and fail
+            print(f"  [ERROR] API HTTP Error: {e}")
+            if e.response:
+                print(f"  [ERROR] Status: {e.response.status_code}, Response: {e.response.text[:200]}")
+            attempt += 1
+            if attempt > max_attempts:
+                raise RuntimeError(f"Pass {pass_number} failed after {max_attempts} attempts due to API errors: {str(e)}")
+            time.sleep(2)
+        except requests.exceptions.RequestException as e:
+            # Network errors
+            print(f"  [ERROR] Network Error: {e}")
+            attempt += 1
+            if attempt > max_attempts:
+                raise RuntimeError(f"Pass {pass_number} failed after {max_attempts} attempts due to network errors: {str(e)}")
+            time.sleep(2)
         except Exception as e:
             print(f"  [ERROR] Error: {e}")
             attempt += 1
-            if attempt > 3:
+            if attempt > max_attempts:
                 raise
+            time.sleep(2)
     
     raise RuntimeError(f"Pass {pass_number} failed after 3 attempts")
 

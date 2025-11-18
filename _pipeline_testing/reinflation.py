@@ -1,9 +1,10 @@
-"""Generic reinflation logic - loads all templates from prompt.md."""
+"""Generic reinflation logic - loads all templates from prompt.json."""
 
 import time
 import json
 from pathlib import Path
 from typing import Dict, Any, Optional, List
+from datetime import datetime
 from schema_loader import load_prompt, extract_prompt_template
 from llm_client import call_openrouter, extract_json_from_response
 from config import RESPONSES_DIR
@@ -43,15 +44,16 @@ def reinflate_section(
     section_data: Optional[Dict[str, Any]] = None,
     temperature: float = 0.4,  # Balanced temperature for faithfulness and completeness
     used_content: Optional[Dict[str, Any]] = None,  # Track content already used in other sections
-    previously_generated_sections: Optional[List[str]] = None  # Previously generated sections to avoid repetition
+    previously_generated_sections: Optional[List[str]] = None,  # Previously generated sections to avoid repetition
+    logging_service: Optional[Any] = None  # Optional logging service for metrics
 ) -> str:
     """
     Generic section reinflation using prompt template.
     
     Args:
-        template_name: Name of template in prompt.md (e.g., "Introduction", "Body Sections", "Conclusion")
+        template_name: Name of template in prompt.json (e.g., "Introduction", "Body Sections", "Conclusion")
         blueprint: Full blueprint dictionary
-        prompt_path: Path to prompt.md
+        prompt_path: Path to prompt.json
         run_timestamp: Timestamp for this run
         section_data: Optional additional data to pass to template
         temperature: LLM temperature
@@ -82,8 +84,14 @@ def reinflate_section(
     attempt = 1
     while attempt <= 3:
         try:
-            response = call_openrouter(system_msg, user_msg, temperature=temperature, response_format_json=False)
+            response, metrics = call_openrouter(system_msg, user_msg, temperature=temperature, response_format_json=False)
             save_reinflation_response(response, 5, attempt, f"reinflate_{template_name.lower().replace(' ', '_')}", run_timestamp)
+            
+            # Log metrics if logging service is provided
+            if logging_service:
+                usage = metrics.get("usage", {})
+                response_time_ms = metrics.get("response_time_ms", 0)
+                logging_service.record_llm_call(response, response_time_ms)
             
             content = response["choices"][0]["message"]["content"]
             if content.startswith("```"):
@@ -1750,7 +1758,10 @@ def reinflate_document(
     blueprint: Dict[str, Any],
     prompt_path: Path,
     run_timestamp: str,
-    run_output_dir: Path
+    run_output_dir: Path,
+    logging_service: Optional[Any] = None,  # Optional logging service for metrics
+    checkpoint_path: Optional[Path] = None,  # Optional checkpoint path for resuming
+    completed_sections: Optional[List[str]] = None  # Optional list of already completed sections
 ) -> Path:
     """
     Reinflate complete document from blueprint.
@@ -1803,8 +1814,51 @@ def reinflate_document(
         # except Exception as e:
         #     print(f"  [WARNING] Could not save validation report: {e}")
     
+    # Initialize completed sections list if resuming
+    if completed_sections is None:
+        completed_sections = []
+    
+    # Checkpoint helper functions
+    def save_reinflation_checkpoint(checkpoint_path: Path, sections: List[str], completed_sections: List[str], blueprint: Dict[str, Any]) -> None:
+        """Save checkpoint for reinflation."""
+        if checkpoint_path:
+            checkpoint_data = {
+                "sections": sections,
+                "completed_sections": completed_sections,
+                "blueprint": blueprint,
+                "checkpoint_time": datetime.now().isoformat()
+            }
+            try:
+                with open(checkpoint_path, "w", encoding="utf-8") as f:
+                    json.dump(checkpoint_data, f, indent=2)
+                print(f"  [CHECKPOINT] Saved reinflation checkpoint: {checkpoint_path.name}")
+            except Exception as e:
+                print(f"  [WARNING] Failed to save checkpoint: {e}")
+    
+    def load_reinflation_checkpoint(checkpoint_path: Path) -> Optional[Dict[str, Any]]:
+        """Load checkpoint for reinflation."""
+        if checkpoint_path and checkpoint_path.exists():
+            try:
+                with open(checkpoint_path, "r", encoding="utf-8") as f:
+                    checkpoint = json.load(f)
+                print(f"  [CHECKPOINT] Loaded reinflation checkpoint: {checkpoint_path.name}")
+                return checkpoint
+            except Exception as e:
+                print(f"  [WARNING] Failed to load checkpoint: {e}")
+        return None
+    
+    # Load checkpoint if resuming
+    checkpoint_data = None
+    if checkpoint_path and checkpoint_path.exists():
+        checkpoint_data = load_reinflation_checkpoint(checkpoint_path)
+        if checkpoint_data:
+            sections = checkpoint_data.get("sections", [])
+            completed_sections = checkpoint_data.get("completed_sections", [])
+            print(f"  [RESUME] Resuming reinflation with {len(completed_sections)} completed sections")
+    
     try:
-        sections = []
+        if not checkpoint_data:
+            sections = []
         
         # Extract title - MUST use exact title from blueprint, no changes
         title = "Document"
@@ -1850,21 +1904,29 @@ def reinflate_document(
         }
         
         if not has_intro_section:
-            try:
-                print("\n[Reinflation] Generating introduction...")
-                intro = reinflate_section(
-                    "Introduction", 
-                    blueprint, 
-                    prompt_path, 
-                    run_timestamp,
-                    temperature=0.4,
-                    used_content=used_content
-                )
-                if intro and not intro.startswith("<!--"):
-                    sections.append(intro)
-                    print("  [OK] Introduction generated")
-            except Exception as e:
-                print(f"  [ERROR] Introduction failed: {e}")
+            if "Introduction" not in completed_sections:
+                try:
+                    print("\n[Reinflation] Generating introduction...")
+                    intro = reinflate_section(
+                        "Introduction", 
+                        blueprint, 
+                        prompt_path, 
+                        run_timestamp,
+                        temperature=0.4,
+                        used_content=used_content,
+                        logging_service=logging_service
+                    )
+                    if intro and not intro.startswith("<!--"):
+                        sections.append(intro)
+                        completed_sections.append("Introduction")
+                        print("  [OK] Introduction generated")
+                        # Save checkpoint
+                        if checkpoint_path:
+                            save_reinflation_checkpoint(checkpoint_path, sections, completed_sections, blueprint)
+                except Exception as e:
+                    print(f"  [ERROR] Introduction failed: {e}")
+            else:
+                print("\n[Reinflation] Skipping Introduction (already completed)")
         else:
             print("\n[Reinflation] Skipping Introduction template (found in body sections)")
         
@@ -1989,10 +2051,13 @@ def reinflate_document(
                         section_data,
                         temperature=0.4,  # Balanced temperature
                         used_content=used_content,  # Track used content
-                        previously_generated_sections=previously_generated  # Pass previously generated sections
+                        previously_generated_sections=previously_generated,  # Pass previously generated sections
+                        logging_service=logging_service
                     )
                     if body_content and not body_content.startswith("<!--"):
                         sections.append(body_content)
+                        section_id = section.get('id', section.get('title', ''))
+                        completed_sections.append(f"Body_{section_id}")
                         # Add to previously generated list (keep more sections for narrative fiction to prevent repetition)
                         # For narrative fiction, keep more context to prevent retellings
                         is_narrative_fiction = 'narrative_fiction' in str(prompt_path) or blueprint.get('story_overview')
@@ -2002,6 +2067,9 @@ def reinflate_document(
                             previously_generated.pop(0)  # Keep only last N sections
                         section_counter += 1  # Increment for next section
                         print(f"  [OK] Section '{section.get('title', '')}' generated (numbered as {section_numbering})")
+                        # Save checkpoint after each section
+                        if checkpoint_path:
+                            save_reinflation_checkpoint(checkpoint_path, sections, completed_sections, blueprint)
                     else:
                         # Debug: why was section skipped?
                         if not body_content:
@@ -2011,7 +2079,7 @@ def reinflate_document(
                     time.sleep(0.5)  # Rate limiting
             else:
                 # No sections, try generic body template
-                body = reinflate_section("Body Sections", blueprint, prompt_path, run_timestamp, previously_generated_sections=[])
+                body = reinflate_section("Body Sections", blueprint, prompt_path, run_timestamp, previously_generated_sections=[], logging_service=logging_service)
                 if body and not body.startswith("<!--"):
                     sections.append(body)
                     print("  [OK] Body sections generated")
@@ -2024,24 +2092,32 @@ def reinflate_document(
         has_conclusion_section = any(s.get('title', '').lower() in ['conclusion', 'conclusions'] for s in doc_sections)
         
         if not has_conclusion_section:
-            try:
-                print("\n[Reinflation] Generating conclusion...")
-                # Pass previously generated sections to conclusion (all body sections)
-                conclusion_previously_generated = [s for s in sections if not s.startswith('# Document') and not s.startswith('Copyright')]
-                conclusion = reinflate_section(
-                    "Conclusion", 
-                    blueprint, 
-                    prompt_path, 
-                    run_timestamp,
-                    temperature=0.4,
-                    used_content=used_content,  # Use same tracking to avoid repetition
-                    previously_generated_sections=conclusion_previously_generated[-5:] if conclusion_previously_generated else []  # Last 5 sections
-                )
-                if conclusion and not conclusion.startswith("<!--"):
-                    sections.append(conclusion)
-                    print("  [OK] Conclusion generated")
-            except Exception as e:
-                print(f"  [ERROR] Conclusion failed: {e}")
+            if "Conclusion" not in completed_sections:
+                try:
+                    print("\n[Reinflation] Generating conclusion...")
+                    # Pass previously generated sections to conclusion (all body sections)
+                    conclusion_previously_generated = [s for s in sections if not s.startswith('# Document') and not s.startswith('Copyright')]
+                    conclusion = reinflate_section(
+                        "Conclusion", 
+                        blueprint, 
+                        prompt_path, 
+                        run_timestamp,
+                        temperature=0.4,
+                        used_content=used_content,  # Use same tracking to avoid repetition
+                        previously_generated_sections=conclusion_previously_generated[-5:] if conclusion_previously_generated else [],  # Last 5 sections
+                        logging_service=logging_service
+                    )
+                    if conclusion and not conclusion.startswith("<!--"):
+                        sections.append(conclusion)
+                        completed_sections.append("Conclusion")
+                        print("  [OK] Conclusion generated")
+                        # Save checkpoint
+                        if checkpoint_path:
+                            save_reinflation_checkpoint(checkpoint_path, sections, completed_sections, blueprint)
+                except Exception as e:
+                    print(f"  [ERROR] Conclusion failed: {e}")
+            else:
+                print("\n[Reinflation] Skipping Conclusion (already completed)")
         else:
             print("\n[Reinflation] Skipping Conclusion template (found in body sections)")
         
@@ -2073,7 +2149,8 @@ def reinflate_document(
                         run_timestamp,
                         section_data=None,
                         temperature=0.4,  # Balanced temperature for faithful citation formatting
-                        used_content=None
+                        used_content=None,
+                        logging_service=logging_service
                     )
                     
                     # Post-process to clean up any remaining line breaks in citations
@@ -2205,6 +2282,15 @@ def reinflate_document(
             f.write(reinflated_content)
         
         print(f"\n[OK] Reinflated document saved to: {reinflated_path}")
+        
+        # Clean up checkpoint file on successful completion
+        if checkpoint_path and checkpoint_path.exists():
+            try:
+                checkpoint_path.unlink()
+                print(f"  [CHECKPOINT] Removed checkpoint file (reinflation completed successfully)")
+            except Exception as e:
+                print(f"  [WARNING] Failed to remove checkpoint: {e}")
+        
         return reinflated_path
         
     except Exception as e:

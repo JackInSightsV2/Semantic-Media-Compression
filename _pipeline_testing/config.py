@@ -21,11 +21,20 @@ DATA_DIR = SCRIPT_DIR / "data"
 RESPONSES_DIR = SCRIPT_DIR / "responses"
 OUTPUT_DIR = SCRIPT_DIR / "output"
 SCHEMAS_DIR = SCRIPT_DIR / "schemas"
+RUNS_DIR = SCRIPT_DIR / "runs"
+INFLATIONS_DIR = SCRIPT_DIR / "inflations"
 
 # Create directories
 DATA_DIR.mkdir(exist_ok=True)
 RESPONSES_DIR.mkdir(exist_ok=True)
 OUTPUT_DIR.mkdir(exist_ok=True)
+RUNS_DIR.mkdir(exist_ok=True)
+INFLATIONS_DIR.mkdir(exist_ok=True)
+
+# API Configuration
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("API_PORT", "8000"))
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
 
 # Category mapping: category_name -> (data_folder, schema_folder, schema_id)
 CATEGORY_MAP = {

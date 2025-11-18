@@ -105,13 +105,10 @@ def process_file(
     full_schema = load_schema(schema_path)
     print("  [OK] Schema loaded")
     
-    # Load prompt (try prompt.json first, fall back to prompt.md for legacy support)
+    # Load prompt
     prompt_path = SCHEMAS_DIR / schema_folder / "v1" / "prompt.json"
     if not prompt_path.exists():
-        # Fall back to legacy prompt.md
-        prompt_path = SCHEMAS_DIR / schema_folder / "v1" / "prompt.md"
-        if not prompt_path.exists():
-            raise FileNotFoundError(f"Prompt not found at {prompt_path} or prompt.json")
+        raise FileNotFoundError(f"Prompt not found at {prompt_path}")
     
     # Extract text
     print(f"\n[INFO] Extracting text from {file_path.suffix.upper()}...")

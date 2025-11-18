@@ -9,10 +9,43 @@ def load_pass_config(schema_path: Path) -> Dict[str, Any]:
     """
     Load pass configuration from schema.json.
     Looks for 'distillation_config' in schema_metadata.
+    Handles pointer files (schema.json pointing to actual schema file).
     
     Returns:
         Pass configuration dict or None if not found
     """
+    # Read the schema file (may be a pointer)
+    with open(schema_path, "r", encoding="utf-8") as f:
+        content = f.read().strip()
+    
+    # Check if this is a pointer file
+    is_pointer = False
+    pointer_filename = None
+    
+    # Try to parse as JSON string (with quotes)
+    if content.startswith('"') and content.endswith('"'):
+        try:
+            pointer_filename = json.loads(content)
+            is_pointer = True
+        except json.JSONDecodeError:
+            pass
+    
+    # If not a JSON string, check if it's just a plain filename
+    if not is_pointer:
+        if not any(char in content for char in ['{', '[', ':', ',']):
+            pointer_filename = content.strip()
+            is_pointer = True
+    
+    # If it's a pointer, resolve to actual schema file
+    if is_pointer and pointer_filename:
+        actual_schema_path = schema_path.parent / pointer_filename.strip()
+        if not actual_schema_path.exists():
+            raise FileNotFoundError(
+                f"Schema pointer file {schema_path} points to non-existent file: {actual_schema_path}"
+            )
+        schema_path = actual_schema_path
+    
+    # Load the actual schema capsule
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
     
@@ -33,7 +66,7 @@ def plan_passes_from_schema(full_schema: Dict[str, Any], pass_config: Optional[D
     Returns:
         List of pass configurations, each with:
         - pass_number: int
-        - pass_name: str (template name in prompt.md)
+        - pass_name: str (template name in prompt.json)
         - fields: List[str] (field names to extract)
         - always_include: List[str] (fields to always include)
     """
@@ -58,7 +91,7 @@ def plan_passes_from_schema(full_schema: Dict[str, Any], pass_config: Optional[D
     pass1_fields = [
         "problem_and_motivation", "prior_work", "executive_summary",
         "story_overview", "overview", "purpose_and_scope",
-        "document_structure", "tone_metadata"
+        "document_structure", "tone_metadata", "quotes_and_anecdotes"
     ]
     
     # Pass 2: Core content (NO examples - too many)

@@ -33,20 +33,40 @@ def categorize_file(filename: str, content_sample: str) -> str:
     if re.match(r'\d{4}\.\d{5}v\d+\.pdf', filename):
         return "research_paper"
     
-    # Check content patterns
-    if any(keyword in content_lower for keyword in ['business plan', 'executive summary', 'market analysis', 'financial projections']):
+    # Check content patterns - prioritize more specific categories first
+    
+    # Research papers - check first as they're common and have specific patterns
+    research_keywords = ['abstract', 'introduction', 'methodology', 'results', 'conclusion', 'references', 
+                         'related work', 'background', 'experimental setup', 'evaluation', 'discussion']
+    research_count = sum(1 for keyword in research_keywords if keyword in content_lower)
+    if research_count >= 3:  # Need multiple research paper indicators
+        return "research_paper"
+    
+    # Business plans - specific business terms
+    if any(keyword in content_lower for keyword in ['business plan', 'executive summary', 'market analysis', 
+                                                     'financial projections', 'revenue model', 'go-to-market']):
         return "business_plan"
     
-    if any(keyword in content_lower for keyword in ['api', 'endpoint', 'request', 'response', 'authentication', 'documentation']):
+    # Technical documentation - API/technical terms
+    if any(keyword in content_lower for keyword in ['api endpoint', 'request/response', 'authentication', 
+                                                     'technical documentation', 'api documentation', 'endpoint']):
         return "technical_documentation"
     
-    if any(keyword in content_lower for keyword in ['chapter', 'novel', 'story', 'character', 'plot', 'the philosopher']):
-        return "narrative_fiction"
-    
-    if any(keyword in content_lower for keyword in ['submission', 'report', 'recommendation', 'findings', 'conclusion']):
+    # Reports - policy/report specific terms
+    if any(keyword in content_lower for keyword in ['policy report', 'submission', 'recommendation', 
+                                                     'findings and recommendations', 'executive report']):
         return "report"
     
-    if any(keyword in content_lower for keyword in ['abstract', 'introduction', 'methodology', 'results', 'conclusion', 'references']):
+    # Narrative fiction - more specific fiction indicators (check last to avoid false positives)
+    # Need multiple fiction indicators to avoid matching research papers that mention "character" or "plot"
+    fiction_keywords = ['chapter one', 'chapter two', 'novel', 'fiction', 'protagonist', 'antagonist',
+                        'narrative arc', 'story arc', 'the philosopher', 'dialogue', 'scene']
+    fiction_count = sum(1 for keyword in fiction_keywords if keyword in content_lower)
+    if fiction_count >= 2:  # Need multiple fiction indicators
+        return "narrative_fiction"
+    
+    # If we found some research indicators but not enough, still default to research
+    if research_count >= 1:
         return "research_paper"
     
     # Default fallback

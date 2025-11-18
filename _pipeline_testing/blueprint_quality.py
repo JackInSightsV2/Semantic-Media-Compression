@@ -25,19 +25,32 @@ def check_blueprint_quality(blueprint: Dict[str, Any], original_text: str, categ
             "quality_score": 0
         }
         
-        if category == "research_paper":
+        # Normalize category for matching
+        category_lower = category.lower() if category else ""
+        
+        if category_lower in ["research_paper", "research", "paper"]:
             report = _check_research_paper_quality(blueprint, original_text)
-        elif category == "technical_documentation":
+        elif category_lower in ["technical_documentation", "technical"]:
             report = _check_technical_documentation_quality(blueprint, original_text)
-        elif category == "report":
+        elif category_lower == "report":
             report = _check_report_quality(blueprint, original_text)
-        elif category == "business_plan" or category == "business" or category == "plan":
+        elif category_lower in ["business_plan", "business", "plan"]:
             report = _check_business_plan_quality(blueprint, original_text)
-        elif category == "narrative_fiction" or category == "fiction" or category == "narrative" or category == "story":
+        elif category_lower in ["narrative_fiction", "fiction", "narrative", "story"]:
             report = _check_narrative_fiction_quality(blueprint, original_text)
         else:
-            # Default report for other categories
-            report["quality_score"] = 100
+            # Default report for unknown categories - still try to extract basic metrics
+            report["warnings"].append(f"Unknown category '{category}' - using generic quality check")
+            # Try to extract at least some basic metrics
+            blueprint_sections = blueprint.get('document_structure', {}).get('sections', [])
+            original_sections = _extract_sections_from_text(original_text)
+            report["metrics"]["original_sections"] = len(original_sections)
+            report["metrics"]["blueprint_sections"] = len(blueprint_sections)
+            if len(original_sections) > 0:
+                report["completeness"]["sections"] = (len(blueprint_sections) / len(original_sections) * 100)
+            else:
+                report["completeness"]["sections"] = 100 if len(blueprint_sections) > 0 else 0
+            report["quality_score"] = report["completeness"].get("sections", 100)
         
         return report
     except Exception as e:
@@ -76,7 +89,7 @@ def _check_research_paper_quality(blueprint: Dict[str, Any], original_text: str)
     
     # Only calculate completeness if we found sections
     if original_section_count > 0:
-        report["completeness"]["sections"] = (blueprint_section_count / original_section_count * 100)
+        report["completeness"]["sections"] = min(100, (blueprint_section_count / original_section_count * 100))
         
         # Check for missing sections
         original_titles = {_normalize_title(s['title']) for s in original_sections}
@@ -91,10 +104,13 @@ def _check_research_paper_quality(blueprint: Dict[str, Any], original_text: str)
         if extra_titles and len(extra_titles) > len(blueprint_titles) * 0.1:  # More than 10% extra
             report["warnings"].append(f"Extra sections in blueprint (possible duplicates): {len(extra_titles)}")
     else:
-        # If we couldn't extract sections, still report counts
-        report["warnings"].append("Could not extract sections from original text (check extraction pattern)")
+        # If we couldn't extract sections, still report counts and calculate based on blueprint
         if blueprint_section_count > 0:
-            report["completeness"]["sections"] = 100  # Assume complete if we can't verify
+            report["completeness"]["sections"] = 100  # Assume complete if we can't verify original
+            report["warnings"].append("Could not extract sections from original text - assuming blueprint is complete")
+        else:
+            report["completeness"]["sections"] = 0
+            report["warnings"].append("Could not extract sections from original text and blueprint has no sections")
     
     # Check references
     original_ref_count = _count_references_in_text(original_text)
@@ -127,11 +143,15 @@ def _check_research_paper_quality(blueprint: Dict[str, Any], original_text: str)
         capped_scores = [min(100, score) for score in completeness_scores]
         base_score = sum(capped_scores) / len(capped_scores)
     else:
-        base_score = 100  # If no metrics, assume good
+        # If no completeness metrics, check if we have basic structure
+        if blueprint_section_count > 0 or blueprint_ref_count > 0:
+            base_score = 75  # Partial credit if we have some structure
+        else:
+            base_score = 50  # Lower score if no structure found
     
-    # Penalize for warnings - each warning reduces score by 10%
-    warning_penalty = min(len(report["warnings"]) * 10, 50)  # Max 50% penalty
-    report["quality_score"] = max(0, base_score - warning_penalty)
+    # Penalize for warnings - each warning reduces score by 5% (less harsh)
+    warning_penalty = min(len(report["warnings"]) * 5, 30)  # Max 30% penalty
+    report["quality_score"] = max(0, round(base_score - warning_penalty, 1))
     
     return report
 

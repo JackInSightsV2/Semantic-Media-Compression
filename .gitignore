@@ -177,8 +177,6 @@ _pipeline_testing/data/
 # Keep small images but exclude very large ones
 # *.jpg
 # *.png
-# *.pdf
 
 # Large documents (consider using Git LFS for these)
-# Uncomment if you want to exclude all PDFs:
-# *.pdf
+*.pdf

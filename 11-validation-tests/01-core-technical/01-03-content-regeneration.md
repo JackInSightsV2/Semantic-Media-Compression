@@ -42,32 +42,22 @@ MICRO-EXPRESSION REQUIREMENTS:
 - Character A: [specific micro-expression from semantic analysis]
 - Exact eyebrow position, lip compression, eye focus direction
 - Asymmetrical expression showing internal conflict about [specific emotion]
-- Must convey subtext: [character's unspoken thoughts/feelings]
-
-CULTURAL AUTHENTICITY REQUIREMENTS:
-- Eye contact pattern: [specific cultural norm from analysis]
-- Interpersonal distance: [exact proxemics measurement and cultural meaning]
-- Hand gesture: [precise cultural gesture with timing and amplitude]
-- Status indicators: [specific clothing/posture details with cultural significance]
 
 CHARACTER CONSISTENCY REQUIREMENTS:
 - Facial structure must match previous scene generations
-- Clothing continuity with [specific wear patterns, wrinkles, stains]
-- Posture consistency with character's established personality
-- Lighting must preserve character recognition across scenes
+- Clothing continuity
+- Posture consistency
+- Lighting must preserve character recognition
 
 TEMPORAL CONSISTENCY REQUIREMENTS:
 - Emotional state progression from previous scene
-- Relationship dynamic evolution (trust level, tension, intimacy)
-- Environmental continuity (time of day, weather, atmosphere)
+- Relationship dynamic evolution
+- Environmental continuity
 
 REGENERATION FIDELITY TEST:
 - Would a human familiar with the original notice differences?
-- Are cultural elements authentic or stereotypical?
 - Does the micro-expression convey the intended subtext?
 - Is character identity preserved across multiple regenerations?
-
-This is testing whether current AI can achieve the semantic fidelity required for true media compression, not just "good enough" generation.
 ```
 
 #### Video Generation Prompt Template:

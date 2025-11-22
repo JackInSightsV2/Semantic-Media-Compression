@@ -46,53 +46,38 @@ Validate current AI models' ability to extract semantic information from video c
 
 ### Step 2: Model Testing Setup
 
-#### For GPT-4 Vision Testing (The Real Challenge):
+#### For GPT-4 Vision Testing:
 **Critical Semantic Extraction Prompt:**
 ```
 You must extract ALL semantic information needed to recreate this video with complete authenticity. This is not description - this is semantic blueprinting for regeneration.
 
-MICRO-EXPRESSION ANALYSIS (Critical for Authenticity):
-- Facial muscle movements: eyebrow micro-raises, lip compressions, nostril flares
-- Eye movement patterns: saccades, fixation points, blink timing and meaning
-- Micro-expressions <0.5 seconds that convey subtext or internal conflict
-- Asymmetrical facial expressions indicating mixed emotions
-- Confidence level (1-10) for detecting these subtle human cues
+MICRO-EXPRESSION ANALYSIS:
+- Facial muscle movements: eyebrow micro-raises, lip compressions
+- Eye movement patterns: saccades, fixation points
+- Confidence level (1-10) for detecting these subtle cues
 
-BODY LANGUAGE SEMANTICS (Essential for Character Consistency):
-- Posture shifts and weight distribution changes with emotional meaning
-- Hand gesture timing, amplitude, and cultural significance
-- Proxemics: interpersonal distance and cultural appropriateness
-- Unconscious mirroring or rejection behaviors between characters
-- Breathing patterns visible in chest/shoulder movement
+BODY LANGUAGE SEMANTICS:
+- Posture shifts and weight distribution changes
+- Hand gesture timing and amplitude
+- Proxemics: interpersonal distance
 
 VOCAL SEMANTIC LAYERS (if audio present):
-- Vocal fry, uptalk, micro-pauses indicating emotional state
-- Pace changes within sentences revealing hesitation/confidence
-- Volume modulation showing power dynamics
-- Accent/dialect consistency and cultural authenticity
+- Pace changes within sentences
+- Volume modulation
 - Subtext conveyed through tone vs literal words
 
-CULTURAL MICRO-SIGNALS (Critical for Cross-Cultural Adaptation):
-- Eye contact patterns specific to cultural context
-- Touch boundaries and cultural appropriateness
-- Status indicators in clothing, posture, spatial positioning
-- Cultural communication styles (direct vs indirect)
-- Generational markers in behavior and expression
-
-TEMPORAL SEMANTIC CONSISTENCY (For Multi-Scene Regeneration):
-- Character emotional arc progression across timeframes
-- Relationship dynamic evolution (trust, tension, intimacy changes)
-- Environmental mood shifts (lighting, atmosphere, energy)
-- Narrative momentum and pacing semantic markers
+TEMPORAL SEMANTIC CONSISTENCY:
+- Character emotional arc progression
+- Relationship dynamic evolution
+- Environmental mood shifts
+- Narrative momentum
 
 REGENERATION-CRITICAL ASSESSMENT:
 - What specific micro-details would a human notice if missing?
 - Which facial expressions carry the most semantic weight?
-- What cultural elements would feel "off" if regenerated incorrectly?
-- Which temporal inconsistencies would break immersion?
 - What cannot current AI reliably detect or recreate?
 
-Rate confidence (1-10) for each category. Be brutally honest about current AI limitations.
+Rate confidence (1-10) for each category.
 ```
 
 #### For Claude 3.5 Sonnet Testing:

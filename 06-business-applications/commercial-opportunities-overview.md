@@ -30,6 +30,8 @@ Semantic media compression allows basic changes in how value is created, distrib
 
 **This defines the theoretical market**: Educational content, corporate training, documentary localization - anywhere adaptation creates value.
 
+**Industry Validation**: At the 2024 CNBC Delivering Alpha Summit, Ben Affleck outlined a "pay-per-story" business model where fans could commission custom episodes of shows like *Succession* for $30—a concrete example of the personalized content generation that semantic compression enables. This demonstrates that industry leaders are already envisioning the business models that semantic compression makes possible. See [README.md](../README.md#real-world-validation-the-industry-vision) for full details.
+
 ## Industry Change Analysis
 
 ### [Entertainment Industry Change](./entertainment-industry.md)

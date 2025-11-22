@@ -1,4 +1,16 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@theme {
+  --color-brand-yellow: #FDE047;
+  --color-brand-pink: #EC4899;
+  --color-brand-purple: #4C1D95;
+  --color-brand-cyan: #06B6D4;
+  --color-brand-cream: #FEFCE8;
+  --color-brand-dark: #0F172A;
+}
+
+
 
 :root {
   --background: 0 0% 100%;

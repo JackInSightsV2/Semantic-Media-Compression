@@ -1,13 +1,21 @@
+import { Hero } from '@/components/landing/Hero';
+import { WhatIsSection } from '@/components/landing/WhatIsSection';
+import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
+import { UseCasesSection } from '@/components/landing/UseCasesSection';
+import { MarketplaceSection } from '@/components/landing/MarketplaceSection';
+import { WhyMattersSection } from '@/components/landing/WhyMattersSection';
+import { Footer } from '@/components/landing/Footer';
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Semantical.Ink</h1>
-        <p className="text-lg text-muted-foreground">
-          Landing page coming soon
-        </p>
-      </div>
+    <main className="min-h-screen bg-white">
+      <Hero />
+      <WhatIsSection />
+      <HowItWorksSection />
+      <UseCasesSection />
+      <MarketplaceSection />
+      <WhyMattersSection />
+      <Footer />
     </main>
   );
 }
-

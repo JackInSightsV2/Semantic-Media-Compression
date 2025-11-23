@@ -88,11 +88,12 @@ export default function ProducePage() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto relative">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+        <div className="text-center py-10 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-500/20 blur-[100px] rounded-full pointer-events-none" />
+          <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-4 relative z-10">
             Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-purple">Derivative</span>
           </h1>
-          <p className="text-xl text-slate-500">
+          <p className="text-xl text-slate-500 max-w-2xl mx-auto relative z-10">
             Transform existing IP into new formats using Semantic AI.
           </p>
         </div>

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FaHome, FaLayerGroup, FaStore, FaMagic, FaCog, FaSignOutAlt, FaFileContract } from 'react-icons/fa';
+import UserMenu from './UserMenu';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -53,16 +54,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         <FaCog />
                         Settings
                     </button>
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-left text-slate-500 hover:text-red-500 rounded-xl hover:bg-slate-50 transition-colors">
-                        <FaSignOutAlt />
-                        Logout
-                    </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 ml-64 p-8 overflow-y-auto">
-                <div className="max-w-7xl mx-auto">
+            <main className="flex-1 ml-64 p-8 overflow-y-auto relative">
+                <div className="absolute top-8 right-8 z-50">
+                    <UserMenu />
+                </div>
+                <div className="max-w-7xl mx-auto pt-12">
                     {children}
                 </div>
             </main>

@@ -1,10 +1,10 @@
-# LAUNCH: Semantic Plagiarism Detection - The Billion Dollar Opportunity
+# LAUNCH: Semantic Plagiarism Detection - The Opportunity
 
 ## Executive Summary
 
 **The Breakthrough**: Semantic media compression technology enables mathematical detection of content plagiarism that goes beyond surface-level copying to identify when someone steals the core meaning, structure, or concept of creative work.
 
-**The Market**: $10+ billion addressable market across content creator protection ($104B creator economy), platform content moderation ($13.4B by 2027), and intellectual property legal services ($6.8B market).
+**The Market**: Addressable market across content creator protection ($104B creator economy), platform content moderation ($13.4B by 2027), and intellectual property legal services ($6.8B market).
 
 **The Opportunity**: Build the foundational infrastructure for mathematical copyright protection using blockchain-verified semantic fingerprints that provide legally admissible evidence of content theft.
 

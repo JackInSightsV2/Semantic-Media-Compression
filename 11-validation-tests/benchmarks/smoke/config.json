@@ -1,0 +1,14 @@
+{
+  "model": "naive-smoke-baseline",
+  "revision": "1",
+  "runtime": "python-stdlib",
+  "hardware": "cpu",
+  "parameters": {},
+  "mode": "smoke",
+  "command": [
+    "python3",
+    "-m",
+    "model_harness.smoke_adapter"
+  ],
+  "timeout_seconds": 10
+}

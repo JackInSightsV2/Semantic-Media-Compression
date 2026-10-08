@@ -1,5 +1,7 @@
 # AI Model Integration and Regeneration Systems
 
+For the October 2026 understanding and decision-model direction, see [JEV, Gemma 4, Gemini and the evaluation harness](decision-models-and-evaluation.md). The discussion below concerns generation and reconstruction, which are evaluated separately.
+
 ## Overview
 
 The regeneration phase of semantic media compression represents the transformation of compressed blueprints back into consumable media through AI model integration. This process requires sophisticated orchestration of multiple AI systems, each specialized for different aspects of content generation.

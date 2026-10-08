@@ -1,0 +1,21 @@
+name: Model harness
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.12']
+    defaults:
+      run:
+        working-directory: 11-validation-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python3 -m unittest discover -s harness_tests -v
+      - run: python3 -m model_harness --dataset benchmarks/smoke/dataset.json --config benchmarks/smoke/config.json --output testing_outputs/harness/smoke.json
+      - run: python3 run_tests.py --provider mock --json

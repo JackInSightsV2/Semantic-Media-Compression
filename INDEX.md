@@ -1,5 +1,12 @@
 # Semantic Media Compression: Complete File Index
 
+## Current model evaluation work
+
+- [Live benchmark handover](BENCHMARK-HANDOVER.md) — measured text-compression results and local dashboard.
+
+- [Decision models and evaluation](07-technical-architecture/decision-models-and-evaluation.md) — current findings and proposed experiments.
+- [Model harness](11-validation-tests/model_harness/README.md) — runnable foundation and adapter contract.
+
 ## Project Root
 - **[README.md](./README.md)** - Main project overview and structure
 - **[NAVIGATION.md](./NAVIGATION.md)** - Complete navigation guide with reading paths

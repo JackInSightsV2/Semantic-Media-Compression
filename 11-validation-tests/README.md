@@ -1,5 +1,11 @@
 # Semantic Media Compression – Testing Suite
 
+## Model comparison harness — October 2026
+
+Use the [model harness](model_harness/README.md) for the new decision and multimodal evaluation foundation. It includes checksum-verified image/frame assets, reference-answer isolation, failure accounting and reproducible JSON reports. The initial smoke adapter is deliberately naive and is not a live model benchmark.
+
+The runner below remains a demonstration pipeline. Its OpenAI vision example sends metadata as text, not images or video.
+
 ## Overview
 
 `11-validation-tests` now ships with a lightweight, modular testing harness that runs entirely with deterministic mock providers. The goal is to make the test flows easy to understand, easy to extend, and ready for a future swap to real API integrations when credentials and media assets are available.

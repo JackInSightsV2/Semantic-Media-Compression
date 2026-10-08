@@ -20,6 +20,15 @@ Author: Stephen Henry JackInSightsV2
 Fingerprint: SH:JI2:b9d2e5f8a1c4d7e0f3a6c9e2b5d8f1a4
 -->
 
+## Model evaluation direction — October 2026
+
+This repository is evolving into a reusable harness for evaluating decision models and multimodal understanding. **Gemma 4 and Gemini are our current leading candidates for image and video recognition**, pending task-specific comparisons. JEV is a candidate decision layer over extracted evidence.
+
+- [Current findings and evaluation architecture](07-technical-architecture/decision-models-and-evaluation.md) — evidence, limitations and planned pipeline comparisons.
+- [Runnable model harness](11-validation-tests/model_harness/README.md) — synthetic media fixtures, provider-neutral adapters and independently computed metrics.
+
+The offline smoke suite runs without credentials. A first live OpenAI/JEV text-compression pilot is now recorded: [results, local dashboard and reproduction commands](BENCHMARK-HANDOVER.md). This is synthetic pilot evidence, not a general model ranking or validation of image/video compression.
+
 ## Project Overview
 
 This project explores semantic content compression - a theoretical approach to storing ANY meaningful content by preserving intent and meaning rather than raw data. Instead of saving exact pixels or bytes (gigabytes), we save semantic blueprints (megabytes) that AI models can use to recreate content adapted for different audiences, cultures, expertise levels, or formats.

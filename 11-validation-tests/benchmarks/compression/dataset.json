@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "id": "semantic-text-pilot-v1",
+  "license": "Apache-2.0; original synthetic narratives authored for this benchmark",
+  "purpose": "Initial live semantic retention pilot, not representative production validation",
+  "split": "public-pilot",
+  "cases": [
+    {
+      "id": "harbour-key",
+      "source": "The Harbour Archive had spent the morning preparing for a small exhibition. Grey clouds hung over the water, and a delivery bicycle stood beside the entrance. Mira counted empty display stands while Sol checked a printed timetable. The room smelled of fresh paint. Neither the weather nor the paint affected the events that followed.\nAt 14:10, Mira found that the east exit was locked. She first tried a brass key marked B7, but it did not turn. She returned B7 to the drawer rather than handing it to anyone. At 14:12 she took the silver key marked S4 from the red envelope and handed S4 to Sol. Sol used S4 to open the east exit at 14:13. Opening the exit let a trolley carrying the exhibition maps pass through; the trolley was too wide for the west doorway. It was the trolley's width, not a fire alarm, that made the east exit necessary.\nThe volunteers talked about moving the opening time from 15:00 to 15:30. They decided against changing it. The public opening remained 15:00. An early note said there were 40 maps on the trolley, but a recount established 36, and Mira crossed out 40. Four empty sleeves had been counted as maps. The corrected inventory was 36 maps.\nAt 14:20 Sol returned S4 to Mira. She placed it in the red envelope and locked the envelope in cabinet C2. B7 remained in the drawer. Nobody reported a lost key. Mira looked at a photograph on her desk and went quiet, but the account gives no explanation for her silence. A visitor suggested she might be upset; this was a guess, not a confirmed fact. The exhibition opened on schedule. The bicycle was still outside when the lights were switched on, and the grey clouds had not cleared.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt": "Which key opened the east exit?",
+          "options": {
+            "a": "B7",
+            "b": "S4",
+            "c": "C2",
+            "d": "No key",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "b"
+        },
+        {
+          "id": "q2",
+          "prompt": "Who opened the east exit?",
+          "options": {
+            "a": "Mira",
+            "b": "The visitor",
+            "c": "Sol",
+            "d": "A volunteer",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q3",
+          "prompt": "Why was the east exit needed?",
+          "options": {
+            "a": "A fire alarm",
+            "b": "The trolley was too wide for the west doorway",
+            "c": "Paint fumes",
+            "d": "A missing map",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "b"
+        },
+        {
+          "id": "q4",
+          "prompt": "What was the corrected map count?",
+          "options": {
+            "a": "40",
+            "b": "4",
+            "c": "32",
+            "d": "36",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "d"
+        },
+        {
+          "id": "q5",
+          "prompt": "When did the public opening take place?",
+          "options": {
+            "a": "15:30",
+            "b": "14:13",
+            "c": "15:00",
+            "d": "14:20",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q6",
+          "prompt": "Where was S4 stored after it was returned?",
+          "options": {
+            "a": "A drawer",
+            "b": "In the red envelope in C2",
+            "c": "On the trolley",
+            "d": "With Sol",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "b"
+        },
+        {
+          "id": "q7",
+          "prompt": "Why did Mira go quiet?",
+          "options": {
+            "a": "She lost B7",
+            "b": "She was angry with Sol",
+            "c": "She disliked the exhibition",
+            "d": "She was tired",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "reservoir-test",
+      "source": "The engineering team at Alder Reservoir began a routine pump trial on Tuesday. The control room had two monitors, a wall clock, and a mug with a chipped handle. Arun wrote a heading in the log while Bea checked that the pressure sensor had been calibrated. Their conversation about lunch did not affect the trial.\nThe written plan was to run pump P2 for twelve minutes at 60 litres per minute. Pump P1 was a backup and was not started. P2 began at 09:00. At 09:04 Bea saw a pressure warning and stopped P2. The trial therefore ran for four minutes, not twelve. A calibrated inline meter recorded 228 litres delivered during the actual trial. The team did not use the planned rate multiplied by the planned duration as the delivered quantity.\nThe first log entry blamed a loose hose. Inspection found the hose secure. At 09:25 Arun found that the downstream valve V3 had been left half closed. The team identified this restriction as the cause of the warning and replaced the loose-hose explanation in the log. They opened V3 fully but did not restart P2 that day. Bea required a fresh inspection before any restart.\nA draft email proposed a Wednesday restart. That email was never sent. The signed plan set the next inspection for Thursday at 10:00; it did not set a restart time. The team notified maintenance of the valve finding, then put an orange tag on P2. The tag meant inspection required, not permanently condemned. P1 remained available as a backup, although it had not been tested during this trial.\nLater, a cleaner moved the chipped mug from the desk to a shelf. Arun rewrote the heading more neatly. The final log preserved the actual start and stop times, the meter reading, and the corrected cause. There was no measurement of how much water leaked, and the account does not establish that any leak occurred. The reservoir's water level after the trial is not stated.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt": "Which pump actually ran?",
+          "options": {
+            "a": "P1",
+            "b": "P2",
+            "c": "Both pumps",
+            "d": "Neither pump",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "b"
+        },
+        {
+          "id": "q2",
+          "prompt": "How long did the actual trial last?",
+          "options": {
+            "a": "12 minutes",
+            "b": "25 minutes",
+            "c": "4 minutes",
+            "d": "60 minutes",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q3",
+          "prompt": "What volume did the meter record?",
+          "options": {
+            "a": "720 litres",
+            "b": "240 litres",
+            "c": "60 litres",
+            "d": "228 litres",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "d"
+        },
+        {
+          "id": "q4",
+          "prompt": "What was the corrected cause of the warning?",
+          "options": {
+            "a": "Loose hose",
+            "b": "Uncalibrated sensor",
+            "c": "V3 half closed",
+            "d": "P1 starting",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q5",
+          "prompt": "When was the next inspection scheduled?",
+          "options": {
+            "a": "Wednesday",
+            "b": "Thursday at 10:00",
+            "c": "Tuesday at 09:25",
+            "d": "Thursday at 09:00",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "b"
+        },
+        {
+          "id": "q6",
+          "prompt": "Did P2 restart that day?",
+          "options": {
+            "a": "Yes, after 09:25",
+            "b": "Yes, at lunch",
+            "c": "No",
+            "d": "Yes, at 10:00",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q7",
+          "prompt": "How much water leaked?",
+          "options": {
+            "a": "Zero litres",
+            "b": "12 litres",
+            "c": "228 litres",
+            "d": "240 litres",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "parcel-correction",
+      "source": "The community theatre office was crowded with costume boxes on Friday morning. Leena put a pot of tea on the table, and Omar opened the delivery ledger. Rain tapped against the window. They were expecting a parcel of blue fabric and another parcel of replacement lamps for the stage.\nAt 08:45 the courier delivered parcel R81 to Leena. Its label said blue fabric, but inside were six replacement lamps. Omar checked the supplier's packing slip and confirmed that the parcel label had been swapped with R18. No blue fabric was delivered that morning. Leena did not send the lamps back because the theatre also needed them. She asked the supplier to correct the paperwork and send the missing fabric separately.\nTwo of the six lamps had cracked bases. Omar set those two aside and marked them unusable. The other four passed a bench test. The theatre used three of the four working lamps in the stage rig and kept the fourth as a spare in cupboard K9. None of the cracked lamps was installed. The original ledger entry said six lamps installed; Omar corrected it to three installed, one working spare, and two unusable.\nThe supplier first suggested sending fabric on Monday, but Leena explained that rehearsals started Monday morning. The supplier then confirmed delivery for Sunday before 18:00. This was a promise, not evidence that the fabric had arrived. The account ends on Friday afternoon. Leena sent a message to the costume team warning them not to cut any fabric until the new delivery was checked.\nThe lamps cost 90 pounds in total. The supplier agreed to refund 30 pounds for the two damaged lamps; no refund had reached the theatre's account by the end of Friday. Omar placed a copy of the refund agreement in a folder. A line in a discarded draft claimed the refund was complete, but the final ledger explicitly said pending. Nobody stated who swapped the labels. The courier smiled on leaving, but the account does not say the courier caused the mistake.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt": "What did R81 actually contain?",
+          "options": {
+            "a": "Blue fabric",
+            "b": "Six lamps",
+            "c": "Four lamps",
+            "d": "Costumes",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "b"
+        },
+        {
+          "id": "q2",
+          "prompt": "How many lamps were installed?",
+          "options": {
+            "a": "Six",
+            "b": "Four",
+            "c": "Two",
+            "d": "Three",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "d"
+        },
+        {
+          "id": "q3",
+          "prompt": "Where was the working spare stored?",
+          "options": {
+            "a": "Cupboard K9",
+            "b": "The stage rig",
+            "c": "With the supplier",
+            "d": "In R18",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "a"
+        },
+        {
+          "id": "q4",
+          "prompt": "What was the final promised fabric delivery time?",
+          "options": {
+            "a": "Monday morning",
+            "b": "Friday afternoon",
+            "c": "Sunday before 18:00",
+            "d": "Saturday noon",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q5",
+          "prompt": "What was the refund status at the end of Friday?",
+          "options": {
+            "a": "30 pounds pending",
+            "b": "30 pounds received",
+            "c": "90 pounds received",
+            "d": "No refund agreed",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "a"
+        },
+        {
+          "id": "q6",
+          "prompt": "Had the missing fabric arrived by the end of this account?",
+          "options": {
+            "a": "Yes on Sunday",
+            "b": "Yes on Friday",
+            "c": "No delivery was recorded",
+            "d": "Yes on Monday",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "c"
+        },
+        {
+          "id": "q7",
+          "prompt": "Who swapped the parcel labels?",
+          "options": {
+            "a": "The courier",
+            "b": "Leena",
+            "c": "Omar",
+            "d": "The costume team",
+            "unknown": "Not established by the supplied context"
+          },
+          "expected": "unknown"
+        }
+      ]
+    }
+  ]
+}

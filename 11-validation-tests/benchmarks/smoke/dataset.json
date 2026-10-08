@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "id": "synthetic-smoke-v1",
+  "license": "Apache-2.0; original synthetic fixtures authored for this repository",
+  "purpose": "Protocol smoke checks, not model ranking or narrative quality evidence",
+  "split": "smoke",
+  "cases": [
+    {
+      "id": "retention-01",
+      "track": "decision",
+      "input": {
+        "evidence": [
+          {
+            "id": "e1",
+            "timestamp_seconds": 12,
+            "observation": "Mira hands Sol a key. Sol opens the locked exit using it."
+          }
+        ]
+      },
+      "questions": [
+        {
+          "id": "retain",
+          "type": "binary",
+          "prompt": "Does the key enable the observed exit opening?"
+        },
+        {
+          "id": "relationship",
+          "type": "choice",
+          "prompt": "How is handing over the key related to opening the exit?",
+          "options": [
+            "unrelated",
+            "enables",
+            "contradicts"
+          ]
+        },
+        {
+          "id": "importance",
+          "type": "score",
+          "prompt": "Rate the key on 0=irrelevant, 1=context, 2=necessary for the observed action.",
+          "range": [
+            0,
+            2
+          ]
+        }
+      ],
+      "expected": {
+        "retain": true,
+        "relationship": "enables",
+        "importance": 2
+      }
+    },
+    {
+      "id": "missing-evidence-01",
+      "track": "decision",
+      "input": {
+        "evidence": [
+          {
+            "id": "e2",
+            "observation": "Mira is silent. Her hands are outside the frame."
+          }
+        ]
+      },
+      "questions": [
+        {
+          "id": "ring",
+          "type": "choice",
+          "prompt": "Does the evidence establish that Mira is wearing a ring?",
+          "options": [
+            "yes",
+            "no",
+            "unknown"
+          ]
+        }
+      ],
+      "expected": {
+        "ring": "unknown"
+      }
+    },
+    {
+      "id": "image-01",
+      "track": "image",
+      "input": {
+        "media": [
+          {
+            "path": "assets/frame-001.png",
+            "mime_type": "image/png",
+            "sha256": "0eea93e404eb0e8a631536a834c77a509c4acb25950840da6ed22f7c5b161330"
+          }
+        ]
+      },
+      "questions": [
+        {
+          "id": "color",
+          "type": "choice",
+          "prompt": "What color is the square?",
+          "options": [
+            "blue",
+            "red",
+            "green"
+          ]
+        },
+        {
+          "id": "objects",
+          "type": "facts",
+          "prompt": "Return visible objects using canonical labels red_square, blue_circle, green_triangle."
+        }
+      ],
+      "expected": {
+        "color": "red",
+        "objects": [
+          "red_square"
+        ]
+      }
+    },
+    {
+      "id": "motion-01",
+      "track": "video_frames",
+      "input": {
+        "media": [
+          {
+            "path": "assets/frame-001.png",
+            "mime_type": "image/png",
+            "sha256": "0eea93e404eb0e8a631536a834c77a509c4acb25950840da6ed22f7c5b161330",
+            "timestamp_seconds": 0
+          },
+          {
+            "path": "assets/frame-002.png",
+            "mime_type": "image/png",
+            "sha256": "2e12a6567acf3169d3bc09f311d519e5b796bed4f2b263747d2ed568b1fced6a",
+            "timestamp_seconds": 1
+          }
+        ],
+        "sampling": {
+          "method": "synthetic_two_frame_sequence",
+          "fps": 1,
+          "audio": "absent"
+        }
+      },
+      "questions": [
+        {
+          "id": "direction",
+          "type": "choice",
+          "prompt": "Between the first and second frame, which way does the square move?",
+          "options": [
+            "left",
+            "right",
+            "stationary"
+          ]
+        }
+      ],
+      "expected": {
+        "direction": "right"
+      }
+    },
+    {
+      "id": "blueprint-qa-01",
+      "track": "blueprint_qa",
+      "input": {
+        "blueprint": {
+          "events": [
+            {
+              "actor": "Mira",
+              "action": "hands key to Sol"
+            },
+            {
+              "actor": "Sol",
+              "action": "opens exit with key"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "who",
+          "type": "choice",
+          "prompt": "Who opens the exit? Answer only from the supplied blueprint.",
+          "options": [
+            "Mira",
+            "Sol",
+            "unknown"
+          ]
+        }
+      ],
+      "expected": {
+        "who": "Sol"
+      }
+    }
+  ]
+}

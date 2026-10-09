@@ -1,5 +1,8 @@
 # Untested Legal Territory and Precedent Gaps
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression exists in a legal vacuum where traditional copyright doctrines have never been tested against this specific technology. This creates both uncertainty and opportunity as legal systems worldwide grapple with questions that have no clear precedents or established frameworks.

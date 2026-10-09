@@ -1,3 +1,6 @@
+
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research notes or conversation material. Treat claims and citations as leads requiring primary-source verification; this content is not independent validation of the repository. See [the current audit](../AUDIT.md).
 I want you to expand in detail the 08 folder please. There is a README.md in that folder that has more details. The entire project is a colletion of md files about JSON to digitial media.
 
 Remember This project is documentation planning for a whitepaper we want to create; not a coding project. No code nor do we want coding examples in this documentation unless is makes 100% sense to convey the point.  

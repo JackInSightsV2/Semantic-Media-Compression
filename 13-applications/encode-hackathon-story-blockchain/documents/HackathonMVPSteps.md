@@ -1,4 +1,7 @@
 # Content Theft Detection with Blockchain Verification
+
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical hackathon design/setup document. Completion statements and example outputs are not independently verified deployment evidence. The current app README describes simulated flows, disabled credentialed writes and unresolved dependency advisories. See [the current audit](../../../AUDIT.md).
 ## Complete Build Guide for Semantic Plagiarism Detection MVP
 
 ---

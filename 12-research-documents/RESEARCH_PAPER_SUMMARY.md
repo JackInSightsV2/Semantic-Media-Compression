@@ -1,5 +1,8 @@
 # Research Paper Blueprint - Quick Reference
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research notes or conversation material. Treat claims and citations as leads requiring primary-source verification; this content is not independent validation of the repository. See [the current audit](../AUDIT.md).
+
 ## What I Created For You
 
 I've analyzed all your documentation files across 10 major sections and created a complete research paper structure based on academic paper formats like "Compression Beyond Pixels: Semantic Compression with Multimodal Foundation Models."

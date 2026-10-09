@@ -1,5 +1,8 @@
 # Competitive Landscape and Alternative Approaches
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 > **Theoretical Analysis**: This document provides theoretical comparison of semantic compression against alternative approaches. This is conceptual analysis of relative strengths/weaknesses, not market research or competitive intelligence.
 
 ## Overview: Understanding the Alternatives

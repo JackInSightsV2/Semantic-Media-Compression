@@ -1,5 +1,8 @@
 # Requirements Document
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 ## Introduction
 
 This specification defines the requirements for building a comprehensive testing framework to execute and validate the 01-core-technical tests for semantic media compression. The framework must automate the execution of semantic extraction accuracy tests, JSON structure generation validation, content regeneration quality assessment, and code semantic extraction testing. The system needs to provide quantitative metrics, automated validation, and comprehensive reporting to validate the theoretical foundations of semantic media compression technology.

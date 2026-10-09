@@ -1,5 +1,8 @@
 # Test 13: Gaussian Splatting Model Investigation
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../AUDIT.md).
+
 ## Objective
 Research and evaluate existing Gaussian Splatting (GS) models for integration with semantic media compression
 
@@ -274,10 +277,10 @@ LIMITATION CATEGORIES:
 
 ## Documentation Updates Required
 Based on research findings, update these white paper sections:
-- [3D Spatial Compression](../07-technical-architecture/3d-spatial-compression.md)
-- [Technical System Overview](../07-technical-architecture/technical-system-overview.md)
-- [Implementation Roadmap](../07-technical-architecture/implementation-roadmap.md)
-- [Technical Feasibility Analysis](../07-technical-architecture/technical-feasibility-analysis.md)
+- [3D Spatial Compression](../../07-technical-architecture/3d-spatial-compression.md)
+- [Technical System Overview](../../07-technical-architecture/technical-system-overview.md)
+- Implementation Roadmap (planned document; absent from this checkout)
+- [Technical Feasibility Analysis](../../07-technical-architecture/technical-feasibility-analysis.md)
 
 ## Next Steps
 Research results will inform technical architecture decisions and implementation planning for 3D spatial compression capabilities in the semantic media compression system.

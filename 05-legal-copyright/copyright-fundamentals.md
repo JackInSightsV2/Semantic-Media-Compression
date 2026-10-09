@@ -1,5 +1,8 @@
 # Copyright Fundamentals and Semantic Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Understanding the legal implications of semantic media compression requires a deep examination of how traditional copyright principles apply to this revolutionary technology. The fundamental tension lies between copyright law's protection of expression versus ideas, and how semantic compression operates precisely at this boundary.

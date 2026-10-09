@@ -1,5 +1,8 @@
 # Philosophical Implications of Semantic Media Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression raises profound philosophical questions that extend far beyond technical implementation. When we compress media to its semantic essence and regenerate it through AI, we challenge fundamental assumptions about the nature of art, identity, memory, and human experience. This philosophical exploration is crucial for understanding the transformative implications of semantic media technology and grounding its development in deeper questions about meaning, authenticity, and existence.

@@ -6,6 +6,7 @@ from functools import partial
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
+from .lossless import compare_report
 
 STATIC = Path(__file__).resolve().parent / 'dashboard'
 
@@ -22,6 +23,7 @@ def reports(root):
                 if errata.is_file() and not errata.is_symlink():
                     data['errata'] = json.loads(errata.read_text())
                     data['limitations'] = data['errata'].get('corrected_limitations', data.get('limitations', []))
+                data['lossless_comparison'] = compare_report(data)
                 result.append(data)
         except (ValueError, OSError):
             continue
@@ -29,14 +31,43 @@ def reports(root):
 
 
 class Handler(BaseHTTPRequestHandler):
-    def __init__(self, *args, runs, **kwargs):
+    def __init__(self, *args, runs, media_runs=None, **kwargs):
         self.runs = runs
+        self.media_runs = Path(media_runs) if media_runs else Path(runs).parent / 'media_runs'
         super().__init__(*args, **kwargs)
 
     def do_GET(self):
         route = urlparse(self.path).path
         if route == '/api/runs':
             self.send_data(json.dumps(reports(self.runs), allow_nan=False).encode(), 'application/json')
+        elif route in ('/api/media', '/api/scene'):
+            result = []
+            root = self.media_runs if route == '/api/media' else Path(self.runs).parent / 'scene_runs'
+            kind = 'media_codec_baseline' if route == '/api/media' else 'scene_semantics'
+            for path in sorted(root.glob('*/report.json'), reverse=True):
+                if path.is_symlink() or path.parent.is_symlink() or not re.fullmatch(r'[A-Za-z0-9_-]+', path.parent.name):
+                    continue
+                try:
+                    data = json.loads(path.read_text())
+                    if data.get('kind') == kind:
+                        errata = path.parent / 'errata.json'
+                        if errata.is_file() and not errata.is_symlink():
+                            data['errata'] = json.loads(errata.read_text())
+                            data['status'] = data['errata'].get('status', data['status'])
+                            data['limitations'].append(data['errata'].get('reason', 'See errata'))
+                            for row in data['rows']:
+                                row.pop('quality', None)
+                        result.append(data)
+                except (OSError, ValueError):
+                    continue
+            self.send_data(json.dumps(result, allow_nan=False).encode(), 'application/json')
+        elif re.fullmatch(r'/media-preview/[A-Za-z0-9_-]+', route):
+            directory = self.media_runs / route.rsplit('/', 1)[1]
+            path = directory / 'libx264.mp4'
+            if directory.is_symlink() or path.is_symlink() or not path.is_file():
+                self.send_error(404)
+            else:
+                self.send_data(path.read_bytes(), 'video/mp4')
         elif route in ('/', '/index.html', '/app.js', '/style.css'):
             name = 'index.html' if route == '/' else route[1:]
             mime = {'html': 'text/html', 'js': 'text/javascript', 'css': 'text/css'}[name.rsplit('.', 1)[1]]
@@ -46,7 +77,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def send_data(self, content, mime):
         self.send_response(200)
-        self.send_header('Content-Type', mime + '; charset=utf-8')
+        self.send_header('Content-Type', mime if mime.startswith('video/') else mime + '; charset=utf-8')
         self.send_header('Content-Length', str(len(content)))
         self.send_header('Cache-Control', 'no-store')
         self.send_header('X-Content-Type-Options', 'nosniff')

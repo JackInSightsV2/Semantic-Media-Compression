@@ -1,5 +1,8 @@
 # Design Document
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 ## Overview
 
 The Model Architecture Testing Framework provides comprehensive testing capabilities for semantic compression model architectures, training approaches, and performance validation. The framework extends the existing 01-core-technical testing infrastructure to support model architecture validation, automated training pipelines, and comparative analysis of different semantic compression approaches.

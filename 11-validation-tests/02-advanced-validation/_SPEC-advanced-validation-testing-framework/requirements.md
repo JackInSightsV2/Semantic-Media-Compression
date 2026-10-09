@@ -1,5 +1,8 @@
 # Requirements Document
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 ## Introduction
 
 This specification defines the requirements for building an advanced validation testing framework to execute the 02-advanced-validation tests for semantic media compression. The framework must implement sophisticated compression ratio analysis, quality degradation measurement, cost-benefit analysis, and performance benchmarking across different content types. The system builds upon the core technical testing framework to provide deeper validation of semantic compression viability for real-world applications.

@@ -1,3 +1,5 @@
+> **Archived instructions — security refresh, 8 October 2026.** Browser signing and IPFS uploads are disabled. The historical steps below are not a working setup guide; they require a future authenticated server implementation or user-wallet signing. Secret names shown without a public prefix are server-only design placeholders, not implemented configuration. Do not add private keys or Pinata credentials to browser configuration. The collection CLI also fails closed through the disabled shared client. Any successful-looking registration in the demo is simulated and is not a blockchain receipt.
+
 # Story Protocol Integration - Setup & Testing Guide
 
 ## Overview
@@ -37,7 +39,7 @@ Your `.env` file should contain:
 
 ```bash
 # Wallet (from MetaMask)
-NEXT_PUBLIC_WALLET_PRIVATE_KEY=0x...
+WALLET_PRIVATE_KEY=0x...
 NEXT_PUBLIC_WALLET_ADDRESS=0x...
 
 # Story Protocol Testnet
@@ -50,7 +52,7 @@ NEXT_PUBLIC_NFT_CONTRACT_ADDRESS=0x...
 # Pinata IPFS
 NEXT_PUBLIC_PINATA_API_KEY=...
 NEXT_PUBLIC_PINATA_SECRET_KEY=...
-NEXT_PUBLIC_PINATA_JWT=...
+PINATA_JWT=...
 ```
 
 ## Testing the Integration
@@ -74,7 +76,7 @@ formData.append('file', Buffer.from(blob), 'test.json');
 
 axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
   headers: {
-    'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_PINATA_JWT,
+    'Authorization': 'Bearer ' + process.env.PINATA_JWT,
     ...formData.getHeaders()
   }
 }).then(res => {
@@ -145,7 +147,7 @@ Open http://localhost:3000
 ### IPFS Upload Fails
 
 **Error: "Authorization failed"**
-- Check `NEXT_PUBLIC_PINATA_JWT` is correct
+- Check `PINATA_JWT` is correct
 - Verify JWT has `pinFileToIPFS` permission
 - Try regenerating JWT in Pinata dashboard
 

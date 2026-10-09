@@ -1,0 +1,21 @@
+{
+  "id": "starwars-cantina-negotiation-30s-v1",
+  "title": "Star Wars: A New Hope \u2014 cantina negotiation",
+  "source_url": "https://www.starwars.com/video/captain-of-the-millennium-falcon",
+  "source_rendition": "Official 1920x1080 H264_4000; Kaltura entry 0_dktc32cr, flavor 0_6vuxo7fk. Fetch current playback URL from official page; signed URLs expire.",
+  "source_sha256": "45f61147956fdf5c736103e452ecb45040b93366cc51a03029e8c46037acf6b9",
+  "reference_sha256": "f7e1bc2c72f2e45d77cd4644ca757d9b661614c5144aadd9e93c60eb0ad7c1be",
+  "license": "Copyright Lucasfilm; no open redistribution licence asserted. Source media remains local and gitignored.",
+  "attribution": "TM & \u00a9 Lucasfilm Ltd. All Rights Reserved.",
+  "start_seconds": 10,
+  "duration_seconds": 30,
+  "fps": 24,
+  "width": 640,
+  "height": 360,
+  "pixel_format": "yuv420p",
+  "filter": "scale=640:360:flags=lanczos,fps=24,format=yuv420p",
+  "track": "video-only; audio excluded from every size and quality result",
+  "reference": "Decoded official lossy H.264 1080p distribution copy, downscaled to 640x360 and resampled from 23.976 to 24 fps. Original widescreen letterboxing retained; active picture about 640x272. Not a lossless film master.",
+  "selection": "Han and Chewbacca at a table with Luke and Obi-Wan; face/wardrobe details, dim light, background patrons and alternating viewpoints. Static dialogue scene rather than high-motion action.",
+  "contamination": "Recognisable public film, possible training familiarity; development fixture, not held-out generalisation test."
+}

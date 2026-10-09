@@ -1,3 +1,5 @@
+> **Archived instructions — security refresh, 8 October 2026.** Browser signing and IPFS uploads are disabled. The historical steps below are not a working setup guide; they require a future authenticated server implementation or user-wallet signing. Secret names shown without a public prefix are server-only design placeholders, not implemented configuration. Do not add private keys or Pinata credentials to browser configuration. The collection CLI also fails closed through the disabled shared client. Any successful-looking registration in the demo is simulated and is not a blockchain receipt.
+
 # Create Your NFT Collection (One-Time Setup)
 
 ## Why You Need This
@@ -52,7 +54,7 @@ You only do this **once**. Then you can register as many semantic IP assets as y
 - Get testnet tokens from Story faucet
 
 **"Cannot read environment variables"**
-- Make sure your `.env` file has `NEXT_PUBLIC_WALLET_PRIVATE_KEY` and `NEXT_PUBLIC_WALLET_ADDRESS`
+- Make sure your `.env` file has `WALLET_PRIVATE_KEY` and `NEXT_PUBLIC_WALLET_ADDRESS`
 
 **"Transaction failed"**
 - Check you're on Story testnet (aeneid)

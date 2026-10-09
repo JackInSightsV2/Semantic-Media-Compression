@@ -1,4 +1,7 @@
 # Research Paper Blueprint: Semantic Media Compression
+
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research notes or conversation material. Treat claims and citations as leads requiring primary-source verification; this content is not independent validation of the repository. See [the current audit](../AUDIT.md).
 ## A Theoretical Framework for Meaning-Based Content Compression and Cross-Cultural Adaptation
 
 > **Blueprint Purpose**: This document provides the complete structure for a research paper based on your theoretical exploration. Each section includes instructions on what content to include and which source files to draw from. This is NOT the final paper - it's your roadmap for writing it.

@@ -1,5 +1,8 @@
 # Cultural Sensitivity and Representation
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 This document addresses the critical need for cultural sensitivity in semantic media compression systems. The goal is to ensure that AI-generated content represents cultures accurately and respectfully, avoiding stereotypes and cultural misrepresentation while enabling meaningful cross-cultural adaptation.

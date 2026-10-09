@@ -1,5 +1,8 @@
 # Quality Metrics and Assessment Framework
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Evaluating the success of semantic media compression requires fundamentally new approaches to quality assessment. Traditional metrics like PSNR, SSIM, or bitrate efficiency are inadequate for measuring whether regenerated content successfully preserves the meaning, emotional impact, and narrative coherence of the original work.

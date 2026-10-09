@@ -1,5 +1,8 @@
 # Practical Examples and Theoretical Case Studies
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 This section explores theoretical applications of semantic media compression across various business contexts, demonstrating potential real-world scenarios and their implications. These examples illustrate how the technology could transform different industries when the underlying AI capabilities mature.

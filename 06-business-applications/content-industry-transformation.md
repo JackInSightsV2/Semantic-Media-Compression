@@ -1,5 +1,8 @@
 # Content Industry Transformation
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Content industries (entertainment, publishing, music, gaming) stand to be fundamentally transformed by semantic media compression, creating new distribution models, creative possibilities, and revenue streams while disrupting traditional production and distribution paradigms.

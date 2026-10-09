@@ -1,5 +1,8 @@
 # The Semantic Universality Assumption: A Critical Examination
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 <!--
 Copyright 2024-2025 Stephen Henry JackInSightsV2
 
@@ -81,17 +84,12 @@ Western Film → [Western Cultural Meaning] → ??? → [Japanese Cultural Meani
 
 ### The Relativist Critique
 
-**Western romantic love is culturally specific**:
-- **Not universal emotion** but Western cultural construct (post-Enlightenment individualism)
-- **Doesn't exist** in cultures with arranged marriage traditions
-- **Cannot be translated** to cultures where marriage is family alliance, not personal fulfillment
+**Representations of romantic relationships require context**:
+- A story can carry assumptions about individual autonomy, family obligations and personal fulfillment.
+- Those assumptions vary within societies as well as between them. Arranged-marriage traditions do not establish an absence of romantic love.
+- Translation or adaptation can change emphasis and interpretation; impossibility of translation does not follow from cultural difference.
 
-**The "romantic comedy" semantic blueprint contains**:
-- Western assumptions about individual autonomy
-- Western values about personal happiness over family duty
-- Western narrative structures about overcoming obstacles to individual desire
-
-**Result**: You can't "adapt" this - you'd have to create fundamentally different meaning
+**Research question**: Which meanings do audiences regard as preserved, changed or lost? A semantic blueprint should record relevant context and uncertainty, and adaptation quality requires audience evidence. The universalist and relativist positions above are competing arguments, not findings established by this repository.
 
 ---
 

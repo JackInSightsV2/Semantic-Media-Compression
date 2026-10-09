@@ -1,5 +1,8 @@
 # Risk Assessment Framework for Semantic Media Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The legal uncertainties surrounding semantic media compression require sophisticated risk assessment frameworks to help stakeholders navigate the complex landscape of potential liabilities, enforcement actions, and regulatory responses. This framework provides structured approaches to evaluating and mitigating legal risks.

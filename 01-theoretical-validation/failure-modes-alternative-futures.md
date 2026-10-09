@@ -1,5 +1,8 @@
 # Failure Modes and Alternative Futures
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## The Elephant in the Room: This Might Not Work
 
 This document addresses the existential question: **What if the entire premise of semantic compression is fundamentally wrong?**
@@ -23,7 +26,7 @@ Not "the AI isn't ready yet" but "this will never work because the underlying as
 **Implication**: Semantic compression as envisioned is **theoretically impossible**
 
 **Evidence this might be true**:
-- "Romantic love" doesn't exist in many arranged-marriage cultures (it's a Western construct, not a universal emotion)
+- The meaning and expression of romantic relationships vary across contexts; marriage practices alone do not establish whether people experience romantic love.
 - "Face" (面子) in Chinese culture has no direct equivalent in Western thought
 - Sacred concepts in indigenous cultures are often explicitly untranslatable
 - Color perception varies by language (Russian has no single word for "blue")

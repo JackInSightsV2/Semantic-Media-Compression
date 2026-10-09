@@ -1,5 +1,8 @@
 # Test 04: Code Semantic Extraction and Regeneration
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../AUDIT.md).
+
 ## Test Overview
 
 This test validates the core capability of extracting semantic meaning from source code and regenerating functionally equivalent implementations. The test focuses on proving that business logic, algorithmic intent, and architectural patterns can be captured and preserved across different implementation approaches.

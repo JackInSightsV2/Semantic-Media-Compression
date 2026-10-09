@@ -1,5 +1,8 @@
 # Code and Codebase Semantic Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic compression principles can revolutionize how we store, transmit, and work with code by capturing the **intent, architecture, and logic patterns** rather than just the literal syntax. Instead of storing every character of source code, we compress the semantic meaning - the algorithms, design patterns, business logic, and architectural decisions - enabling AI systems to regenerate functionally equivalent code optimized for different contexts, languages, or requirements.

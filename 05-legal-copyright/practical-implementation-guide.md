@@ -1,5 +1,8 @@
 # Practical Implementation Guide for Semantic Media Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 This guide provides actionable frameworks for organizations seeking to implement semantic media compression technology within current legal constraints. Rather than waiting for legal clarity, companies can take concrete steps today to minimize risks while maximizing the benefits of this transformative technology.

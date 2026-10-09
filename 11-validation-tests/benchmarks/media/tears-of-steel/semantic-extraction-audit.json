@@ -1,0 +1,48 @@
+{
+  "reviewer": "Agent visual review; not independent human adjudication",
+  "scope": "Selected extracted assertions checked against sampled source frames; not an exhaustive assertion-level score. Frozen QA and model outputs are unchanged.",
+  "findings": [
+    {
+      "fact_index": 0,
+      "kind": "temporal_overstatement",
+      "evidence_seconds": [
+        0,
+        6,
+        14,
+        24
+      ],
+      "finding": "Lying down is assigned 0\u201329 seconds although the man sits up early in the clip."
+    },
+    {
+      "fact_index": 7,
+      "kind": "temporal_overstatement",
+      "evidence_seconds": [
+        16,
+        24,
+        25
+      ],
+      "finding": "Rope holding is assigned 16\u201329 seconds; clear foreground grasp is visible at 24\u201325 seconds, so the interval overstates direct support."
+    },
+    {
+      "fact_index": 8,
+      "kind": "temporal_overstatement",
+      "evidence_seconds": [
+        21,
+        26,
+        29
+      ],
+      "finding": "Drinking is assigned 21\u201329 seconds; the carton is clearly visible only in the later close-up from 26 seconds."
+    },
+    {
+      "fact_index": 10,
+      "kind": "unsupported_inference",
+      "evidence_seconds": [
+        0,
+        15,
+        29
+      ],
+      "finding": "The boat/ship interpretation is not established by the supplied frames. Visible posts, balusters and ropes do not justify identifying a vessel."
+    }
+  ],
+  "conclusion": "High question accuracy does not establish complete factual or temporal fidelity of the extracted JSON."
+}

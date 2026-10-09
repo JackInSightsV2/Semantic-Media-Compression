@@ -4,7 +4,7 @@ import platform
 import subprocess
 from pathlib import Path
 
-VERSION = '0.2.2'
+VERSION = '0.5.0'
 
 
 def provenance():

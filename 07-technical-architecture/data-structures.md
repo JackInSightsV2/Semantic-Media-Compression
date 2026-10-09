@@ -1,5 +1,8 @@
 # Data Structures and Information Architecture
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The semantic blueprint format represents a fundamental reimagining of how media information is organized and stored. Rather than preserving raw audiovisual data, these structures capture the conceptual relationships, narrative elements, and regenerative instructions that enable AI systems to reconstruct meaningful content.

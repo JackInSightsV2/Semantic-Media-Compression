@@ -1,0 +1,4 @@
+{
+  "status": "reader_limited",
+  "reason": "Timestamp-specific v2: no-context control correctly has 0/15 visual answers, but the source-frame reader scores only 6/15 and full JSON 5/15. These results expose reader/timing limitations and do not demonstrate faithful scene preservation."
+}

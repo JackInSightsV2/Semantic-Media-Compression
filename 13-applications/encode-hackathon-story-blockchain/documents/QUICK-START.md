@@ -1,3 +1,5 @@
+> **Archived instructions — security refresh, 8 October 2026.** Browser signing and IPFS uploads are disabled. The historical steps below are not a working setup guide; they require a future authenticated server implementation or user-wallet signing. Secret names shown without a public prefix are server-only design placeholders, not implemented configuration. Do not add private keys or Pinata credentials to browser configuration. The collection CLI also fails closed through the disabled shared client. Any successful-looking registration in the demo is simulated and is not a blockchain receipt.
+
 # Quick Start Guide - Story Protocol Integration
 
 ## ⚡ Get Running in 5 Minutes
@@ -7,7 +9,7 @@ Your `.env` file should have these variables:
 
 ```bash
 # Wallet
-NEXT_PUBLIC_WALLET_PRIVATE_KEY=0x...
+WALLET_PRIVATE_KEY=0x...
 NEXT_PUBLIC_WALLET_ADDRESS=0x...
 
 # Story Protocol
@@ -18,7 +20,7 @@ NEXT_PUBLIC_NFT_CONTRACT_ADDRESS=0x...  # ← Get this from Story Protocol docs
 # Pinata IPFS
 NEXT_PUBLIC_PINATA_API_KEY=...
 NEXT_PUBLIC_PINATA_SECRET_KEY=...
-NEXT_PUBLIC_PINATA_JWT=...
+PINATA_JWT=...
 ```
 
 ### Step 2: Install & Run
@@ -185,7 +187,7 @@ console.log({
   wallet: process.env.NEXT_PUBLIC_WALLET_ADDRESS,
   rpc: process.env.NEXT_PUBLIC_STORY_RPC_URL,
   nft: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
-  pinata: !!process.env.NEXT_PUBLIC_PINATA_JWT
+  pinata: !!process.env.PINATA_JWT
 });
 ```
 

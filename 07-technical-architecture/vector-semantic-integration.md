@@ -1,5 +1,8 @@
 # Vector-Based Semantic Compression Architecture
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Vector embeddings provide the mathematical foundation for semantic media compression, enabling precise semantic relationships, cultural adaptations, and consistency validation while maintaining the core principle of self-contained, portable semantic blueprints. Unlike traditional vector databases, all vector data is embedded directly within semantic blueprint files for complete portability and offline regeneration capabilities.

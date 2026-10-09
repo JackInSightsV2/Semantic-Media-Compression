@@ -1,0 +1,318 @@
+{
+  "id": "tos-4k-visual-qa-v1",
+  "annotation_status": "Agent-authored from 30 actual source frames before model extraction; not independently adjudicated; development fixture. No model outputs used to choose or revise questions.",
+  "frame_sampling": "Exact frame indices 0,24,...696; 0..29 clip-relative seconds; original 3840x1714 PNG; no audio.",
+  "predeclared_validity": {
+    "minimum_source_answerable_accuracy": 0.8,
+    "maximum_no_context_answerable_accuracy": 0.25,
+    "purpose": "Flag reader-limited or prior-knowledge/leaky controls; not statistical validation."
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "prompt": "What colour is the older foreground man's hair?",
+      "options": {
+        "a": "Grey/white",
+        "b": "Dark brown",
+        "c": "Red",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        14
+      ]
+    },
+    {
+      "id": "q02",
+      "prompt": "What pattern is visible on the older man's outer clothing?",
+      "options": {
+        "a": "Plain solid colour",
+        "b": "Checks/plaid",
+        "c": "Horizontal stripes",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        6,
+        14
+      ]
+    },
+    {
+      "id": "q03",
+      "prompt": "What is the older man doing at the beginning of the supplied sequence?",
+      "options": {
+        "a": "Standing at a door",
+        "b": "Walking upstairs",
+        "c": "Reclining on bedding",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "q04",
+      "prompt": "What change in posture does the older man make early in the sequence?",
+      "options": {
+        "a": "He sits up from reclining",
+        "b": "He lies down from standing",
+        "c": "He remains motionless",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        7
+      ]
+    },
+    {
+      "id": "q05",
+      "prompt": "Where does the older man bring his hand around seconds 8\u201310?",
+      "options": {
+        "a": "His forehead",
+        "b": "His shoulder/upper arm",
+        "c": "His knee",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": "q06",
+      "prompt": "What does the older man grip near seconds 24\u201325?",
+      "options": {
+        "a": "A railing knob",
+        "b": "A bottle",
+        "c": "A hanging rope",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        24,
+        25
+      ]
+    },
+    {
+      "id": "q07",
+      "prompt": "What prominent vertical structures divide the interior?",
+      "options": {
+        "a": "Wooden posts and turned railing spindles",
+        "b": "Metal mesh partitions",
+        "c": "Glass cubicle walls",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        15,
+        23
+      ]
+    },
+    {
+      "id": "q08",
+      "prompt": "Where is the younger man positioned in the early shots relative to the older man?",
+      "options": {
+        "a": "In front on the left",
+        "b": "Behind him on the right",
+        "c": "Directly above him",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        14
+      ]
+    },
+    {
+      "id": "q09",
+      "prompt": "What object is the younger man handling in the close-up around seconds 20\u201323?",
+      "options": {
+        "a": "A telescope on its own",
+        "b": "A camera",
+        "c": "A rifle with a scope",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        20,
+        23
+      ]
+    },
+    {
+      "id": "q10",
+      "prompt": "What supports the front of that long object?",
+      "options": {
+        "a": "Two slim support legs",
+        "b": "A broad wooden box",
+        "c": "A single thick pedestal",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        20,
+        23
+      ]
+    },
+    {
+      "id": "q11",
+      "prompt": "What is the main colour of the younger man's outer clothing?",
+      "options": {
+        "a": "Tan/brown",
+        "b": "Blue",
+        "c": "Bright red",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        20,
+        29
+      ]
+    },
+    {
+      "id": "q12",
+      "prompt": "What type of container does the younger man hold near the end?",
+      "options": {
+        "a": "A metal mug",
+        "b": "A clear bottle",
+        "c": "A rectangular drink carton",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        26,
+        29
+      ]
+    },
+    {
+      "id": "q13",
+      "prompt": "Which colours are prominent on the final drink container?",
+      "options": {
+        "a": "Yellow/orange and white",
+        "b": "Blue and silver",
+        "c": "Black and red",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        26,
+        29
+      ]
+    },
+    {
+      "id": "q14",
+      "prompt": "What protrudes from the top of the final drink container?",
+      "options": {
+        "a": "A spoon",
+        "b": "A pale bent straw",
+        "c": "A long dark tube",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        26,
+        29
+      ]
+    },
+    {
+      "id": "q15",
+      "prompt": "What small light sources appear beside the bedding?",
+      "options": {
+        "a": "Electric desk lamps",
+        "b": "A string of coloured bulbs",
+        "c": "Lit candles",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        0,
+        14
+      ]
+    },
+    {
+      "id": "q16",
+      "prompt": "Which appears first: the wider room view or the younger man's rifle close-up?",
+      "options": {
+        "a": "The wider room view",
+        "b": "The rifle close-up",
+        "c": "They appear simultaneously",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        15,
+        23
+      ]
+    },
+    {
+      "id": "q17",
+      "prompt": "Where does the visible sequence take place?",
+      "options": {
+        "a": "An open street",
+        "b": "An interior beside large windows/railings",
+        "c": "A forest clearing",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "q18",
+      "prompt": "What does the younger man do with the container at the end?",
+      "options": {
+        "a": "Pours it onto the floor",
+        "b": "Places it on his head",
+        "c": "Brings the straw/container toward his mouth",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        26,
+        29
+      ]
+    },
+    {
+      "id": "q19",
+      "prompt": "What is the older man's personal name according only to the supplied visual evidence?",
+      "options": {
+        "a": "Alex",
+        "b": "Ben",
+        "c": "Chris",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "q20",
+      "prompt": "What exact words are spoken according to these silent frames?",
+      "options": {
+        "a": "Come here",
+        "b": "Stay there",
+        "c": "Go away",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "q21",
+      "prompt": "On what exact calendar date do the depicted events occur?",
+      "options": {
+        "a": "1 January",
+        "b": "5 May",
+        "c": "8 October",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    }
+  ]
+}

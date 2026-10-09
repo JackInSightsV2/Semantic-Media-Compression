@@ -1,5 +1,8 @@
 # Distribution and Archival Revolution
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 ## ⚠️ Critical Reality Check
 
 **→ Executive Summary: [Distribution Efficiency Potential](./distribution-efficiency-potential.md)** - Read this first for honest assessment

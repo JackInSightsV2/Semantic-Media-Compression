@@ -1,0 +1,22 @@
+{
+  "id": "big-buck-bunny-flowers-4k-30s-v1",
+  "title": "Big Buck Bunny: flowers and butterfly \u2014 4K",
+  "source_url": "https://download.blender.org/demo/movies/BBB/bbb_sunflower_2160p_30fps_normal.mp4.zip",
+  "source_member": "bbb_sunflower_2160p_30fps_normal.mp4",
+  "source_sha256": "37f0ff251a606c2dcfa26c19fe6bf843234b4e7a8889cfab50bc26f644e55520",
+  "license": "CC-BY-3.0",
+  "license_url": "https://peach.blender.org/about/",
+  "attribution": "(c) copyright 2008, Blender Foundation / www.bigbuckbunny.org",
+  "start_seconds": 55,
+  "duration_seconds": 30,
+  "fps": 30,
+  "width": 3840,
+  "height": 2160,
+  "pixel_format": "yuv420p",
+  "filter": "fps=30,format=yuv420p",
+  "track": "video-only; audio excluded from every size and quality result",
+  "reference": "Decoded official Sunflower 3840x2160 distribution copy, with no spatial resizing. Preserve 30 fps. Lossy H.264 source, not original render frames.",
+  "selection": "Corresponding flowers and butterfly sequence, visually checked at 55\u201385 seconds. Different official edition and frame rate from the historical 360p fixture; not a controlled resolution-only comparison.",
+  "contamination": "Public well-known film; recognisability and possible model familiarity make this a development fixture, not a held-out generalisation test.",
+  "reference_sha256": "4a1163e1fff8db607814c77d4308b8538c89cb857937b8552bca552320a9ca80"
+}

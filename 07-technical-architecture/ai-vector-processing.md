@@ -1,5 +1,8 @@
 # AI Vector Processing: Reading, Writing, and Optimization
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 This document explores how AI systems interact with vector-enhanced semantic blueprints, covering the technical processes for reading vector data, performing semantic operations, and writing optimized vector representations. The focus is on practical implementation strategies that maintain the portability and efficiency advantages of embedded vector architectures.

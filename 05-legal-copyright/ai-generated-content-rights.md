@@ -1,5 +1,8 @@
 # AI-Generated Content Rights and Ownership
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The regeneration of content from semantic blueprints creates novel questions about authorship, ownership, and rights in AI-generated works. These questions become particularly complex when AI systems make creative decisions during regeneration that weren't explicitly encoded in the original blueprint.

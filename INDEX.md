@@ -116,7 +116,7 @@
 - `personal-therapeutic-applications.md` - Personal and therapeutic uses
 
 ## Initial Development Files
-**Folder**: [Initial/](./Initial/)
+**Folder**: Initial/ (planned document; absent from this checkout)
 - `ChatGPT Conversaion.md` - Original conversation that sparked this project
 - `Notes.md` - Development notes and ideas
 

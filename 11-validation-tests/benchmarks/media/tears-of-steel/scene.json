@@ -1,0 +1,22 @@
+{
+  "id": "tears-of-steel-interior-4k-30s-v1",
+  "title": "Tears of Steel: interior conversation \u2014 native 4K widescreen",
+  "source_url": "https://download.blender.org/demo/movies/ToS/tearsofsteel_4k.mov.zip",
+  "source_member": "tearsofsteel_4k.mov",
+  "source_sha256": "89b7fd21c7729b7d5071af993939997f847b5af06613a3388ba158dae9e52ab3",
+  "license": "CC-BY-3.0",
+  "license_url": "https://media.xiph.org/tearsofsteel/README.txt",
+  "attribution": "(CC) Blender Foundation | mango.blender.org",
+  "start_seconds": 120,
+  "duration_seconds": 30,
+  "fps": 24,
+  "width": 3840,
+  "height": 1714,
+  "pixel_format": "yuv420p",
+  "filter": "fps=24,format=yuv420p",
+  "track": "video-only; audio excluded from every size and quality result",
+  "reference": "Official 3840x1714 cinematic 4K distribution source, native 24 fps. No spatial resizing, cropping or padding. Lossy distribution source, not a lossless camera master.",
+  "selection": "02:00\u201302:30 interior conversation with real actors, fabric and room detail, viewpoint changes and a scoped rifle. Contact sheet visually inspected before encoding; film uses visual effects.",
+  "contamination": "Public film; development fixture, not a held-out generalisation benchmark. Different aspect ratio and frame rate from Big Buck Bunny; no matched-content codec difficulty claim.",
+  "reference_sha256": "a9ae055fb2ebf9309a361f3d628feffff6f2858e07c4cce12d5e9322e90d70b1"
+}

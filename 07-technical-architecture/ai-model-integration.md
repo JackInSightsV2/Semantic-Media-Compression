@@ -1,5 +1,8 @@
 # AI Model Integration and Regeneration Systems
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 For the October 2026 understanding and decision-model direction, see [JEV, Gemma 4, Gemini and the evaluation harness](decision-models-and-evaluation.md). The discussion below concerns generation and reconstruction, which are evaluated separately.
 
 ## Overview

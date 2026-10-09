@@ -1,5 +1,8 @@
 # Consent and Privacy Frameworks
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## The Unique Privacy Landscape of Semantic Media
 
 Semantic media compression creates unprecedented privacy challenges by transforming personal experiences, memories, and cultural expressions into manipulable data structures. Unlike traditional privacy concerns focused on data collection and storage, semantic compression raises questions about the very nature of personal identity and experience ownership.

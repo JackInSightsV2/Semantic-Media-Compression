@@ -1,5 +1,8 @@
 # Ethical Framework for Semantic Media Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 <!--
 Copyright 2024-2025 Stephen Henry JackInSightsV2
 
@@ -105,16 +108,16 @@ Addresses fundamental privacy concerns when compressing and regenerating persona
 **Immediate Follow-up**: The ethical principles established here directly inform:
 - **[Legal Compliance Framework](../05-legal-copyright/legal-framework-analysis.md)**: How ethical requirements translate into legal compliance strategies
 - **[Technical System Design](../07-technical-architecture/technical-system-overview.md)**: How ethical safeguards must be built into technical architecture
-- **[Implementation Standards](../08-implementation-standards/standards-development-overview.md)**: How ethical principles become enforceable technical standards
+- **Implementation Standards (planned document; absent from this checkout)**: How ethical principles become enforceable technical standards
 
 **Business Integration**: 
 - Ethical constraints shape viable [commercial opportunities](../06-business-applications/commercial-opportunities-overview.md)
-- Responsible development practices inform [competitive positioning](../10-competitive-analysis/market-landscape-overview.md)
+- Responsible development practices inform competitive positioning (planned document; absent from this checkout)
 
 **Long-term Considerations**:
-- Ethical frameworks must evolve with [future scenarios](../11-scenario-planning/future-scenarios-framework.md)
-- Moral principles guide [long-term strategic planning](../12-future-implications/long-term-impact-analysis.md)
+- Ethical frameworks must evolve with future scenarios (planned document; absent from this checkout)
+- Moral principles guide [long-term strategic planning](../08-future-implications/long-term-impact-analysis.md)
 
 **Related Analysis**:
 - Cultural sensitivity requirements from [Cultural Analysis](../03-cultural-social-impact/cultural-transformation-analysis.md) inform ethical implementation
-- Community engagement frameworks connect to [Indigenous](../03-cultural-social-impact/indigenous-perspectives-framework.md) and [Global South](../03-cultural-social-impact/global-south-perspectives-framework.md) perspectives
+- Community engagement frameworks connect to Indigenous (planned document; absent from this checkout) and Global South (planned document; absent from this checkout) perspectives

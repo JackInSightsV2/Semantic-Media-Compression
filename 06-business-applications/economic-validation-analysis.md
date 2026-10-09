@@ -1,5 +1,8 @@
 # Economic Validation: When Does Semantic Compression Make Sense?
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 > **Theoretical Analysis**: This document explores economic principles and scenarios to understand when semantic compression might be theoretically viable. Numbers and projections are illustrative thought experiments, not validated market research or financial forecasts.
 
 ## Executive Summary: The Critical Economic Question

@@ -1,5 +1,8 @@
 # Education and Training Applications
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression has the potential to revolutionize education by enabling personalized, adaptive, and culturally responsive learning experiences while dramatically reducing the costs and barriers associated with high-quality educational content creation and distribution.

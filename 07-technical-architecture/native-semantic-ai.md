@@ -1,5 +1,8 @@
 # Native Semantic AI Architecture
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The breakthrough innovation in semantic media compression isn't just using vectors - it's building AI models that natively understand and operate on semantic meaning as a core architectural feature. Instead of treating semantic vectors as external data structures, these AI systems have semantic understanding built into their fundamental processing, making cultural adaptation, consistency validation, and cross-media transformation natural mathematical operations rather than complex post-processing steps.

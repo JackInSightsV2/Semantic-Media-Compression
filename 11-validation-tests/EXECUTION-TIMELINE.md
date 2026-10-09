@@ -1,5 +1,8 @@
 # Solo Developer Testing Timeline
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../AUDIT.md).
+
 ## Overview
 3-day realistic testing program for solo developer with £100 budget + RTX 5090
 

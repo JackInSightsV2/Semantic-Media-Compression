@@ -1,5 +1,8 @@
 # Legacy Employee Management System
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 This is a realistic legacy Java EE 6 application that has accumulated significant technical debt over 8+ years of development. It demonstrates common patterns and problems found in enterprise legacy systems.
 
 ## System Overview

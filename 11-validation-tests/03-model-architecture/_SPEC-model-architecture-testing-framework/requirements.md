@@ -1,5 +1,8 @@
 # Requirements Document
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 ## Introduction
 
 This specification defines the requirements for building a comprehensive testing framework for the 03-model-architecture folder within the semantic media compression testing suite. The framework will implement automated testing capabilities for semantic compression model architectures, training approaches, and performance validation. This includes creating the missing test files, implementing the testing infrastructure, and providing automated execution capabilities for model architecture validation.

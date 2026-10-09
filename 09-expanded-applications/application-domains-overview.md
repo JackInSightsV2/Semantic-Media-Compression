@@ -1,5 +1,8 @@
 # Applications: The Full Scope of Semantic Compression
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## ⚠️ Critical Reframing: Non-Media Applications Are the PRIMARY Near-Term Opportunity
 
 **Traditional View**: Semantic compression is for entertainment media, with some "expanded applications" to other domains
@@ -31,16 +34,16 @@
 
 ## Overview
 
-Semantic compression can be applied to any domain where **meaning/intent** can be separated from **specific expression**. Building on the [theoretical foundation](../01-theoretical-validation/theoretical-foundation-overview.md), [technical architecture](../07-technical-architecture/technical-system-overview.md), [business applications](../06-business-applications/commercial-opportunities-overview.md), and [long-term implications](../12-future-implications/long-term-impact-analysis.md), this section explores the full scope across creative arts, scientific communication, business documentation, and personal applications.
+Semantic compression can be applied to any domain where **meaning/intent** can be separated from **specific expression**. Building on the [theoretical foundation](../01-theoretical-validation/theoretical-foundation-overview.md), [technical architecture](../07-technical-architecture/technical-system-overview.md), [business applications](../06-business-applications/commercial-opportunities-overview.md), and [long-term implications](../08-future-implications/long-term-impact-analysis.md), this section explores the full scope across creative arts, scientific communication, business documentation, and personal applications.
 
 **Comprehensive Foundation**: Expanded applications build on:
 - Core principles from [theoretical validation](../01-theoretical-validation/theoretical-foundation-overview.md)
 - Cultural sensitivity from [social impact analysis](../03-cultural-social-impact/cultural-transformation-analysis.md)
 - Ethical frameworks from [ethical considerations](../04-ethical-considerations/ethical-framework-overview.md)
 - Technical feasibility from [architecture analysis](../07-technical-architecture/technical-system-overview.md)
-- Implementation experience from [case studies](../09-case-studies-examples/case-study-methodology.md)
+- Implementation experience from case studies (planned document; absent from this checkout)
 
-**Vision Integration**: Applications demonstrate the potential identified in [long-term impact analysis](../12-future-implications/long-term-impact-analysis.md).
+**Vision Integration**: Applications demonstrate the potential identified in [long-term impact analysis](../08-future-implications/long-term-impact-analysis.md).
 
 ## Core Principle Extension
 
@@ -48,7 +51,7 @@ The key insight driving these expanded applications is that semantic compression
 
 ## Creative Arts Applications
 
-### [Music and Audio Arts](./music-audio-applications.md)
+### Music and Audio Arts (planned document; absent from this checkout)
 
 Exploring how semantic compression could transform musical composition, performance, and cultural exchange:
 
@@ -57,7 +60,7 @@ Exploring how semantic compression could transform musical composition, performa
 - **Cultural Musical Adaptation**: Western classical pieces with traditional instruments from other cultures
 - **Collaborative Composition**: Multiple artists contributing semantic elements to shared musical works
 
-### [Literature and Written Arts](./literature-applications.md)
+### Literature and Written Arts (planned document; absent from this checkout)
 
 Analyzing semantic compression applications for written creative expression:
 
@@ -66,7 +69,7 @@ Analyzing semantic compression applications for written creative expression:
 - **Poetry Semantic Preservation**: Capturing meter, imagery, and emotional resonance for regeneration across languages
 - **Interactive Storytelling**: Reader-influenced regeneration of narrative elements
 
-### [Visual and Spatial Arts](./visual-arts-applications.md)
+### Visual and Spatial Arts (planned document; absent from this checkout)
 
 Examining how semantic compression could transform visual creative expression:
 
@@ -77,7 +80,7 @@ Examining how semantic compression could transform visual creative expression:
 
 ## Knowledge and Communication Applications
 
-### [Scientific Knowledge Transfer](./scientific-applications.md)
+### Scientific Knowledge Transfer (planned document; absent from this checkout)
 
 Exploring semantic compression for scientific communication and education:
 
@@ -86,7 +89,7 @@ Exploring semantic compression for scientific communication and education:
 - **Cross-Disciplinary Translation**: Physics concepts regenerated for biology researchers with appropriate analogies
 - **Educational Accessibility**: Complex scientific knowledge made accessible across different learning styles and cultural contexts
 
-### [Historical Documentation and Preservation](./historical-applications.md)
+### Historical Documentation and Preservation (planned document; absent from this checkout)
 
 Analyzing semantic compression for historical knowledge preservation and interpretation:
 
@@ -95,7 +98,7 @@ Analyzing semantic compression for historical knowledge preservation and interpr
 - **Archaeological Integration**: Ancient civilizations regenerated with new archaeological discoveries integrated
 - **Cultural Heritage Preservation**: Traditional knowledge compressed and regenerated for contemporary understanding
 
-### [Business and Professional Communication](./business-applications.md)
+### Business and Professional Communication (planned document; absent from this checkout)
 
 Examining semantic compression applications in professional contexts:
 
@@ -106,7 +109,7 @@ Examining semantic compression applications in professional contexts:
 
 ## Personal and Therapeutic Applications
 
-### [Personal Memory and Experience Preservation](./personal-memory-applications.md)
+### Personal Memory and Experience Preservation (planned document; absent from this checkout)
 
 Exploring semantic compression for individual life documentation:
 
@@ -115,7 +118,7 @@ Exploring semantic compression for individual life documentation:
 - **Intergenerational Knowledge Transfer**: Family wisdom and experiences preserved semantically for future generations
 - **Personal Growth Documentation**: Life lessons and insights compressed and regenerated for different life stages
 
-### [Therapeutic and Medical Applications](./therapeutic-applications.md)
+### Therapeutic and Medical Applications (planned document; absent from this checkout)
 
 Analyzing semantic compression applications in healthcare and therapy:
 
@@ -126,7 +129,7 @@ Analyzing semantic compression applications in healthcare and therapy:
 
 ## Specialized and Emerging Applications
 
-### [Legal and Governance Applications](./legal-governance-applications.md)
+### Legal and Governance Applications (planned document; absent from this checkout)
 
 Examining semantic compression in legal and governmental contexts:
 
@@ -135,7 +138,7 @@ Examining semantic compression in legal and governmental contexts:
 - **Cross-Jurisdictional Adaptation**: International law adapted for different legal systems and cultural contexts
 - **Policy Impact Communication**: Government policies regenerated for different stakeholder groups
 
-### [Research and Academic Applications](./research-academic-applications.md)
+### Research and Academic Applications (planned document; absent from this checkout)
 
 Exploring semantic compression for academic and research purposes:
 
@@ -284,11 +287,11 @@ This expanded view of semantic compression applications shows that the technolog
 - **[Legal Compliance](../05-legal-copyright/legal-framework-analysis.md)**: Legal frameworks applicable across application domains
 - **[Business Viability](../06-business-applications/commercial-opportunities-overview.md)**: Commercial models validated through expanded applications
 - **[Technical Architecture](../07-technical-architecture/technical-system-overview.md)**: System design proven scalable across domains
-- **[Implementation Standards](../08-implementation-standards/standards-development-overview.md)**: Standards validated across diverse applications
-- **[Case Study Methodology](../09-case-studies-examples/case-study-methodology.md)**: Validation approaches proven across domains
-- **[Competitive Analysis](../10-competitive-analysis/market-landscape-overview.md)**: Market intelligence applicable to expanded domains
-- **[Scenario Planning](../11-scenario-planning/future-scenarios-framework.md)**: Strategic scenarios validated across applications
-- **[Future Implications](../12-future-implications/long-term-impact-analysis.md)**: Long-term vision realized through expanded applications
+- **Implementation Standards (planned document; absent from this checkout)**: Standards validated across diverse applications
+- **Case Study Methodology (planned document; absent from this checkout)**: Validation approaches proven across domains
+- **Competitive Analysis (planned document; absent from this checkout)**: Market intelligence applicable to expanded domains
+- **Scenario Planning (planned document; absent from this checkout)**: Strategic scenarios validated across applications
+- **[Future Implications](../08-future-implications/long-term-impact-analysis.md)**: Long-term vision realized through expanded applications
 
 **Broad Application Potential**: The scope of applications demonstrates that semantic media compression represents a significant change in human communication, creativity, and knowledge preservation that could affect many aspects of how we create, share, and experience meaning.
 

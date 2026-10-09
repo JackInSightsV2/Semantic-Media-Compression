@@ -1,5 +1,8 @@
 # File Format and Data Structure Design
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression requires sophisticated file formats and data structures to represent complex media content effectively while enabling efficient processing and regeneration. This analysis explores the theoretical requirements for semantic blueprint formats.

@@ -19,115 +19,26 @@
 
 import axios from 'axios';
 
-const PINATA_API_URL = 'https://api.pinata.cloud';
+// Never ship a Pinata token in the browser bundle. No write backend exists yet.
+const WRITE_DISABLED = 'IPFS uploads are disabled: an authenticated server-side credentials integration is required. Nothing was uploaded.';
 
-export async function uploadToIPFS(data: any) {
- try {
-   const jsonString = JSON.stringify(data, null, 2);
-   const blob = new Blob([jsonString], { type: 'application/json' });
-  
-   const formData = new FormData();
-   formData.append('file', blob, 'semantic-data.json');
-  
-  const metadata = JSON.stringify({
-    name: `Semantic Fingerprint - ${data.document_metadata?.title || data.metadata?.title || 'Untitled'}`,
-    keyvalues: {
-      content_id: data.content_id,
-      type: 'semantic_fingerprint',
-      // Contract Information
-      license_type: data.contract_information?.license_type || 'CC-BY-SA-4.0',
-      commercial_use: data.contract_information?.commercial_use?.toString() || 'false',
-      derivative_works: data.contract_information?.derivative_works?.toString() || 'true',
-      attribution_required: data.contract_information?.attribution_required?.toString() || 'true',
-      compression_format: 'semantic_json_v1',
-      story_protocol: 'true',
-      blockchain: 'story_testnet',
-    },
-  });
-  formData.append('pinataMetadata', metadata);
-  
-   const response = await axios.post(
-     `${PINATA_API_URL}/pinning/pinFileToIPFS`,
-     formData,
-     {
-       headers: {
-         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
-         'Content-Type': 'multipart/form-data',
-       },
-     }
-   );
-  
-   return response.data.IpfsHash; // Returns CID like "QmX..."
- } catch (error) {
-   console.error('IPFS upload failed:', error);
-   throw error;
- }
+export async function uploadToIPFS(_data: any): Promise<string> {
+  throw new Error(WRITE_DISABLED);
 }
 
+export async function uploadJSONToIPFS(_json: any, _name: string = 'metadata.json'): Promise<string> {
+  throw new Error(WRITE_DISABLED);
+}
+
+export async function uploadImageBufferToIPFS(
+  _buffer: Uint8Array | ArrayBuffer,
+  _name: string = 'image.png'
+): Promise<string> {
+  throw new Error(WRITE_DISABLED);
+}
+
+// Public read-only gateway access remains available.
 export async function fetchFromIPFS(ipfsHash: string) {
- try {
-   // Use Pinata gateway or public IPFS gateway
-   const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
-   return response.data;
- } catch (error) {
-   console.error('IPFS fetch failed:', error);
-   throw error;
- }
+  const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+  return response.data;
 }
-
-
-// Upload a JSON object to IPFS via Pinata's pinJSONToIPFS
-export async function uploadJSONToIPFS(json: any, name: string = 'metadata.json') {
- try {
- 	const body = {
- 		pinataContent: json,
- 		pinataMetadata: {
- 			name,
- 		},
- 	};
-
- 	const response = await axios.post(
- 		`${PINATA_API_URL}/pinning/pinJSONToIPFS`,
- 		body,
- 		{
- 			headers: {
- 				'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
- 				'Content-Type': 'application/json',
- 			},
- 		}
- 	);
-
- 	return response.data.IpfsHash as string;
- } catch (error) {
- 	console.error('IPFS JSON upload failed:', error);
- 	throw error;
- }
-}
-
-// Upload a PNG image buffer (e.g., generated QR) to IPFS via Pinata
-export async function uploadImageBufferToIPFS(buffer: Uint8Array | ArrayBuffer, name: string = 'image.png') {
- try {
- 	const blob = new Blob([buffer as ArrayBuffer], { type: 'image/png' });
-
- 	const formData = new FormData();
- 	formData.append('file', blob, name);
-
- 	const response = await axios.post(
- 		`${PINATA_API_URL}/pinning/pinFileToIPFS`,
- 		formData,
- 		{
- 			headers: {
- 				'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
- 				'Content-Type': 'multipart/form-data',
- 			},
- 		}
- 	);
-
- 	return response.data.IpfsHash as string;
- } catch (error) {
- 	console.error('IPFS image upload failed:', error);
- 	throw error;
- }
-}
-
-

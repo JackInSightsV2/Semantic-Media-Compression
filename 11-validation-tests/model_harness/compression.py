@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import gzip
 import json
 import math
 import os
@@ -12,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .core import digest, number
+from .lossless import measure
 from .providers import Jev, OpenAI, ProviderError, Transport, load_env, object_schema
 from .version import provenance
 
@@ -104,11 +104,12 @@ def pack_facts(facts, byte_budget):
 
 
 def measure_payload(source, payload):
-    raw, packed = source.encode(), payload.encode()
-    return {'source_bytes': len(raw), 'blueprint_bytes': len(packed),
-            'byte_reduction': 1 - len(packed) / len(raw),
-            'source_gzip_bytes': len(gzip.compress(raw, mtime=0)),
-            'blueprint_gzip_bytes': len(gzip.compress(packed, mtime=0))}
+    raw, packed = measure(source.encode()), measure(payload.encode())
+    return {'source_bytes': raw['raw'], 'blueprint_bytes': packed['raw'],
+            'byte_reduction': 1 - packed['raw'] / raw['raw'],
+            'source_gzip_bytes': raw['gzip9'], 'blueprint_gzip_bytes': packed['gzip9'],
+            'source_lossless_bytes': raw, 'blueprint_lossless_bytes': packed}
+
 
 
 def summarize(rows):

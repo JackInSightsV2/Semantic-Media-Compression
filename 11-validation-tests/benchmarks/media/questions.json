@@ -1,0 +1,268 @@
+{
+  "id": "bbb-30s-visual-qa-v1",
+  "annotation_status": "Agent-authored from the 30 sampled frames before API extraction; not independently adjudicated; development fixture, not held-out test.",
+  "frame_sampling": "Exact decoded frame indices 0,24,...696; clip-relative seconds 0..29; PNG,640x360; no audio.",
+  "questions": [
+    {
+      "id": "subject",
+      "prompt": "What is the main animal?",
+      "options": {
+        "a": "Rabbit",
+        "b": "Dog",
+        "c": "Bear",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "fur",
+      "prompt": "What colour is its fur?",
+      "options": {
+        "a": "Black",
+        "b": "Pale grey/white",
+        "c": "Bright red",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "setting",
+      "prompt": "What setting is visible?",
+      "options": {
+        "a": "Indoor kitchen",
+        "b": "Snowy city",
+        "c": "Sunny grassy woodland/meadow",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "opening",
+      "prompt": "What is behind the rabbit near the beginning?",
+      "options": {
+        "a": "A dark opening under roots/rocks",
+        "b": "A car",
+        "c": "A swimming pool",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        6
+      ]
+    },
+    {
+      "id": "stretch",
+      "prompt": "What does the rabbit do with its arms near the beginning?",
+      "options": {
+        "a": "Claps repeatedly",
+        "b": "Stretches them outward/upward",
+        "c": "Holds a book",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "roof",
+      "prompt": "What man-made feature appears in the early background?",
+      "options": {
+        "a": "Traffic lights",
+        "b": "Skyscrapers",
+        "c": "A low roof/building",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        0,
+        6
+      ]
+    },
+    {
+      "id": "camera_order",
+      "prompt": "Which shot comes first: low-angle sky view or flower close-up?",
+      "options": {
+        "a": "Flower close-up",
+        "b": "Low-angle sky view",
+        "c": "They are the same shot",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        7,
+        18
+      ]
+    },
+    {
+      "id": "flowers",
+      "prompt": "What colours are the prominent foreground flowers?",
+      "options": {
+        "a": "White petals with yellow centres",
+        "b": "All black",
+        "c": "Red petals with blue centres",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        14,
+        19
+      ]
+    },
+    {
+      "id": "lean",
+      "prompt": "How does the rabbit interact with the flower cluster?",
+      "options": {
+        "a": "Burns it",
+        "b": "Pulls it up",
+        "c": "Brings its face close to it",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        17,
+        19
+      ]
+    },
+    {
+      "id": "rear",
+      "prompt": "What part is visible in the rear view around 20 seconds?",
+      "options": {
+        "a": "Long striped tail",
+        "b": "Small round pale tail",
+        "c": "Metal backpack",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        20,
+        21
+      ]
+    },
+    {
+      "id": "high_view",
+      "prompt": "Does the view around 22\u201323 seconds look down through branches/leaves?",
+      "options": {
+        "a": "Yes",
+        "b": "No, it is underwater",
+        "c": "No, it shows an indoor ceiling",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        22,
+        23
+      ]
+    },
+    {
+      "id": "butterfly",
+      "prompt": "What colour is the butterfly near the end?",
+      "options": {
+        "a": "Black and yellow",
+        "b": "Green",
+        "c": "Pink/purple",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        26,
+        29
+      ]
+    },
+    {
+      "id": "butterfly_time",
+      "prompt": "When is the conspicuous butterfly visible?",
+      "options": {
+        "a": "Only at the start",
+        "b": "Near the end",
+        "c": "Throughout all sampled frames",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "overhead",
+      "prompt": "What ground feature is visible in the final overhead view?",
+      "options": {
+        "a": "A tiled floor",
+        "b": "A road crossing",
+        "c": "Grass and small purple flowers",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        26,
+        29
+      ]
+    },
+    {
+      "id": "near_head",
+      "prompt": "Where does the butterfly pass in the final overhead frames?",
+      "options": {
+        "a": "Near/above the rabbit's head",
+        "b": "Inside a car",
+        "c": "Across an ocean",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        27,
+        29
+      ]
+    },
+    {
+      "id": "name",
+      "prompt": "What is the rabbit's personal name according only to these frames?",
+      "options": {
+        "a": "Buck",
+        "b": "Sam",
+        "c": "Max",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "audio",
+      "prompt": "Which musical instrument is heard?",
+      "options": {
+        "a": "Piano",
+        "b": "Violin",
+        "c": "Trumpet",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "date",
+      "prompt": "On what calendar date do these depicted events occur?",
+      "options": {
+        "a": "1 January",
+        "b": "5 May",
+        "c": "8 October",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    }
+  ]
+}

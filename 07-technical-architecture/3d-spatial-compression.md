@@ -1,5 +1,8 @@
 # 3D Spatial Compression and Gaussian Splatting Integration
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression extends beyond traditional 2D video and audio to include 3D spatial content. By integrating with technologies like Gaussian Splatting, we can compress entire 3D scenes, environments, and spatial experiences into semantic descriptions that preserve spatial relationships, cultural context, and functional meaning while achieving massive compression ratios.

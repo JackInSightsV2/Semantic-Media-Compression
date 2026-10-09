@@ -1,5 +1,8 @@
 # The Aesthetics of Consistency: Beauty in Non-Determinism
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression fundamentally transforms the nature of aesthetic experience by making media fluid, adaptive, and non-deterministic. When every regeneration produces subtle variations, traditional concepts of aesthetic consistency, artistic perfection, and beauty must be reconsidered. This analysis examines how aesthetic philosophy adapts to media that exists as potential rather than fixed form.

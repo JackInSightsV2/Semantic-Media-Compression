@@ -1,5 +1,8 @@
 # Actionable Risk Mitigation Strategies
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 This document provides specific, implementable risk mitigation strategies that organizations can deploy immediately to reduce legal exposure while implementing semantic media compression technology. These strategies go beyond general principles to offer concrete actions, measurable safeguards, and practical compliance measures.

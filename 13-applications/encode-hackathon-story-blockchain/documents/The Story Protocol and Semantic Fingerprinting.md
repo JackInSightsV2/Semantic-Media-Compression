@@ -1,3 +1,6 @@
+
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical hackathon design/setup document. Completion statements and example outputs are not independently verified deployment evidence. The current app README describes simulated flows, disabled credentialed writes and unresolved dependency advisories. See [the current audit](../../../AUDIT.md).
 Great question! Let me explore how **Story Protocol** specifically enables your semantic IP vision:
 
 ## Story Protocol's Unique Value for Semantic IP

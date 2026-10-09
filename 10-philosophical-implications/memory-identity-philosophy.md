@@ -1,5 +1,8 @@
 # The Philosophy of Memory and Identity: Self in the Age of Regeneration
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 When semantic compression is applied to personal memories and experiences, it raises profound questions about the nature of self, identity, and authentic experience. If memories can be compressed to semantic blueprints and regenerated in different forms, what happens to personal identity, narrative continuity, and the authenticity of lived experience? This analysis examines the philosophical implications of regenerable memory and the potential for technologically mediated self-construction.

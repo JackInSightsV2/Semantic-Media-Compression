@@ -1,0 +1,268 @@
+{
+  "id": "starwars-cantina-visual-qa-v1",
+  "annotation_status": "Agent-authored from all 30 sampled frames, frozen before API extraction; no independent adjudication. Names and spoken facts are intentionally unknown in the silent track.",
+  "frame_sampling": "Exact decoded indices 0,24,...696; clip-relative seconds0..29; no audio.",
+  "questions": [
+    {
+      "id": "setting",
+      "prompt": "What setting is visible?",
+      "options": {
+        "a": "A dim indoor room around a table",
+        "b": "An outdoor snowy field",
+        "c": "A brightly lit hospital corridor",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "figures",
+      "prompt": "Which group appears across the alternating shots?",
+      "options": {
+        "a": "Four helmeted soldiers",
+        "b": "Three human-looking males and one brown-furred humanoid",
+        "c": "Two humans and two metal robots",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        10
+      ]
+    },
+    {
+      "id": "vest",
+      "prompt": "What does the brown-haired man beside the furry figure wear?",
+      "options": {
+        "a": "Red armour",
+        "b": "A blue raincoat",
+        "c": "A dark vest over a light shirt",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "fur",
+      "prompt": "What covers the non-human-looking figure?",
+      "options": {
+        "a": "Long brown fur",
+        "b": "Smooth silver metal",
+        "c": "Green scales",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "strap",
+      "prompt": "What crosses the furry figure's torso?",
+      "options": {
+        "a": "A flower garland",
+        "b": "A diagonal strap/bandolier",
+        "c": "A white necktie",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "elder",
+      "prompt": "What distinguishes the older human-looking man?",
+      "options": {
+        "a": "A shaved head and no beard",
+        "b": "A red mask",
+        "c": "Grey/white hair and a white beard",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "robe",
+      "prompt": "What outer garment does the older man wear?",
+      "options": {
+        "a": "A dark brown robe over lighter clothing",
+        "b": "A yellow safety vest",
+        "c": "A silver spacesuit",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "youth",
+      "prompt": "What clothing does the younger man beside the elder wear?",
+      "options": {
+        "a": "A dark helmet",
+        "b": "A light wrap-style tunic",
+        "c": "A striped business suit",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "positions",
+      "prompt": "Who sits immediately beside the older bearded man in their shared shot?",
+      "options": {
+        "a": "The furry figure",
+        "b": "The dark-vested man",
+        "c": "The younger light-tunic man",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "lamp",
+      "prompt": "What bright object is on the table in the early shots?",
+      "options": {
+        "a": "A glowing white upright lamp/light",
+        "b": "A green computer monitor",
+        "c": "An orange flame",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "windows",
+      "prompt": "What bright background feature contrasts with the dim room?",
+      "options": {
+        "a": "Stars in space",
+        "b": "Bright rectangular window/opening areas",
+        "c": "A red sunset over an ocean",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0,
+        5
+      ]
+    },
+    {
+      "id": "background",
+      "prompt": "What appears behind the younger and older men in the wider shots?",
+      "options": {
+        "a": "A blank white wall only",
+        "b": "Rows of parked vehicles",
+        "c": "Several dark standing human-like figures",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "foreground",
+      "prompt": "What partly obscures the foreground in some table shots?",
+      "options": {
+        "a": "An out-of-focus person's head/shoulder seen from behind",
+        "b": "A close-up tree trunk",
+        "c": "A large red sign",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "gesture",
+      "prompt": "Does the dark-vested man gesture with his hands while seated?",
+      "options": {
+        "a": "No, his hands are tied",
+        "b": "Yes",
+        "c": "No, he is asleep throughout",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        11,
+        17
+      ]
+    },
+    {
+      "id": "closeup_order",
+      "prompt": "Which isolated face close-up appears first in this excerpt?",
+      "options": {
+        "a": "Older white-bearded man before younger light-tunic man",
+        "b": "Neither has a close-up",
+        "c": "Younger light-tunic man before older white-bearded man",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        18,
+        24
+      ]
+    },
+    {
+      "id": "name",
+      "prompt": "What is the dark-vested man's name according only to these silent frames?",
+      "options": {
+        "a": "Han",
+        "b": "Luke",
+        "c": "Lando",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "price",
+      "prompt": "What exact travel price is spoken in this excerpt?",
+      "options": {
+        "a": "Two thousand",
+        "b": "Ten thousand",
+        "c": "Seventeen thousand",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "destination",
+      "prompt": "Which destination is named in the dialogue?",
+      "options": {
+        "a": "Alderaan",
+        "b": "Hoth",
+        "c": "Coruscant",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    }
+  ]
+}

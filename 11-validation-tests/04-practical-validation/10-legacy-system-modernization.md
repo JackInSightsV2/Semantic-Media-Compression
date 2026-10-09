@@ -1,5 +1,8 @@
 # Test 10: Legacy System Modernization Validation
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../AUDIT.md).
+
 ## Test Overview
 
 This test validates semantic compression's ability to modernize legacy enterprise systems while preserving critical business logic, regulatory compliance, and operational reliability. The test focuses on real-world scenarios where companies are stuck with outdated technology stacks but cannot afford the risk or cost of traditional rewrite approaches.

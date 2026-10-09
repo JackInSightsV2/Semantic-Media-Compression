@@ -1,5 +1,8 @@
 # Computational Efficiency Optimization: The Path to Energy Viability
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Executive Summary
 
 This document outlines the technical pathways required to achieve the 50-500x computational efficiency improvements necessary for semantic compression to become energy-viable for general use. The analysis covers hardware specialization, algorithmic optimization, and architectural innovations needed to bridge the current energy gap.

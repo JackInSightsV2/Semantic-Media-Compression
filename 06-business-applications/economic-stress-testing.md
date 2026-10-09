@@ -1,5 +1,8 @@
 # Economic Stress Testing: Adversarial Scenarios
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 > **Theoretical Analysis**: This document explores adversarial scenarios and stress tests to understand theoretical boundaries and failure modes. This is scenario analysis, not financial forecasting or market prediction. Numbers are illustrative for exploring "what if everything goes wrong?" questions.
 
 ## Overview: Challenging the Business Case
@@ -18,7 +21,7 @@ The economic validation shows semantic compression works when content requires 3
 
 **What if we're wrong?**
 
-**Current costs**:
+**Illustrative cost assumptions (not current quotes)**:
 - GPT-4 class inference: $0.01-0.10 per 1000 tokens
 - Video generation: $5-50 per minute
 - Real-time regeneration: $100-1000 per hour
@@ -35,25 +38,25 @@ The economic validation shows semantic compression works when content requires 3
 ### Impact on Viability by Content Type
 
 **Corporate/Technical Documentation** (text-based):
-- Current cost: $0.10-1.00 per document regeneration
+- Illustrative assumed cost: $0.10-1.00 per document regeneration
 - **At $5/regeneration**: Still viable for high-value docs (compliance, critical procedures)
 - **At $50/regeneration**: Only for premium use cases (executive briefings, legal docs)
 - **Breakpoint**: ~$10 per regeneration for typical corporate use
 
 **Educational Content** (mixed media):
-- Current cost: $1-10 per course module regeneration
+- Illustrative assumed cost: $1-10 per course module regeneration
 - **At $50/module**: Still viable for paid courses ($100+ value per student)
 - **At $500/module**: Only for high-value professional training
 - **Breakpoint**: ~$20 per module for sustainable education markets
 
 **Entertainment Media** (high-fidelity video):
-- Current target: $1-5 per 90-minute film regeneration
+- Historical hypothetical target: $1-5 per 90-minute film regeneration
 - **At $50/film**: Economically impossible for consumer use
 - **At $500/film**: Only for theatrical releases with massive cultural adaptation budgets
 - **Breakpoint**: ~$5 per film for any consumer viability
 
 **Scientific Knowledge** (adaptive papers):
-- Current cost: $0.50-5.00 per paper adaptation
+- Illustrative assumed cost: $0.50-5.00 per paper adaptation
 - **At $10/adaptation**: Still viable for institutional access
 - **At $100/adaptation**: Only for critical research needs
 - **Breakpoint**: ~$20 per adaptation for academic library budgets
@@ -322,22 +325,22 @@ The economic validation shows semantic compression works when content requires 3
 **User testing reveals (hypothetical worst case)**:
 
 **Corporate users**:
-- 60% say: "This is confusing - I need the 'official' version"
-- 40% report: "Can't coordinate with teammates - we're all seeing different docs"
+- Fictional scenario: 60% say: "This is confusing - I need the 'official' version"
+- Fictional scenario: 40% report: "Can't coordinate with teammates - we're all seeing different docs"
 - **Productivity decreases** instead of increases
 
 **Educational users**:
-- 70% say: "I want to review what I learned, not see a new explanation"
-- 50% report: "I don't trust AI adaptations - they might be wrong"
+- Fictional scenario: 70% say: "I want to review what I learned, not see a new explanation"
+- Fictional scenario: 50% report: "I don't trust AI adaptations - they might be wrong"
 - **Learning outcomes worse** than static content
 
 **Entertainment users**:
-- 90% say: "This feels like a cheap knock-off, not the real movie"
+- Fictional scenario: 90% say: "This feels like a cheap knock-off, not the real movie"
 - 85% report: "I hate that it's different every time - ruins the experience"
 - **Absolute rejection**
 
 **Even technical users (best case)**:
-- 30% say: "I just want the original - adaptation is confusing"
+- Fictional scenario: 30% say: "I just want the original - adaptation is confusing"
 - **Lower adoption than predicted**
 
 ### Impact on Business Model

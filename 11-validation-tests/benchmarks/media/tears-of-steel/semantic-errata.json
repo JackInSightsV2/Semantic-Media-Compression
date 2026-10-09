@@ -1,0 +1,4 @@
+{
+  "status": "completed_with_extraction_errors",
+  "reason": "Visual audit found overstated action intervals and an unsupported boat/ship inference in the extracted JSON. QA is a narrow single-trial pilot; JSON outperforming the source reader reflects reader variability, not greater information retention. Full-resolution PNGs were submitted but provider-side preprocessing can resize them. See extraction-audit.json and the documented interpretation."
+}

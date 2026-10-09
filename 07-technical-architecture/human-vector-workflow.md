@@ -1,5 +1,8 @@
 # Human-Vector Workflow Integration
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 While vector-based semantic compression offers powerful mathematical capabilities for content adaptation and processing, it introduces significant challenges for human creators who need to understand, edit, and collaborate on semantic blueprints. This document explores strategies for maintaining human accessibility while leveraging vector advantages.

@@ -2,6 +2,9 @@
 
 # Situational Awareness: The Decade Ahead
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical hackathon design/setup document. Completion statements and example outputs are not independently verified deployment evidence. The current app README describes simulated flows, disabled credentialed writes and unresolved dependency advisories. See [the current audit](../../../../AUDIT.md).
+
 *A long‑form strategic essay on AGI timelines, industrial mobilization, security, and governance*
 
 **Publication date:** 6 June 2024

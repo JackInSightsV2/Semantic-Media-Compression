@@ -1,5 +1,8 @@
 # Bias and Fairness Mitigation
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Understanding Bias in Semantic Media Systems
 
 Bias in semantic media compression represents a multifaceted challenge that extends beyond traditional algorithmic bias concerns. When human experiences, cultural knowledge, and personal memories are compressed into semantic representations and then regenerated through AI systems, multiple layers of bias can be introduced, amplified, or perpetuated.

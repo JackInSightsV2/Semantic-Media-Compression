@@ -1,5 +1,8 @@
 # Implementation Plan
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 - [ ] 1. Set up project structure and core interfaces
   - Create directory structure for the practical validation testing framework
   - Define base interfaces and abstract classes for all major components

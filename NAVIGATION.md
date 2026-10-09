@@ -89,7 +89,7 @@ This documentation explores the complete vision, but practical work starts with 
 ### 🔧 **Technical Implementation Path** (2-4 hours)
 1. [Theoretical Foundation](./01-theoretical-validation/theoretical-foundation-overview.md) - Core concepts
 2. [Technical Architecture](./07-technical-architecture/technical-system-overview.md) - System design
-3. [Implementation Standards](./08-implementation-standards/standards-development-overview.md) - Technical standards
+3. Implementation Standards (planned document; absent from this checkout) - Technical standards
 4. [Practical Examples](./06-business-applications/practical-examples-case-studies.md) - Theoretical case studies
 5. [Semantic JSON Evolution](./08-future-implications/semantic-json-evolution.md) - Model advances that cut semantic loss
 
@@ -142,14 +142,14 @@ This documentation explores the complete vision, but practical work starts with 
 ### **Theoretical → Practical Flow**
 - [Theoretical Foundation](./01-theoretical-validation/theoretical-foundation-overview.md) sets up core principles
 - [Technical Architecture](./07-technical-architecture/technical-system-overview.md) implements these principles
-- [Case Studies](./09-case-studies-examples/case-study-methodology.md) validate the implementation
+- Case Studies (planned document; absent from this checkout) validate the implementation
 - [Business Applications](./06-business-applications/commercial-opportunities-overview.md) commercialize the technology
 
 ### **Impact → Governance Flow**
 - [Cultural Analysis](./03-cultural-social-impact/cultural-transformation-analysis.md) identifies societal effects
 - [Ethical Framework](./04-ethical-considerations/ethical-framework-overview.md) covers moral concerns
 - [Legal Analysis](./05-legal-copyright/legal-framework-analysis.md) provides compliance framework
-- [Implementation Standards](./08-implementation-standards/standards-development-overview.md) enforces governance
+- Implementation Standards (planned document; absent from this checkout) enforces governance
 
 ### **Analysis → Strategy Flow**
 - All analysis sections (01-10) inform strategic planning

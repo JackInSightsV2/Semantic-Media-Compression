@@ -60,3 +60,25 @@ Default maximum: 24 calls for this three-case pilot, with a 2,400-output-token c
 3. Add independently annotated unseen texts and a larger, less redundant source set. Repeat trials and report uncertainty. Separate unknown-question performance from answerable-fact retention.
 4. Exercise image/frame extraction and then a rights-cleared short video. The OpenAI transport can send image bytes, but this completed compression pilot tested text only.
 5. Measure token savings, complete archive size, cost and latency at several retention budgets. Gzip source/blueprint sizes are already recorded for reference. This is not lossless reconstruction.
+
+## Conventional baselines added — 8 October 2026, harness 0.3.0
+
+The earlier **65.8% JEV-arm saving was raw UTF-8 source versus raw blueprint**, not ZIP. Offline analysis of the preserved completed run now verifies exact ZIP/gzip/XZ round trips. Original reports and QA scores are unchanged.
+
+| Payload, summed over three independently encoded cases | Raw bytes | ZIP DEFLATE9 bytes | Gzip9 bytes | XZ6 bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Full source | 5,513 | 3,022 | 2,740 | 3,056 |
+| OpenAI blueprint | 1,840 | 1,431 | 1,149 | 1,404 |
+| JEV-selected blueprint | 1,888 | 1,405 | 1,123 | 1,388 |
+
+ZIP includes one-file archive headers per case; packing the corpus into one archive is a different experiment. Full-source ZIP saves 45.2% against raw source with no byte loss. JEV-blueprint ZIP is 53.5% smaller than full-source ZIP, but retains only the lossy blueprint. QA was not rerun on decompressed files: exact byte equality verifies that their input text is unchanged, not that model answers are deterministic. The original full-source and JEV QA observations remain 21/21 and 18/21 respectively. These are payload-only figures, excluding model weights/prompts/provenance.
+
+See [the dated lossless analysis](11-validation-tests/benchmarks/compression/lossless-2026-10-08.json) for source-report hash, analysis implementation hash and runtime versions. The dashboard recomputes these offline comparisons from saved contexts and exposes their separate analysis provenance.
+
+The [Big Buck Bunny 30-second scene baseline](11-validation-tests/benchmarks/media/README.md) is also prepared and measured against conventional codecs. Its dashboard preview is exactly 30 seconds, 640×360, video only. This establishes the reference and codec controls. The later [semantic JSON pilot](11-validation-tests/benchmarks/media/SEMANTIC-RESULTS.md) adds sampled-frame factual QA; video reconstruction remains untested. It does not turn the earlier synthetic text score into a film-compression result.
+
+Validation: 24 harness unit tests pass, including lossless archive recovery, failed-case pairing, pinned-source rejection and dashboard errata/symlink boundaries. The actual scene run verifies ZIP recovery, exact FFV1 frames, aligned PSNR/SSIM and frame counts; two reference decodes match. Browser inspection confirmed the new tables and a playable 30-second video element. No paid model calls were used for these comparisons.
+
+## Live-action Star Wars baseline — harness 0.4.1
+
+Added the official cantina negotiation excerpt, 00:10–00:40, with pinned source and decoded hashes. See the [full comparison and semantic-control findings](11-validation-tests/benchmarks/media/starwars/README.md). AV1 is 441,400 bytes for the silent 640×360 clip. The initial semantic QA control failed (17/18 with no context); a timestamp-specific v2 yields 0/15 visual answers without context, but only 6/15 from source frames and 5/15 from full JSON. The dashboard preserves both outcomes and marks their limitations. Do not claim the tiny JSON faithfully preserves the scene.

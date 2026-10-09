@@ -1,5 +1,8 @@
 # Blockchain Storage Architecture for Semantic Blueprints
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Using blockchain as the primary storage medium for semantic blueprints creates a revolutionary content preservation and distribution system. With blueprint file sizes ranging from 6-10MB (Phase 2 vector-enhanced) to 50-200MB (Phase 1 JSON), blockchain storage becomes not just feasible but optimal for creating immutable, globally accessible, and cryptographically verifiable semantic media archives.

@@ -1,5 +1,8 @@
 # Economic Impact Analysis and Market Transformation
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 > **Theoretical Analysis**: This document explores theoretical economic impacts and market transformations if semantic compression achieves widespread adoption. This is conceptual scenario analysis, not economic forecasting or impact assessment with validated data.
 
 ## Overview

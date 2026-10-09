@@ -1,5 +1,8 @@
 # Unstract LLMWhisperer vs. Semantic Media Compression Framework — Comparative Analysis
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research notes or conversation material. Treat claims and citations as leads requiring primary-source verification; this content is not independent validation of the repository. See [the current audit](../../../AUDIT.md).
+
 > Purpose: Contrast Unstract’s document-prep technology with this project’s semantic media compression and cultural adaptation framework; identify overlaps, gaps, and integration paths.
 
 References: [Unstract LLMWhisperer](https://unstract.com/llmwhisperer/)

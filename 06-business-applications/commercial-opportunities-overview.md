@@ -1,5 +1,8 @@
 # Commercial Applications and Market Opportunities
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical business scenario. Market sizes, survey responses, success probabilities, prices, ROI and break-even points below are illustrative assumptions, not validated customer research or current price quotes. See [the current audit](../AUDIT.md).
+
 <!--
 Copyright 2024-2025 Stephen Henry JackInSightsV2
 
@@ -39,7 +42,7 @@ Based on the [theoretical foundation](../01-theoretical-validation/theoretical-f
 
 **Implementation Dependencies**: Business opportunities identified here directly inform:
 - Technical architecture requirements in [Section 07](../07-technical-architecture/technical-system-overview.md)
-- Competitive positioning strategies in [Section 10](../10-competitive-analysis/market-landscape-overview.md)
+- Competitive positioning strategies in Section 10 (planned document; absent from this checkout)
 
 ## The Economic Change
 
@@ -69,7 +72,7 @@ Semantic media compression allows basic changes in how value is created, distrib
 
 ## Industry Change Analysis
 
-### [Entertainment Industry Change](./entertainment-industry.md)
+### Entertainment Industry Change (planned document; absent from this checkout)
 
 Looks at how semantic compression could change entertainment:
 
@@ -182,13 +185,13 @@ This comprehensive analysis reveals that semantic media compression represents a
 
 **Technical Implementation**: The business opportunities identified here directly inform:
 - **[Technical Architecture Requirements](../07-technical-architecture/technical-system-overview.md)**: What technical capabilities are needed to enable these business models
-- **[Implementation Standards](../08-implementation-standards/standards-development-overview.md)**: How business requirements translate into technical standards
-- **[Case Study Development](../09-case-studies-examples/case-study-methodology.md)**: Practical validation of business model viability
+- **Implementation Standards (planned document; absent from this checkout)**: How business requirements translate into technical standards
+- **Case Study Development (planned document; absent from this checkout)**: Practical validation of business model viability
 
 **Strategic Planning**: Business analysis enables:
-- **[Competitive Analysis](../10-competitive-analysis/market-landscape-overview.md)**: Understanding market positioning and competitive dynamics
-- **[Scenario Planning](../11-scenario-planning/future-scenarios-framework.md)**: Exploring different market development trajectories
-- **[Future Implementation](../12-future-implications/long-term-impact-analysis.md)**: Long-term strategic roadmap development
+- **Competitive Analysis (planned document; absent from this checkout)**: Understanding market positioning and competitive dynamics
+- **Scenario Planning (planned document; absent from this checkout)**: Exploring different market development trajectories
+- **[Future Implementation](../08-future-implications/long-term-impact-analysis.md)**: Long-term strategic roadmap development
 
 **Compliance Integration**:
 - Business models must operate within [legal frameworks](../05-legal-copyright/legal-framework-analysis.md)
@@ -196,5 +199,5 @@ This comprehensive analysis reveals that semantic media compression represents a
 - Market opportunities must consider [cultural implications](../03-cultural-social-impact/cultural-transformation-analysis.md)
 
 **Expanded Applications**:
-- Traditional business models inform [expanded application domains](../13-expanded-applications/application-domains-overview.md)
+- Traditional business models inform [expanded application domains](../09-expanded-applications/application-domains-overview.md)
 - Commercial viability enables exploration of novel use cases beyond traditional media

@@ -1,5 +1,8 @@
 # Design Document
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 ## Overview
 
 The Practical Validation Testing Framework is designed to comprehensively validate semantic compression's ability to modernize legacy enterprise systems while preserving business logic, ensuring regulatory compliance, and demonstrating measurable improvements in development efficiency. The framework provides automated testing capabilities, comprehensive validation metrics, and detailed reporting to demonstrate practical enterprise value.

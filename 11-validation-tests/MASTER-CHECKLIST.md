@@ -1,312 +1,46 @@
-# Solo Developer Testing Checklist
+# Validation checklist — evidence before scale
 
-> **Tip:** Before walking through the manual steps below, run the automated mock harness (`python run_tests.py`) to confirm the pipeline wiring and to familiarise yourself with the expected artefacts. Once you swap in real providers, use this checklist to track the extended, human-in-the-loop validation programme.
+Refreshed 8 October 2026. This replaces the earlier fixed-day/budget plan and the claim that a 50:1 ratio alone “proves concept.” Old model names, training times and costs are not current measurements.
 
-## Day 1: Semantic Extraction (Budget: £30)
+## Runnable checks
 
-### Morning: Content Collection (2 hours)
-- [ ] **Get 5 Short Videos**
-  - [ ] Download from Pexels Videos or YouTube CC
-  - [ ] Keep videos 1-3 minutes each
-  - [ ] Ensure royalty-free licensing
-  - [ ] Convert to MP4 if needed
+From `11-validation-tests`:
 
-- [ ] **Quick Manual Review** (30 minutes total)
-  - [ ] Watch each video once
-  - [ ] Note key characters, setting, main actions
-  - [ ] Don't spend more than 5 minutes per video
+```bash
+python3 -m unittest discover -s harness_tests -v
+python3 run_tests.py --provider mock --json
+```
 
-### Afternoon: GPT-4 Vision Testing (3 hours, £20)
-- [ ] **Semantic Extraction**
-  - [ ] Set up GPT-4 Vision access
-  - [ ] Upload all 5 videos
-  - [ ] Run semantic extraction prompt on each
-  - [ ] Save all outputs to text files
-  - [ ] Quick accuracy rating vs your notes (1-10)
+The first checks the new harness; the second checks legacy mock wiring. Neither measures general model capability. Live evaluations use paid APIs and should have declared call/token limits; see [the current handover](../BENCHMARK-HANDOVER.md).
 
-### Evening: Claude Analysis (1 hour, £10)
-- [ ] **Narrative Understanding**
-  - [ ] Set up Claude 3.5 Sonnet access
-  - [ ] Feed GPT-4 outputs to Claude for analysis
-  - [ ] Compare Claude vs GPT-4 understanding quality
-  - [ ] Document which model handles what better
+## Dataset and references
 
-## Day 2: JSON Generation & Local Training (Budget: £15)
+- [ ] Record asset rights, provenance, hashes and source-level development/test splits.
+- [ ] Have independent annotators label facts, questions and ambiguity; adjudicate differences.
+- [ ] Include rare details, numbers, corrections, negation, causes and unanswerable questions.
+- [ ] Keep evaluation questions and answers out of compression/extraction requests.
 
-### Morning: JSON Structure Creation (2 hours, £15)
-- [ ] **Structured Representation**
-  - [ ] Take best semantic extractions from Day 1
-  - [ ] Generate structured JSON using GPT-4
-  - [ ] Test 2 different JSON schema approaches
-  - [ ] Validate JSON syntax
-  - [ ] Calculate preliminary compression ratios
+## Measurements
 
-### Afternoon: Local LoRA Training (4 hours, £0)
-- [ ] **RTX 5090 Setup**
-  - [ ] Install CUDA toolkit and PyTorch
-  - [ ] Set up Mistral-7B with LoRA configuration
-  - [ ] Create training dataset from your 5 videos + JSON
-  - [ ] Train LoRA adapter (2-4 hours on 5090)
-  - [ ] Test local model vs API models
+- [ ] Compare full source, no context, length-matched truncation and appropriate conventional baselines.
+- [ ] Measure answerable-fact recall, unsupported additions, ambiguity handling and failure coverage separately.
+- [ ] Enforce complete byte budgets and declare excluded decoder dependencies.
+- [ ] Record exact harness/model/processor versions, prompts, code and dataset hashes, dates and usage.
+- [ ] Repeat paired trials over independent sources and report uncertainty.
 
-### Evening: Performance Comparison (1 hour)
-- [ ] **Model Analysis**
-  - [ ] Compare few-shot prompting vs local LoRA
-  - [ ] Document JSON quality and consistency
-  - [ ] Calculate cost per video for each approach
-  - [ ] Identify best approach for your use case
+## Before visual/media claims
 
-## Day 3: Content Regeneration & Analysis (Budget: £15)
+- [ ] Verify actual image/frame/audio delivery, not metadata-only prompts.
+- [ ] Record sampling rate, frame timestamps, resolution and dropped or missed events.
+- [ ] Generate actual reconstructed outputs if claiming reconstruction quality.
+- [ ] Compare with conventional codecs at matched rate/quality criteria.
+- [ ] Include model weights, residuals, reference assets and source-specific training in accounting.
 
-### Morning: Image Generation (2 hours, £15)
-- [ ] **Visual Regeneration**
-  - [ ] Set up DALL-E 3 access
-  - [ ] Use best JSON outputs to generate images
-  - [ ] Test character consistency across scenes
-  - [ ] Measure visual quality and accuracy
-  - [ ] Document what works vs what doesn't
+## Before product claims
 
-### Afternoon: Compression Analysis (2 hours)
-- [ ] **Metrics Calculation**
-  - [ ] Calculate actual compression ratios achieved
-  - [ ] Measure quality degradation vs original content
-  - [ ] Test one multi-cycle compression (JSON→regen→JSON)
-  - [ ] Document technical limitations found
-  - [ ] Compare with traditional compression methods
+- [ ] Validate code equivalence with executable tests where code is regenerated.
+- [ ] Measure end-to-end cost/latency/energy rather than infer savings from file size.
+- [ ] Review legal permissions separately from similarity and provenance.
+- [ ] Resolve the historical app's security/dependency gaps before deployment.
 
-### Evening: Results & Next Steps (1 hour)
-- [ ] **Final Analysis**
-  - [ ] Compile all metrics and findings
-  - [ ] Assess commercial viability based on results
-  - [ ] Document what worked, what didn't
-  - [ ] Plan next steps if results are promising
-  - [ ] Calculate total cost and ROI
-
-## Day 4: Code Semantic Compression POC (Budget: £10)
-
-### Morning: Legacy Code Analysis (2 hours)
-- [ ] **Code Semantic Extraction**
-  - [ ] Select simple legacy Java/PHP business logic (payroll calculation)
-  - [ ] Use GPT-4 to extract semantic business rules
-  - [ ] Generate semantic blueprint JSON structure
-  - [ ] Document algorithm patterns and business constraints
-  - [ ] Validate semantic accuracy against original code
-
-### Afternoon: Cross-Language Generation (3 hours, £10)
-- [ ] **Modern Implementation Generation**
-  - [ ] Generate Spring Boot service from semantic blueprint
-  - [ ] Generate Node.js/TypeScript equivalent
-  - [ ] Generate Python FastAPI equivalent
-  - [ ] Test functional equivalence across implementations
-  - [ ] Measure development time savings vs manual rewrite
-
-### Evening: Enterprise Value Assessment (1 hour)
-- [ ] **Business Case Validation**
-  - [ ] Calculate potential migration cost savings
-  - [ ] Assess legacy system modernization applications
-  - [ ] Document cross-platform development efficiency gains
-  - [ ] Identify enterprise use cases and market opportunities
-
-## Success Criteria (Realistic Targets)
-
-### Minimum Viable Results:
-- [ ] Semantic extraction >70% accuracy on simple content
-- [ ] Valid JSON structure with key semantic elements
-- [ ] Compression ratio >50:1 (proves concept)
-- [ ] Recognizable characters in regenerated images
-- [ ] Local LoRA produces consistent JSON format
-- [ ] Code semantic extraction >90% business logic accuracy
-- [ ] Cross-language code generation maintains functional equivalence
-- [ ] 70%+ development time reduction demonstrated for legacy migration
-
-- [ ] **Training Infrastructure Setup**
-  - [ ] Set up GPU computing environment
-  - [ ] Install T5/FLAN-T5 training frameworks
-  - [ ] Set up LoRA training infrastructure
-  - [ ] Prepare data preprocessing pipelines
-  - [ ] Test training environments with sample data
-
-### Weeks 5-6: Model Training
-- [ ] **Test 08: Fine-Tuning (Option 2)**
-  - [ ] Train T5-base model on prepared dataset
-  - [ ] Train FLAN-T5-base model on prepared dataset
-  - [ ] Monitor training progress and validation loss
-  - [ ] Save model checkpoints regularly
-  - [ ] Run initial validation tests on trained models
-
-- [ ] **Test 08: LoRA Training (Option 3)**
-  - [ ] Set up LLaMA-2-7B with LoRA configuration
-  - [ ] Set up Mistral-7B with LoRA configuration
-  - [ ] Train LoRA adapters on 20-50 examples
-  - [ ] Monitor training efficiency and convergence
-  - [ ] Validate LoRA model performance
-
-- [ ] **Model Comparison Analysis**
-  - [ ] Compare all three approaches (few-shot, fine-tuning, LoRA)
-  - [ ] Measure JSON compliance rates
-  - [ ] Assess semantic completeness scores
-  - [ ] Calculate cost per video processed
-  - [ ] Select best-performing approach
-
-### Weeks 7-8: Advanced Validation
-- [ ] **Test 04: Compression Ratio Analysis**
-  - [ ] Measure original file sizes across content types
-  - [ ] Generate semantic JSON for all test content
-  - [ ] Calculate actual compression ratios achieved
-  - [ ] Test different compression quality levels
-  - [ ] Validate against target metrics (200:1 minimum)
-  - [ ] Analyze compression efficiency by content type
-
-- [ ] **Test 05: Multi-Cycle Compression**
-  - [ ] Set up 5-cycle compression-regeneration pipeline
-  - [ ] Test quality degradation over multiple cycles
-  - [ ] Measure character consistency drift
-  - [ ] Assess narrative coherence degradation
-  - [ ] Document cumulative quality loss patterns
-  - [ ] Validate <20% quality loss target over 5 cycles
-
-## Phase 3: Regeneration Quality Assessment (Weeks 9-12)
-
-### Week 9: Multi-Modal Generation
-- [ ] **Test 03: Complete Content Regeneration**
-  - [ ] Set up all image generation models (DALL-E 3, Midjourney, Stable Diffusion XL)
-  - [ ] Set up video generation models (Runway Gen-2, Pika Labs)
-  - [ ] Set up audio generation models (ElevenLabs, Mubert, AIVA)
-  - [ ] Test character consistency across regenerations
-  - [ ] Test scene coherence and narrative flow
-  - [ ] Measure cross-modal consistency
-  - [ ] Document technical quality metrics
-
-### Week 10: Cultural Adaptation
-- [ ] **Test 06: Cultural Adaptation Accuracy**
-  - [ ] Select content with strong cultural elements
-  - [ ] Generate adaptations for 3-5 target cultures
-  - [ ] Recruit cultural community validators
-  - [ ] Conduct cultural accuracy assessments
-  - [ ] Measure adaptation quality vs authenticity
-  - [ ] Achieve >70% community approval target
-
-### Week 11: Human Evaluation
-- [ ] **Test 09: Human Evaluation Framework**
-  - [ ] Recruit film/media professionals (5-10 evaluators)
-  - [ ] Recruit cultural experts (5-10 evaluators)
-  - [ ] Recruit community validators (20-30 people)
-  - [ ] Design standardized evaluation surveys
-  - [ ] Conduct expert evaluation sessions
-  - [ ] Conduct community validation sessions
-  - [ ] Achieve >80% inter-rater reliability
-
-### Week 12: Benchmarking
-- [ ] **Test 10: Benchmark Comparison**
-  - [ ] Compare with H.264, H.265, AV1 compression
-  - [ ] Compare with existing AI compression methods
-  - [ ] Benchmark processing speed and efficiency
-  - [ ] Analyze cost-effectiveness vs alternatives
-  - [ ] Document competitive advantages
-  - [ ] Assess commercial viability
-
-## Phase 4: Advanced Testing and Validation (Weeks 13-16)
-
-### Week 13: Enterprise Code Applications
-- [ ] **Test 04: Code Semantic Extraction and Regeneration**
-  - [ ] Test algorithm semantic capture (sorting, search, calculation)
-  - [ ] Test business logic extraction (e-commerce, payroll, CRM)
-  - [ ] Test architectural pattern extraction (MVC, microservices)
-  - [ ] Validate cross-language regeneration accuracy
-  - [ ] Measure compression ratios for code vs traditional methods
-  - [ ] Test legacy system modernization scenarios
-
-- [ ] **Test 10: Legacy System Modernization Validation**
-  - [ ] Test COBOL to Java microservices migration
-  - [ ] Test PHP monolith to Node.js microservices
-  - [ ] Test .NET Framework to .NET Core migration
-  - [ ] Validate 100% business logic preservation
-  - [ ] Measure 70%+ timeline reduction vs traditional rewrites
-  - [ ] Test regulatory compliance preservation
-
-- [ ] **Test 11: Cross-Platform Development Efficiency**
-  - [ ] Test mobile banking app cross-platform generation
-  - [ ] Test e-learning platform multi-platform deployment
-  - [ ] Test enterprise CRM cross-platform consistency
-  - [ ] Validate 80%+ development effort reduction
-  - [ ] Test platform-native experience preservation
-  - [ ] Measure feature parity across platforms
-
-### Week 14: Legal and Ethical
-- [ ] **Test 12: Copyright and Fair Use Analysis**
-  - [ ] Test semantic compression on copyrighted content
-  - [ ] Analyze legal risk levels for different approaches
-  - [ ] Evaluate fair use claims for educational/research
-  - [ ] Document attribution and provenance tracking
-  - [ ] Validate community consent mechanisms
-  - [ ] Assess bias and representation in AI outputs
-
-### Week 15: Platform and Deployment
-- [ ] **Test 13: Platform and Deployment**
-  - [ ] Test processing time for different content lengths
-  - [ ] Test concurrent user handling capabilities
-  - [ ] Measure storage and bandwidth requirements
-  - [ ] Test API compatibility with existing platforms
-  - [ ] Evaluate mobile device performance
-  - [ ] Assess cross-platform compatibility
-
-- [ ] **Test 14: Gaussian Splatting Investigation**
-  - [ ] Research existing GS models and implementations
-  - [ ] Test GS compression ratios and performance
-  - [ ] Assess integration feasibility with semantic compression
-  - [ ] Document hardware requirements and limitations
-  - [ ] Evaluate commercial availability and licensing
-
-### Week 16: Comprehensive Analysis
-- [ ] **Results Compilation and Analysis**
-  - [ ] Compile all test results into master database
-  - [ ] Perform statistical analysis on performance metrics
-  - [ ] Calculate confidence intervals and significance tests
-  - [ ] Identify technical limitations and failure modes
-  - [ ] Assess commercial viability and market readiness
-  - [ ] Document areas needing further research
-
-### Week 17: Final Reporting
-- [ ] **Documentation and Reporting**
-  - [ ] Update white paper technical sections with empirical data
-  - [ ] Create comprehensive testing results report
-  - [ ] Develop executive summary with key findings
-  - [ ] Create technical specifications and implementation guide
-  - [ ] Prepare stakeholder presentations
-  - [ ] Plan transition to production development phase
-
-## Success Criteria Tracking
-
-### Overall Success Metrics:
-- [ ] Semantic extraction accuracy >80% across all categories
-- [ ] Compression ratios >200:1 with acceptable quality
-- [ ] Character consistency >75% across regenerations
-- [ ] Cultural adaptation approval >70% from community validators
-- [ ] JSON format compliance >95%
-- [ ] Human evaluator agreement >80%
-- [ ] Processing time <5 minutes per video clip
-- [ ] Cost per video processed <$1.00
-
-### Phase-Specific Milestones:
-- [ ] **Phase 1**: Basic POC demonstrated with >75% accuracy
-- [ ] **Phase 2**: Custom model training successful with >200:1 compression
-- [ ] **Phase 3**: Content regeneration quality >75% expert approval
-- [ ] **Phase 4**: Legal/ethical frameworks validated, deployment ready
-
-## Risk Mitigation Checklist:
-- [ ] Backup model approaches identified for each test
-- [ ] Alternative data sources prepared for annotation delays
-- [ ] Cloud computing resources secured for training bottlenecks
-- [ ] Legal review scheduled early in process
-- [ ] Cultural consultants engaged throughout testing
-- [ ] Quality control processes implemented at each phase
-
-## Final Deliverables Checklist:
-- [ ] Comprehensive testing results database
-- [ ] Updated white paper with empirical data
-- [ ] Technical implementation guide
-- [ ] Business case and market analysis
-- [ ] Legal and ethical compliance framework
-- [ ] Cultural sensitivity guidelines
-- [ ] Production development roadmap
-- [ ] Stakeholder presentation materials
+No unchecked item represents completed work. Five examples cannot establish a reliable training dataset or production generalisation.

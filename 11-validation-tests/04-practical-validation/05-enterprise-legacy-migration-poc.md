@@ -1,5 +1,8 @@
 # Test 05: Enterprise Legacy Migration Proof of Concept
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../AUDIT.md).
+
 ## Test Overview
 
 This test provides a practical, implementable proof of concept for demonstrating semantic compression's value in enterprise legacy system migration. The test is designed to be executed with current AI capabilities while showcasing the transformative potential for enterprise modernization projects.

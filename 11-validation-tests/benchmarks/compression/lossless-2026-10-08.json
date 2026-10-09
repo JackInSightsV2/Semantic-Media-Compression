@@ -1,0 +1,84 @@
+{
+  "method": "lossless-v1",
+  "derived_at": "2026-10-08T19:18:26.686335+00:00",
+  "analysis_provenance": {
+    "implementation_sha256": "42beedb8f47de85ff0ec3541eac756a85789f5aca2ce5325726d67c2e6084e36",
+    "python": "3.14.4",
+    "zlib": "1.2.12"
+  },
+  "aggregation": "Sum of independently encoded files, one per successful case; ZIP member name payload; ZIP container included; gzip9 mtime=0; xz preset6.",
+  "interpretation": "Lossless decoders restore exact input bytes. QA is not rerun: source archives restore full source; blueprint archives restore only the lossy blueprint. No codec includes model, prompt or provenance storage.",
+  "rows": [
+    {
+      "arm": "full_source",
+      "cases": 3,
+      "attempted_cases": 3,
+      "bytes": {
+        "raw": 5513,
+        "zip_deflate9": 3022,
+        "gzip9": 2740,
+        "xz6": 3056
+      },
+      "paired_source_bytes": {
+        "raw": 5513,
+        "zip_deflate9": 3022,
+        "gzip9": 2740,
+        "xz6": 3056
+      },
+      "reduction_vs_same_encoding": {
+        "raw": 0.0,
+        "zip_deflate9": 0.0,
+        "gzip9": 0.0,
+        "xz6": 0.0
+      }
+    },
+    {
+      "arm": "openai_blueprint",
+      "cases": 3,
+      "attempted_cases": 3,
+      "bytes": {
+        "raw": 1840,
+        "zip_deflate9": 1431,
+        "gzip9": 1149,
+        "xz6": 1404
+      },
+      "paired_source_bytes": {
+        "raw": 5513,
+        "zip_deflate9": 3022,
+        "gzip9": 2740,
+        "xz6": 3056
+      },
+      "reduction_vs_same_encoding": {
+        "raw": 0.6662434246326864,
+        "zip_deflate9": 0.5264725347452018,
+        "gzip9": 0.5806569343065693,
+        "xz6": 0.5405759162303665
+      }
+    },
+    {
+      "arm": "jev_blueprint",
+      "cases": 3,
+      "attempted_cases": 3,
+      "bytes": {
+        "raw": 1888,
+        "zip_deflate9": 1405,
+        "gzip9": 1123,
+        "xz6": 1388
+      },
+      "paired_source_bytes": {
+        "raw": 5513,
+        "zip_deflate9": 3022,
+        "gzip9": 2740,
+        "xz6": 3056
+      },
+      "reduction_vs_same_encoding": {
+        "raw": 0.6575367313622347,
+        "zip_deflate9": 0.5350761085373925,
+        "gzip9": 0.5901459854014599,
+        "xz6": 0.5458115183246073
+      }
+    }
+  ],
+  "source_run_id": "20261008T104523Z-e0dc3239",
+  "source_report_sha256": "ef164fe83a03784b045cd590c755031e6bb2d90e12e3f06caa0cfd96e734fff7"
+}

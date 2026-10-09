@@ -1,5 +1,8 @@
 # Semantic Similarity vs. Plagiarism: A Critical Distinction
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Executive Summary
 
 **Critical Insight**: High semantic similarity does not automatically equal plagiarism. This distinction is fundamental to building a viable semantic fingerprinting product.

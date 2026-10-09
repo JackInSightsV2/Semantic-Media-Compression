@@ -1,5 +1,8 @@
 # Architectural Convergence: Semantic Compression and Neural Network Patterns
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The semantic media compression system exhibits fascinating convergence with established neural network architectures - particularly transformers and convolutional networks - while transcending their limitations through a novel semantic intermediate representation approach. Rather than building yet another neural architecture, this system creates a universal semantic format that leverages the strengths of multiple architectural paradigms while remaining architecture-agnostic.

@@ -1,5 +1,8 @@
 # Future Legal Frameworks and Regulatory Evolution
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical legal research draft. Similarity scores, risk percentages, templates and blockchain records do not establish infringement, ownership, compliance or legal admissibility. Numerical legal probabilities and coverage estimates below are unsupported; consult the current sourced audit before reuse. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The legal landscape for semantic media compression will inevitably evolve through legislative action, judicial precedent, international cooperation, and industry self-regulation. Understanding potential future frameworks helps stakeholders prepare for and influence the development of appropriate legal structures.

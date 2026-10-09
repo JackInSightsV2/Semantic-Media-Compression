@@ -1,5 +1,8 @@
 # Academic Foundation and Scholarly Integration
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 <!--
 Copyright 2024-2025 Stephen Henry JackInSightsV2
 
@@ -166,7 +169,7 @@ Grounding semantic compression in established mathematical and computational the
 - **Algorithmic Information Theory**: Theoretical foundations for understanding meaning extraction and regeneration processes
 - **Compression Mathematics**: How semantic compression extends and changes traditional compression theory
 
-### [Cognitive Science and Human Meaning Processing](./cognitive-science-integration.md)
+### Cognitive Science and Human Meaning Processing (planned document; absent from this checkout)
 
 Connecting semantic compression to established research on human cognition and memory:
 
@@ -176,7 +179,7 @@ Connecting semantic compression to established research on human cognition and m
 - **Meaning Distillation**: How humans extract and remember essential meaning from experiences
 - **Cognitive Load Theory**: Understanding how semantic compression can reduce cognitive burden while preserving meaning
 
-### [Compression Mathematics and Theory](./compression-mathematics.md)
+### Compression Mathematics and Theory (planned document; absent from this checkout)
 
 Mathematical foundations that validate semantic compression approaches:
 
@@ -188,7 +191,7 @@ Mathematical foundations that validate semantic compression approaches:
 
 ## Cross-Disciplinary Synthesis
 
-### [Integrated Theoretical Framework](./integrated-theoretical-framework.md)
+### Integrated Theoretical Framework (planned document; absent from this checkout)
 
 Synthesizing insights from multiple disciplines into coherent theoretical models:
 
@@ -198,7 +201,7 @@ Synthesizing insights from multiple disciplines into coherent theoretical models
 - **Technology Ethics Integration**: Combining philosophical ethics with practical technology design
 - **Human-Centered AI Framework**: Integrating cognitive science, anthropology, and computer science
 
-### [Research Methodology Integration](./research-methodology-integration.md)
+### Research Methodology Integration (planned document; absent from this checkout)
 
 Combining research methods from different disciplines for comprehensive analysis:
 
@@ -292,14 +295,14 @@ This interdisciplinary integration strengthens the theoretical foundation of sem
 **Technical Integration**: Academic frameworks inform:
 - **[Technical Architecture](../07-technical-architecture/technical-system-overview.md)**: Cognitive science and information theory guide system design
 - **[Quality Metrics](../07-technical-architecture/quality-metrics.md)**: Academic research provides evaluation frameworks
-- **[Implementation Standards](../08-implementation-standards/standards-development-overview.md)**: Scholarly best practices inform technical standards
+- **Implementation Standards (planned document; absent from this checkout)**: Scholarly best practices inform technical standards
 
 **Research Opportunities**: Academic integration enables:
-- **[Case Study Development](../09-case-studies-examples/case-study-methodology.md)**: Rigorous research methodologies for validation
-- **[Competitive Analysis](../10-competitive-analysis/market-landscape-overview.md)**: Academic research landscape assessment
-- **[Future Research Priorities](../12-future-implications/research-development-priorities.md)**: Scholarly research agenda development
+- **Case Study Development (planned document; absent from this checkout)**: Rigorous research methodologies for validation
+- **Competitive Analysis (planned document; absent from this checkout)**: Academic research landscape assessment
+- **[Future Research Priorities](../08-future-implications/research-development-priorities.md)**: Scholarly research agenda development
 
 **Cross-Disciplinary Connections**:
 - Information theory foundations connect to [technical feasibility analysis](../07-technical-architecture/technical-feasibility-analysis.md)
-- Anthropological frameworks inform [Indigenous perspectives](../03-cultural-social-impact/indigenous-perspectives-framework.md) and [Global South engagement](../03-cultural-social-impact/global-south-perspectives-framework.md)
-- Media studies theory connects to [authenticity challenges](../03-cultural-social-impact/media-literacy-authenticity.md)
+- Anthropological frameworks inform Indigenous perspectives (planned document; absent from this checkout) and Global South engagement (planned document; absent from this checkout)
+- Media studies theory connects to authenticity challenges (planned document; absent from this checkout)

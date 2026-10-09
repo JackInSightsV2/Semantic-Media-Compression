@@ -1,5 +1,8 @@
 # Compression Pipeline Architecture
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The compression pipeline represents the basic transformation process that converts traditional media files into vector-enhanced semantic blueprints. This process shifts from preserving pixels and audio waves to capturing meaning, intent, and recreatable instructions in both human-readable JSON descriptions and mathematically precise vector embeddings that AI models can interpret, manipulate, and reconstruct.

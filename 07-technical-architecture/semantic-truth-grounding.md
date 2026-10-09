@@ -1,5 +1,8 @@
 # Semantic Truth Grounding: Beyond RAG Systems
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Native semantic AI architecture enables a revolutionary approach to grounding AI responses in truth that transcends the limitations of current Retrieval-Augmented Generation (RAG) systems. By building semantic understanding directly into AI model architecture, we can create mathematical truth validation, real-time fact checking, and semantic consistency enforcement as core AI capabilities rather than external post-processing steps.

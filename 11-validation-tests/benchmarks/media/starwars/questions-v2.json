@@ -1,0 +1,274 @@
+{
+  "id": "starwars-cantina-visual-qa-v2",
+  "scene_id": "starwars-cantina-negotiation-30s-v1",
+  "annotation_status": "Agent-authored after v1 failed the no-context control; timestamp-specific v2 references frozen before a new extraction run; not independently adjudicated. Both versions and all outcomes retained.",
+  "frame_sampling": "Exact decoded indices 0,24,...696; clip-relative seconds0..29; no audio.",
+  "questions": [
+    {
+      "id": "q01",
+      "prompt": "At 0 seconds, which side of the image is obscured by a large out-of-focus foreground person?",
+      "options": {
+        "a": "Left",
+        "b": "Right",
+        "c": "Both equally",
+        "d": "Neither",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        0
+      ]
+    },
+    {
+      "id": "q02",
+      "prompt": "At 4 seconds, which side of the image is obscured by a large out-of-focus foreground person?",
+      "options": {
+        "a": "Left",
+        "b": "Right",
+        "c": "Both equally",
+        "d": "Neither",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        4
+      ]
+    },
+    {
+      "id": "q03",
+      "prompt": "At 0 seconds, what is immediately to the image-right of the dark drinking vessel on the table?",
+      "options": {
+        "a": "A red book",
+        "b": "A green bottle",
+        "c": "A bright white upright light",
+        "d": "A metal helmet",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        0
+      ]
+    },
+    {
+      "id": "q04",
+      "prompt": "At 0 seconds, what shape are the pale fittings on the diagonal chest strap?",
+      "options": {
+        "a": "Stars",
+        "b": "Small circles",
+        "c": "Long feathers",
+        "d": "Rectangular blocks",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "d",
+      "evidence_frame_seconds": [
+        0
+      ]
+    },
+    {
+      "id": "q05",
+      "prompt": "At 4 seconds, what colour is the hair of the clearly visible seated person on image-left?",
+      "options": {
+        "a": "Grey/white",
+        "b": "Black",
+        "c": "Bright red",
+        "d": "Blue",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        4
+      ]
+    },
+    {
+      "id": "q06",
+      "prompt": "At 18 seconds, what facial hair does the close-up subject have?",
+      "options": {
+        "a": "A thick white beard",
+        "b": "No visible beard",
+        "c": "A long black beard",
+        "d": "A curled moustache",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        18
+      ]
+    },
+    {
+      "id": "q07",
+      "prompt": "At 24 seconds, what facial hair does the close-up subject have?",
+      "options": {
+        "a": "No visible beard",
+        "b": "A black moustache only",
+        "c": "A white beard",
+        "d": "A red beard",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        24
+      ]
+    },
+    {
+      "id": "q08",
+      "prompt": "At 0 seconds, what colour is the sleeveless outer garment on the image-left seated person?",
+      "options": {
+        "a": "Bright red",
+        "b": "Blue",
+        "c": "White",
+        "d": "Black/dark",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "d",
+      "evidence_frame_seconds": [
+        0
+      ]
+    },
+    {
+      "id": "q09",
+      "prompt": "At 4 seconds, how does the image-right seated person's light garment close across the upper chest?",
+      "options": {
+        "a": "An overlapping V-shaped wrap",
+        "b": "A row of metal buttons",
+        "c": "A zipped high collar",
+        "d": "It has no opening",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        4
+      ]
+    },
+    {
+      "id": "q10",
+      "prompt": "At 18 seconds, which part of the image contains a small blurred upright object with a pale top and reddish lower part?",
+      "options": {
+        "a": "Upper-left background",
+        "b": "Lower-right background",
+        "c": "Lower-left foreground",
+        "d": "Upper-right foreground",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        18
+      ]
+    },
+    {
+      "id": "q11",
+      "prompt": "At 4 seconds, what appears above the background silhouettes?",
+      "options": {
+        "a": "A circular porthole",
+        "b": "A plain dark ceiling only",
+        "c": "A bright rectangular gridded opening",
+        "d": "A neon text sign",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        4
+      ]
+    },
+    {
+      "id": "q12",
+      "prompt": "At 0 seconds, how are the two clearly visible seated subjects arranged left-to-right?",
+      "options": {
+        "a": "Furred subject then dark-vested person",
+        "b": "Two furred subjects",
+        "c": "Two helmeted people",
+        "d": "Dark-vested person then furred subject",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "d",
+      "evidence_frame_seconds": [
+        0
+      ]
+    },
+    {
+      "id": "q13",
+      "prompt": "At 4 seconds, how are the two clearly visible seated subjects arranged left-to-right?",
+      "options": {
+        "a": "Grey-bearded person then younger brown-haired person",
+        "b": "Younger brown-haired person then grey-bearded person",
+        "c": "Two grey-bearded people",
+        "d": "Two helmeted people",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "a",
+      "evidence_frame_seconds": [
+        4
+      ]
+    },
+    {
+      "id": "q14",
+      "prompt": "In the sampled images from 11 to 17 seconds, what changes about the image-left seated person?",
+      "options": {
+        "a": "He puts on a helmet",
+        "b": "He gestures with his hands",
+        "c": "He leaves the room",
+        "d": "He lies down",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "b",
+      "evidence_frame_seconds": [
+        11,
+        17
+      ]
+    },
+    {
+      "id": "q15",
+      "prompt": "At 29 seconds, how is the close-up subject's head oriented relative to his earlier upright close-up?",
+      "options": {
+        "a": "Tilted far backward",
+        "b": "Turned fully away",
+        "c": "Lowered slightly with gaze down",
+        "d": "Upside down",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "c",
+      "evidence_frame_seconds": [
+        24,
+        29
+      ]
+    },
+    {
+      "id": "q16",
+      "prompt": "What is the full personal name of the person in the close-up at 18 seconds, established by these silent images alone?",
+      "options": {
+        "a": "Alex North",
+        "b": "Chris Vale",
+        "c": "Sam Reed",
+        "d": "Robin West",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "q17",
+      "prompt": "What exact number is spoken at 12 seconds?",
+      "options": {
+        "a": "Forty",
+        "b": "Sixty",
+        "c": "Eighty",
+        "d": "Ninety",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    },
+    {
+      "id": "q18",
+      "prompt": "What calendar date is explicitly established by these sampled images?",
+      "options": {
+        "a": "1 January",
+        "b": "5 May",
+        "c": "8 October",
+        "d": "31 December",
+        "unknown": "Not established by the supplied evidence"
+      },
+      "expected": "unknown",
+      "evidence_frame_seconds": []
+    }
+  ]
+}

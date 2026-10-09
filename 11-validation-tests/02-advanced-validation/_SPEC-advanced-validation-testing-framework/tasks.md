@@ -1,5 +1,8 @@
 # Implementation Plan
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical experiment specification, not an executed validation report. Thresholds, dates, budgets, hardware estimates and expected results below are proposed targets. Use the maintained model harness for runnable tests; mock success does not establish model quality. See [the current audit](../../../AUDIT.md).
+
 - [ ] 1. Set up advanced validation framework structure and core interfaces
   - Create TESTS/02-advanced-validation/framework directory structure
   - Define base interfaces for advanced validation components

@@ -1,0 +1,22 @@
+{
+  "id": "big-buck-bunny-flowers-30s-v1",
+  "title": "Big Buck Bunny: flowers and butterfly",
+  "source_url": "https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_640x360.m4v.zip",
+  "source_member": "BigBuckBunny_640x360.m4v",
+  "source_sha256": "738e2f999860553d056dd79c952f58f63cbb73892a57c72342ce9e5330d9d2d7",
+  "license": "CC-BY-3.0",
+  "license_url": "https://peach.blender.org/about/",
+  "attribution": "(c) copyright 2008, Blender Foundation / www.bigbuckbunny.org",
+  "start_seconds": 50,
+  "duration_seconds": 30,
+  "fps": 24,
+  "width": 640,
+  "height": 360,
+  "pixel_format": "yuv420p",
+  "filter": "crop=640:358:0:0,pad=640:360:0:0:black,fps=24,format=yuv420p",
+  "track": "video-only; audio excluded from every size and quality result",
+  "reference": "Decoded H.264 distribution copy. Crop one bottom row from 640x359, then pad two black rows to 640x360 to avoid unstable odd-height edge samples. Not the original lossless render.",
+  "selection": "Bunny outdoors, close-ups, flowers, a butterfly and a change of viewpoint. Contact sheet visually checked by the agent; semantic annotations not independently adjudicated.",
+  "contamination": "Public well-known film; recognisability and possible model familiarity make this a development fixture, not a held-out generalisation test.",
+  "reference_sha256": "a848355c1b7650a3f5a1a15863a9914120077fd630d01c2d0fbf024219583760"
+}

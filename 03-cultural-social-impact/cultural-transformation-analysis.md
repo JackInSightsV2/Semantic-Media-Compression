@@ -1,5 +1,8 @@
 # Cultural Adaptation and Cross-Cultural Media
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Based on the [theoretical foundation](../01-theoretical-validation/theoretical-foundation-overview.md), this section looks at how semantic media compression allows cross-cultural adaptation of content. The key insight is that by storing meaning separately from specific cultural expression, we can recreate content that's culturally appropriate for different audiences while preserving the original intent.
@@ -14,7 +17,7 @@ Based on the [theoretical foundation](../01-theoretical-validation/theoretical-f
 
 **The Anthropological Challenge**: Cultural relativists argue meaning IS culture - there may be no "universal semantic layer" independent of cultural expression.
 
-**Example**: "Romantic love" in Western films isn't a universal emotion with culturally-specific expressions - it's a Western cultural construct that doesn't exist in arranged-marriage cultures. You're not just adapting expression; you're transforming the semantic content itself.
+**Example**: A film's portrayal of romance may carry culturally specific assumptions. Adaptations need contextual review; arranged-marriage traditions do not establish an absence of romantic love. The earlier categorical claim was unsupported.
 
 **If this assumption is wrong, the entire cultural adaptation framework collapses.**
 
@@ -118,8 +121,8 @@ Ensuring respectful and accurate cultural representation:
 
 **Implementation Considerations**: 
 - Technical systems must incorporate cultural sensitivity: [Technical Architecture](../07-technical-architecture/technical-system-overview.md)
-- Standards must protect cultural rights: [Implementation Standards](../08-implementation-standards/standards-development-overview.md)
+- Standards must protect cultural rights: Implementation Standards (planned document; absent from this checkout)
 
 **Long-term Strategic Planning**:
-- Cultural evolution scenarios: [Future Scenarios Framework](../11-scenario-planning/future-scenarios-framework.md)
-- Societal transformation roadmap: [Long-term Impact Analysis](../12-future-implications/long-term-impact-analysis.md)
+- Cultural evolution scenarios: Future Scenarios Framework (planned document; absent from this checkout)
+- Societal transformation roadmap: [Long-term Impact Analysis](../08-future-implications/long-term-impact-analysis.md)

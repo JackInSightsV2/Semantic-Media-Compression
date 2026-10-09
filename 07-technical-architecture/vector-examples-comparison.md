@@ -1,5 +1,8 @@
 # Vector vs JSON Semantic Compression: Practical Examples
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 This analysis demonstrates the practical differences between traditional JSON-based semantic compression and vector-enhanced approaches across three key media types: training videos, music, and movies. The examples illustrate how vector mathematics transforms semantic compression from descriptive text to programmable meaning.

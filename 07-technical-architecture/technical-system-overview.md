@@ -1,5 +1,8 @@
 # Technical Implementation Architecture
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 <!--
 Copyright 2024-2025 Stephen Henry JackInSightsV2
 
@@ -283,13 +286,13 @@ This technical architecture provides the foundation for transforming semantic me
 ## Implementation Pathway
 
 **Next Technical Steps**:
-- **[Standards Development](../08-implementation-standards/standards-development-overview.md)**: Translating this architecture into industry standards and protocols
-- **[Case Study Implementation](../09-case-studies-examples/case-study-methodology.md)**: Practical demonstrations of these technical concepts
-- **[Competitive Positioning](../10-competitive-analysis/market-landscape-overview.md)**: How this architecture compares to existing and emerging technologies
+- **Standards Development (planned document; absent from this checkout)**: Translating this architecture into industry standards and protocols
+- **Case Study Implementation (planned document; absent from this checkout)**: Practical demonstrations of these technical concepts
+- **Competitive Positioning (planned document; absent from this checkout)**: How this architecture compares to existing and emerging technologies
 
 **Business Integration**:
 - Technical feasibility directly enables the [commercial opportunities](../06-business-applications/commercial-opportunities-overview.md) identified in business analysis
-- Implementation costs and timelines inform [scenario planning](../11-scenario-planning/future-scenarios-framework.md) and [future roadmaps](../12-future-implications/long-term-impact-analysis.md)
+- Implementation costs and timelines inform scenario planning (planned document; absent from this checkout) and [future roadmaps](../08-future-implications/long-term-impact-analysis.md)
 
 **Compliance Integration**:
 - Technical safeguards must implement [ethical requirements](../04-ethical-considerations/ethical-framework-overview.md)

@@ -1,5 +1,8 @@
 # Semantic Extraction Algorithms and Vector-Enhanced JSON Structure
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 The transformation of movies into meaningful semantic blueprints requires sophisticated algorithms that can parse visual and audio content into structured representations combining human-readable JSON descriptions with mathematically precise vector embeddings. This process goes far beyond traditional media analysis to capture the narrative intent, emotional context, and regenerative instructions that enable AI systems to reconstruct meaningful experiences while providing mathematical foundations for cultural adaptation, consistency validation, and cross-media transformation.

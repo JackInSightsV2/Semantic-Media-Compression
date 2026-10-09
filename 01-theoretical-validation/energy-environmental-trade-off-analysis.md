@@ -1,5 +1,8 @@
 # Energy/Environmental Trade-Off Analysis: The Intellectual Check
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Executive Summary
 
 This analysis confronts the fundamental economic premise of semantic compression by examining the energy trade-off between transmission efficiency and AI inference costs. While 1000:1 compression offers dramatic storage and bandwidth savings, the computational energy required for real-time regeneration creates a critical balance point that determines the technology's viability and environmental impact.

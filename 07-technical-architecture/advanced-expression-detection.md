@@ -1,5 +1,8 @@
 # Advanced Expression Detection: Capturing Human Communication Nuances
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic media compression requires AI models sophisticated enough to detect, analyze, and recreate the subtle layers of human expression that carry meaning beyond explicit content. Current AI technology lacks the nuanced understanding necessary to preserve the micro-expressions, body language subtleties, vocal inflections, and cultural communication patterns that audiences unconsciously process and that contribute significantly to media impact.

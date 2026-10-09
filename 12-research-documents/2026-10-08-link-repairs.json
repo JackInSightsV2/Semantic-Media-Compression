@@ -1,0 +1,485 @@
+[
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 172,
+    "target": "./cognitive-science-integration.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 182,
+    "target": "./compression-mathematics.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 194,
+    "target": "./integrated-theoretical-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 204,
+    "target": "./research-methodology-integration.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 298,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 301,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 302,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 303,
+    "target": "../12-future-implications/research-development-priorities.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/research-development-priorities.md"
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 307,
+    "target": "../03-cultural-social-impact/indigenous-perspectives-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 307,
+    "target": "../03-cultural-social-impact/global-south-perspectives-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "02-interdisciplinary-integration/academic-integration-overview.md",
+    "line": 308,
+    "target": "../03-cultural-social-impact/media-literacy-authenticity.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "03-cultural-social-impact/cultural-transformation-analysis.md",
+    "line": 124,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "03-cultural-social-impact/cultural-transformation-analysis.md",
+    "line": 127,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "03-cultural-social-impact/cultural-transformation-analysis.md",
+    "line": 128,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "04-ethical-considerations/ethical-framework-overview.md",
+    "line": 111,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "04-ethical-considerations/ethical-framework-overview.md",
+    "line": 115,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "04-ethical-considerations/ethical-framework-overview.md",
+    "line": 118,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "04-ethical-considerations/ethical-framework-overview.md",
+    "line": 119,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "04-ethical-considerations/ethical-framework-overview.md",
+    "line": 123,
+    "target": "../03-cultural-social-impact/indigenous-perspectives-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "04-ethical-considerations/ethical-framework-overview.md",
+    "line": 123,
+    "target": "../03-cultural-social-impact/global-south-perspectives-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 45,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 75,
+    "target": "./entertainment-industry.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 188,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 189,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 192,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 193,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 194,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "06-business-applications/commercial-opportunities-overview.md",
+    "line": 202,
+    "target": "../13-expanded-applications/application-domains-overview.md",
+    "action": "corrected relative path",
+    "replacement": "../09-expanded-applications/application-domains-overview.md"
+  },
+  {
+    "path": "07-technical-architecture/technical-system-overview.md",
+    "line": 289,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "07-technical-architecture/technical-system-overview.md",
+    "line": 290,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "07-technical-architecture/technical-system-overview.md",
+    "line": 291,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "07-technical-architecture/technical-system-overview.md",
+    "line": 295,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "07-technical-architecture/technical-system-overview.md",
+    "line": 295,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 8,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 11,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 12,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 13,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 16,
+    "target": "../13-expanded-applications/application-domains-overview.md",
+    "action": "corrected relative path",
+    "replacement": "../09-expanded-applications/application-domains-overview.md"
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 95,
+    "target": "../13-expanded-applications/application-domains-overview.md",
+    "action": "corrected relative path",
+    "replacement": "../09-expanded-applications/application-domains-overview.md"
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 96,
+    "target": "../13-expanded-applications/creative-arts-applications.md",
+    "action": "corrected relative path",
+    "replacement": "../09-expanded-applications/creative-arts-applications.md"
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 97,
+    "target": "../13-expanded-applications/personal-therapeutic-applications.md",
+    "action": "corrected relative path",
+    "replacement": "../09-expanded-applications/personal-therapeutic-applications.md"
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 110,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "08-future-implications/long-term-impact-analysis.md",
+    "line": 111,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 37,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 44,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 46,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 54,
+    "target": "./music-audio-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 63,
+    "target": "./literature-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 72,
+    "target": "./visual-arts-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 83,
+    "target": "./scientific-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 92,
+    "target": "./historical-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 101,
+    "target": "./business-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 112,
+    "target": "./personal-memory-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 121,
+    "target": "./therapeutic-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 132,
+    "target": "./legal-governance-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 141,
+    "target": "./research-academic-applications.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 290,
+    "target": "../08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 291,
+    "target": "../09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 292,
+    "target": "../10-competitive-analysis/market-landscape-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 293,
+    "target": "../11-scenario-planning/future-scenarios-framework.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "09-expanded-applications/application-domains-overview.md",
+    "line": 294,
+    "target": "../12-future-implications/long-term-impact-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../08-future-implications/long-term-impact-analysis.md"
+  },
+  {
+    "path": "11-validation-tests/05-special-research/13-gaussian-splatting-investigation.md",
+    "line": 280,
+    "target": "../07-technical-architecture/3d-spatial-compression.md",
+    "action": "corrected relative path",
+    "replacement": "../../07-technical-architecture/3d-spatial-compression.md"
+  },
+  {
+    "path": "11-validation-tests/05-special-research/13-gaussian-splatting-investigation.md",
+    "line": 281,
+    "target": "../07-technical-architecture/technical-system-overview.md",
+    "action": "corrected relative path",
+    "replacement": "../../07-technical-architecture/technical-system-overview.md"
+  },
+  {
+    "path": "11-validation-tests/05-special-research/13-gaussian-splatting-investigation.md",
+    "line": 282,
+    "target": "../07-technical-architecture/implementation-roadmap.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "11-validation-tests/05-special-research/13-gaussian-splatting-investigation.md",
+    "line": 283,
+    "target": "../07-technical-architecture/technical-feasibility-analysis.md",
+    "action": "corrected relative path",
+    "replacement": "../../07-technical-architecture/technical-feasibility-analysis.md"
+  },
+  {
+    "path": "INDEX.md",
+    "line": 119,
+    "target": "./Initial/",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "NAVIGATION.md",
+    "line": 92,
+    "target": "./08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "NAVIGATION.md",
+    "line": 145,
+    "target": "./09-case-studies-examples/case-study-methodology.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  },
+  {
+    "path": "NAVIGATION.md",
+    "line": 152,
+    "target": "./08-implementation-standards/standards-development-overview.md",
+    "action": "removed dangling link; marked missing proposal",
+    "replacement": null
+  }
+]

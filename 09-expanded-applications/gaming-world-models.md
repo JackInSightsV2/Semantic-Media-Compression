@@ -1,5 +1,8 @@
 # Gaming and World Model Applications
 
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Conceptual research material, retained for discussion. Broad cultural assertions, future scenarios and quantitative claims are not established findings merely because they appear here; validate them against appropriate primary evidence and affected communities. See [the current audit](../AUDIT.md).
+
 ## Overview
 
 Semantic compression has significant potential in gaming and virtual world creation. By compressing game worlds, narratives, and interactive elements into semantic descriptions, we can create more dynamic, personalized, and culturally adaptive gaming experiences.

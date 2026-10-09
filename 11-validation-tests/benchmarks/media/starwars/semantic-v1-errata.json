@@ -1,0 +1,4 @@
+{
+  "status": "control_failed",
+  "reason": "No-context reader answered 14/15 visual questions correctly (17/18 including unknowns). Question cues/prior knowledge make this run unsuitable evidence of semantic retention. Raw scores remain for inspection; superseded by a timestamp-specific v2 evaluation."
+}

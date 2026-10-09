@@ -1,3 +1,6 @@
+
+<!-- AUDIT-STATUS: 2026-10-08 -->
+> **Evidence status — 8 October 2026:** Historical research proposal. The concepts below are not measured project results. Numerical performance, cost, market, energy, adoption and calendar claims are unvalidated assumptions unless linked to a reproducible source and dated evidence. See [the current audit](../AUDIT.md).
 ## GraphRAG-Enabled Knowledge Layer Integration
 
 - **Purpose**: Examine how GraphRAG-style retrieval can reinforce the knowledge layer of semantic compression by enriching contextual grounding and adaptive retrieval.
